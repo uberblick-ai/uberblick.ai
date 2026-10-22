@@ -13,25 +13,25 @@
 <section class="q"><h2>The agent loop as a flow</h2>
 <p>Our page <strong>UB Agent loop</strong> describes how an issue moves from filed to merged through the preparer, implementer, reviewer and integrator roles, and where a person has to step in. Its first block is the flow. The source puts each role in a column and each gate in a row; the <em>rework</em> edges run back on the left so a reader sees at a glance which failures loop and which stop.</p>
 <div class="tabs ex"><div class="tablist" role="tablist" aria-label="ablauf example"><button role="tab" id="t-ablauf-v" aria-selected="true" aria-controls="p-ablauf-v" type="button">Displayed</button><button role="tab" id="t-ablauf-m" aria-selected="false" aria-controls="p-ablauf-m" type="button">Markdown</button></div>
-  <div class="panel" role="tabpanel" id="p-ablauf-v" aria-labelledby="t-ablauf-v"><img class="l" src="/img/blocks/ablauf-light.png" alt="An ablauf flow: an agent calls edit_block, the server checks the guidance lease, the edit is applied or refused with guidance_required, the agent reads and calls again" loading="lazy"><img class="d" src="/img/blocks/ablauf-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-ablauf-v" aria-labelledby="t-ablauf-v"><img class="l" src="/img/blocks/ablauf-light.png" alt="An ablauf flow: an agent calls edit_block, the server checks the old text and the revision, the edit is applied or answered with stale_block, the agent re-diffs and calls again" loading="lazy"><img class="d" src="/img/blocks/ablauf-dark.png" alt="" loading="lazy"></div>
   <div class="panel" role="tabpanel" id="p-ablauf-m" aria-labelledby="t-ablauf-m" hidden><pre>```ablauf
 flow v0
 columns rework main
 
 pill edit_block col=main tone=agent "agent calls edit_block"
-box server "checks the guidance lease"
+box server "checks old text and revision"
 end applied "Edit applied"
 
-pill guidance_required col=rework row=server tone=rework
-box get_doc "agent reads the pages it was told to"
+pill stale_block col=rework row=server tone=rework
+box rediff "agent re-diffs against the current text"
 
 edit_block --&gt; server
-server --&gt; applied : read within ten minutes
-server --&gt; guidance_required tone=rework : not read
-guidance_required --&gt; get_doc tone=rework
-get_doc --&gt; edit_block tone=rework from=left to=left label=end : calls again
+server --&gt; applied : text and revision match
+server --&gt; stale_block tone=rework : someone edited meanwhile
+stale_block --&gt; rediff tone=rework
+rediff --&gt; edit_block tone=rework from=left to=left label=end : calls again
 ```</pre></div></div>
-<p class="small">The flow shown is the guidance gate from the same page; the full loop flow is drawn when its page is final.</p>
+<p class="small">The flow shown is the stale-edit check from the MCP contracts page; the full loop flow is drawn when its page is final.</p>
 <p>When the retrospective proposed a second review gate, the agent that wrote the proposal added one row to the source. The pull request diff showed three new lines and one changed edge, and the reviewer could read the change without opening the editor. The renderer reported no crossings; had it reported one, the agent would have seen the line number and moved the node.</p>
 </section>
 

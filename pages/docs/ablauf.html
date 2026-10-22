@@ -16,35 +16,35 @@ flow v0
 columns rework main
 
 pill edit_block col=main tone=agent &quot;agent calls edit_block&quot;
-box server &quot;checks the guidance lease&quot;
+box server &quot;checks old text and revision&quot;
 end applied &quot;Edit applied&quot;
 
-pill guidance_required col=rework row=server tone=rework
-box get_doc &quot;agent reads the pages it was told to&quot;
+pill stale_block col=rework row=server tone=rework
+box rediff &quot;agent re-diffs against the current text&quot;
 
 edit_block --&gt; server
-server --&gt; applied : read within ten minutes
-server --&gt; guidance_required tone=rework : not read
-guidance_required --&gt; get_doc tone=rework
-get_doc --&gt; edit_block tone=rework from=left to=left label=end : calls again
+server --&gt; applied : text and revision match
+server --&gt; stale_block tone=rework : someone edited meanwhile
+stale_block --&gt; rediff tone=rework
+rediff --&gt; edit_block tone=rework from=left to=left label=end : calls again
 ```">Copy</button></div>
-  <div class="panel" role="tabpanel" id="p-ablauf-v" aria-labelledby="t-ablauf-v"><img class="l" src="/img/blocks/ablauf-light.png" alt="The Ablauf block as the editor shows it: an agent calls edit_block, the server checks the guidance lease, an edit applied when the pages were read within ten minutes, otherwise guidance_required, the agent reads the pages with get_doc and calls again" loading="lazy"><img class="d" src="/img/blocks/ablauf-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-ablauf-v" aria-labelledby="t-ablauf-v"><img class="l" src="/img/blocks/ablauf-light.png" alt="The Ablauf block as the editor shows it: an agent calls edit_block, the server checks the old text and the revision, the edit is applied when they match, otherwise stale_block, the agent re-diffs against the current text and calls again" loading="lazy"><img class="d" src="/img/blocks/ablauf-dark.png" alt="" loading="lazy"></div>
   <div class="panel" role="tabpanel" id="p-ablauf-m" aria-labelledby="t-ablauf-m" hidden><pre>```ablauf
 flow v0
 columns rework main
 
 pill edit_block col=main tone=agent &quot;agent calls edit_block&quot;
-box server &quot;checks the guidance lease&quot;
+box server &quot;checks old text and revision&quot;
 end applied &quot;Edit applied&quot;
 
-pill guidance_required col=rework row=server tone=rework
-box get_doc &quot;agent reads the pages it was told to&quot;
+pill stale_block col=rework row=server tone=rework
+box rediff &quot;agent re-diffs against the current text&quot;
 
 edit_block --&gt; server
-server --&gt; applied : read within ten minutes
-server --&gt; guidance_required tone=rework : not read
-guidance_required --&gt; get_doc tone=rework
-get_doc --&gt; edit_block tone=rework from=left to=left label=end : calls again
+server --&gt; applied : text and revision match
+server --&gt; stale_block tone=rework : someone edited meanwhile
+stale_block --&gt; rediff tone=rework
+rediff --&gt; edit_block tone=rework from=left to=left label=end : calls again
 ```</pre></div></div>
   </section>
 
