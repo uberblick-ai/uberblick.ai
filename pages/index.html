@@ -23,7 +23,7 @@
 
 <section class="blk" id="demo">
 <div class="blk-h"><h2>One document, edited by an agent and a person.</h2><a href="/guides/product-intent">How we build with it</a></div>
-<p class="blk-intro">A delivery report in our own product workspace. The agent writes the paragraph and the records; the chart on the page is the data. Comments sit beside the text.</p>
+<p class="blk-intro">A delivery report in our own product workspace. The agent writes the paragraph and the records; the chart on the page is the data. Comments sit beside the text, and the agent in the thread files the follow-up on GitHub.</p>
 <section class="frame" aria-label="Uberblick, a demo of one document being edited by an agent and a person">
   <div class="fbar"><span class="fdots" aria-hidden="true"><i></i><i></i><i></i></span><span class="furl">127.0.0.1:7777 · Uberblick product</span><button type="button" id="demoReplay">Replay</button></div>
   <div class="fbody">
@@ -48,6 +48,7 @@
           <g class="pts"><circle cx="60" cy="100" r="3"/><circle cx="140" cy="73.3" r="3"/><circle cx="220" cy="86.7" r="3"/><circle cx="300" cy="60" r="3"/><circle cx="380" cy="73.3" r="3"/><circle cx="460" cy="46.7" r="3"/><circle cx="540" cy="60" r="3.5" class="new" id="fnew"/></g>
         </svg>
       </section>
+      <div class="fpill" id="fpill" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg><span class="num">#2142</span><span class="ttl">Apply the retry limit</span><span class="lbl">needs-preparation</span></div>
       <div class="fcomment fmobile" id="fcomment2" hidden></div>
       <div class="fpointer" id="fpointer" hidden aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><title>Pointer</title><path d="M2 1l11 7-4.5 1.2L6 14z"/></svg><b>You</b></div>
     </main>
@@ -56,7 +57,9 @@
         <div class="who"><span class="av person" aria-hidden="true">Y</span><span>You</span><small>just now</small><button type="button" class="fresolve" id="fresolve" title="Resolve this thread">Resolve</button></div>
         <div class="on">on “one wasted run”</div>
         <p id="fq"></p>
-        <div class="freply" id="freply" hidden><div class="who"><span class="av agent" aria-hidden="true">C</span><span>Claude</span><small>just now</small></div><p>Yes. The timeout on #1588; its retrospective is linked from today's record.</p></div>
+        <div class="freply" id="freply" hidden><div class="who"><span class="av agent" aria-hidden="true">C</span><span>Claude</span><small>just now</small></div><p>Yes, the timeout on #1588. The retry limit in the decision record would have caught it. Shall I file that?</p></div>
+        <div class="freply" id="freply2" hidden><div class="who"><span class="av person" aria-hidden="true">Y</span><span>You</span><small>just now</small></div><p id="fa"></p></div>
+        <div class="freply" id="freply3" hidden><div class="who"><span class="av agent" aria-hidden="true">C</span><span>Claude</span><small>just now</small></div><p>Filed as #2142. The issue points at this page and at the decision record.</p></div>
       </div>
     </aside>
   </div>
@@ -143,20 +146,22 @@ ub mcp install claude">Copy</button></span></div>
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const typed = $('typed'), caret = $('fcaret'), sync = $('fsync'), edited = $('fedited'), seg = $('fseg'), dot = $('fnew'), recs = $('frecords');
   const pointer = $('fpointer'), comment = $('fcomment'), q = $('fq'), reply = $('freply'), para = $('fpara'), frame = $('demo');
+  const answer = $('fa'), reply2 = $('freply2'), reply3 = $('freply3'), pill = $('fpill');
   const sentence = ' Today: six deliveries, one wasted run. Chart updated from the record.';
   const question = 'Was the wasted run the timeout on #1588?';
+  const yes = 'Yes, file it.';
   let run = 0, timers = [];
   const later = (fn, ms) => timers.push(setTimeout(fn, ms));
   function reset() {
     timers.forEach(clearTimeout); timers = []; run++;
     typed.textContent = ''; caret.hidden = true; caret.classList.remove('fade'); sync.classList.remove('pulse'); edited.textContent = 'Edited 2 hours ago';
     seg.classList.remove('drawn'); dot.classList.remove('shown'); recs.textContent = '6 records';
-    pointer.hidden = true; pointer.classList.remove('move', 'fade'); comment.hidden = true; comment.classList.remove('focus', 'resolved'); q.textContent = ''; reply.hidden = true;
+    pointer.hidden = true; pointer.classList.remove('move', 'fade'); comment.hidden = true; comment.classList.remove('focus', 'resolved'); q.textContent = ''; reply.hidden = true; reply2.hidden = true; reply3.hidden = true; answer.textContent = ''; pill.classList.remove('shown');
     const old = para.querySelector('mark'); if (old) old.replaceWith(...old.childNodes); para.normalize();
   }
   function finalState() {
     typed.textContent = sentence; seg.classList.add('drawn'); dot.classList.add('shown'); recs.textContent = '7 records'; edited.textContent = 'Edited just now by Claude';
-    markPhrase(); comment.hidden = false; comment.classList.add('focus'); q.textContent = question; reply.hidden = false;
+    markPhrase(); comment.hidden = false; comment.classList.add('focus'); q.textContent = question; reply.hidden = false; reply2.hidden = false; answer.textContent = yes; reply3.hidden = false; pill.classList.add('shown');
   }
   function markPhrase() {
     const node = typed.firstChild; if (!node) return; const i = node.data.indexOf('one wasted run'); if (i < 0) return;
@@ -184,7 +189,12 @@ ub mcp install claude">Copy</button></span></div>
       later(() => { markPhrase(); }, 1000);
       later(() => { comment.hidden = false; comment.classList.add('focus'); pointer.classList.add('fade'); }, 1500);
       later(() => { let k = 0; (function type() { if (id !== run) return; if (k < question.length) { q.textContent += question[k++]; later(type, 30 + Math.random() * 30); } })(); }, 1900);
-      later(() => { reply.hidden = false; }, 1900 + question.length * 45 + 1400);
+      const asked = 1900 + question.length * 45 + 1400;
+      later(() => { reply.hidden = false; }, asked);
+      later(() => { reply2.hidden = false; let k = 0; (function type() { if (id !== run) return; if (k < yes.length) { answer.textContent += yes[k++]; later(type, 40 + Math.random() * 40); } })(); }, asked + 2600);
+      const agreed = asked + 2600 + yes.length * 60 + 900;
+      later(() => { sync.classList.remove('pulse'); void sync.offsetWidth; sync.classList.add('pulse'); pill.classList.add('shown'); }, agreed);
+      later(() => { reply3.hidden = false; }, agreed + 700);
     }
   }
   $('fresolve').addEventListener('click', () => {
