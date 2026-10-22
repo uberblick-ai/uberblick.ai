@@ -17,7 +17,7 @@
   <li>The Markdown folder in the repo went stale, and plans made with an agent on one machine never left it.</li>
   <li>New agent sessions get too much context from local Markdown files, or miss the guidelines they should have read first.</li>
   <li>Decisions keep coming back because the last answer is a paragraph somewhere, and you would rather have a record that agents look up before they build.</li>
-  <li>Reports should carry their numbers, so the chart on the page is the data and not a screenshot of a dashboard.</li>
+  <li>The team is confident extracting relevant numbers into reports, so the chart on the page is the data and not a screenshot of a dashboard.</li>
   <li>Local and offline matter, and MCP is the main way in: the agent you already use, not another assistant.</li>
   <li>Delivery lives on GitHub, and the reasoning should live next to it in a place that was built for agents, not retrofitted.</li>
 </ul>
@@ -25,20 +25,22 @@
 
 <section class="q" id="nofit"><h2>Not a good fit when</h2>
 <ul class="fit">
-  <li>The content is company-wide: onboarding, HR, sales, meeting notes for everyone. Notion, Confluence or Google Docs do this better. Uberblick focuses on small product and tech focused teams.</li>
-  <li>You need someone to host it. Nobody hosts Uberblick for you; sharing needs the hub you run. But it is just a Docker file: <a href="/docs/hub">Run a hub</a>.</li>
+  <li>The content is company-wide: onboarding, HR, sales, meeting notes for everyone. Notion, Confluence, Outline or Google Docs do this better. Uberblick focuses on small product and tech focused teams.</li>
+  <li>You need someone to host it. Nobody hosts Uberblick for you; sharing needs the hub you run. But it is just a Docker Compose file, plus the backups and upgrades any service needs: <a href="/docs/hub">Run a hub</a>.</li>
   <li>You want tasks. There are none and there will be none. Uberblick is not a task manager; delivery lives in the tracker.</li>
-  <li>Your issues live in Jira, Linear or GitLab. Uberblick links to GitHub and only GitHub today.</li>
-  <li>Your team is on Windows. We are on macOS and Linux so far; Windows might work, and if you need it, we can make it happen. Phone support will come; today a phone can read and comment in the browser.</li>
-  <li>You need enterprise permissions. A workspace has members and admins, signed in with GitHub. No SSO, no per-page rights, no audit log.</li>
-  <li>You want "ask the wiki" built in. Uberblick has no AI of its own, and that is deliberate: quite frankly, MCP in your favourite AI desktop app has come a long way, and every built-in approach we have tried feels outdated next to it. If a question box inside the product is what you want, Notion, Confluence and Outline ship one.</li>
+  <li>Your issues live in Jira, Linear or GitLab. Uberblick understands GitHub references and only those today; anything else is a plain link.</li>
+  <li>Your team is on Windows. We are on macOS and Linux so far; Windows might work, and if you need it, we can make it happen. Phone support will come; today the editor is for desktop browsers and iPad.</li>
+  <li>You need fine-grained permissions. A workspace has members and admins, signed in with GitHub. No SSO, no per-page rights, no read-only role, no audit log.</li>
+  <li>You want "ask the wiki" built in. Uberblick has no AI of its own, and that is deliberate: quite frankly, MCP in your favourite AI desktop app has come a long way, and the built-in approaches we have tried feel outdated next to it. If an assistant inside the product is what you want, Notion, Confluence, Outline, AFFiNE and Falconer ship one.</li>
   <li>You use it as a solo developer. It might work: Uberblick was started by a solo developer and it helped. But Obsidian or Trilium are probably better suited to one person's notes.</li>
 </ul>
-<p>Some of the above may be added later. We are focused on getting the core of the app right and will expand on what is requested and what feels right. <a href="https://github.com/uberblick-ai/uberblick-2/issues/new">File an issue and request what you need</a>.</p>
+<p>Some of the above, tasks aside, may be added later. We are focused on getting the core of the app right and will expand on what is requested and what feels right. <a href="https://github.com/uberblick-ai/uberblick-2/issues/new">File an issue and request what you need</a>.</p>
 </section>
 
 <section class="q" id="matrix"><h2>Side by side</h2>
-<p>"Agents" means how a coding agent reads and writes the documents. Hosted tools first, then open source and source-available tools. Markdown in the repo is in the second table because it is the honest baseline.</p>
+<p>"Agents" means how a coding agent reads and writes the documents. Hosted tools first, then open source and source-available tools. Markdown in the repo is in the second table because it is the honest baseline. A cell such as "A doc" under Decisions means the tool has no decision type: you write the record as a document and keep your own convention. Where a feature needs a paid plan or an extension, the cell says so.</p>
+<p>Where the others are stronger: Notion, Confluence and Outline for company-wide knowledge with mature sharing and administration. Google Docs for reviewing prose with people outside the team. Obsidian and Markdown in the repo for plain files you own outright, with history and diffs for free. Jupyter when the numbers behind a decision must be computed, not just stored. And every tool with an official MCP server gives your coding agent a way in too; that is no longer an Uberblick-only trait.</p>
+<p>What you take on with Uberblick: you run the hub and its backups and upgrades, clients and hub move to a new protocol together, and a member you remove keeps the documents already on their disk. <code>export_markdown</code> gives any page back as a Markdown file with the blocks as fenced source, so leaving is possible, but it is not a folder of Markdown while you use it.</p>
 </section>
 </div>
 
@@ -47,40 +49,40 @@
   <thead><tr><th>&nbsp;</th><th class="us">Uberblick</th><th>Notion</th><th>Confluence</th><th>Google Docs</th><th>Falconer</th></tr></thead>
   <tbody>
     <tr><th scope="row">Licence</th><td class="us">MIT</td><td>Proprietary</td><td>Proprietary</td><td>Proprietary</td><td>Proprietary</td></tr>
-    <tr><th scope="row">Built for</th><td class="us">Product and engineering teams with agents</td><td>Any team, any content</td><td>Large organisations on Atlassian</td><td>Co-writing prose</td><td>A knowledge layer over code and tools</td></tr>
-    <tr><th scope="row">Where it lives</th><td class="us">A copy on each computer, synced by a hub you run</td><td>Notion's cloud</td><td>Atlassian cloud or your data centre</td><td>Google's cloud</td><td>Falconer's cloud</td></tr>
-    <tr><th scope="row">Offline</th><td class="us">Always</td><td>Limited</td><td>No</td><td>With the browser extension</td><td>No</td></tr>
-    <tr><th scope="row">Co-editing</th><td class="us">Real time, comments beside the text</td><td>Real time</td><td>Real time</td><td>Real time, with suggestions</td><td>Real time</td></tr>
-    <tr><th scope="row">Agents</th><td class="us">MCP first: search, read, edit one block, comment, update data; reads required before writes</td><td>API, MCP connector, Notion's own agents</td><td>API, Rovo MCP server</td><td>API</td><td>MCP read and write; docs updated from merged PRs</td></tr>
-    <tr><th scope="row">Built-in AI</th><td class="us">None; bring your own agent over MCP</td><td>Notion AI, agents</td><td>Rovo</td><td>Gemini</td><td>Its own assistant</td></tr>
+    <tr><th scope="row">Built for</th><td class="us">Product and engineering teams with agents</td><td>Docs, wikis, databases and project workflows</td><td>Team knowledge, strongest next to Jira</td><td>Writing and reviewing documents in Workspace</td><td>A knowledge layer over code and tools</td></tr>
+    <tr><th scope="row">Where it lives</th><td class="us">A copy on each computer, synced by a hub you run</td><td>Notion's cloud</td><td>Atlassian cloud; Data Center is retiring, end of life March 2029</td><td>Google's cloud</td><td>Falconer's cloud; single-tenant or self-hosted for enterprise</td></tr>
+    <tr><th scope="row">Offline</th><td class="us">Yes; edits sync when the hub is reachable</td><td>Downloaded pages in the apps</td><td>No</td><td>In the mobile apps; desktop with setup</td><td>No</td></tr>
+    <tr><th scope="row">Co-editing</th><td class="us">Real time, with comments</td><td>Real time, with comments</td><td>Real time, with comments</td><td>Real time, with suggestions and comments</td><td>Real time, with comments and suggestions</td></tr>
+    <tr><th scope="row">Agents</th><td class="us">MCP first: search, read, edit one block, comment, update data; pages tagged as guidance must be read before writing</td><td>API, MCP (read and write), Notion's own agents</td><td>API, Rovo MCP server (read and write)</td><td>API; Workspace MCP servers in developer preview</td><td>MCP read and write; docs updated from merged PRs</td></tr>
+    <tr><th scope="row">Built-in AI</th><td class="us">None; bring your own agent over MCP</td><td>Notion AI, agents (paid plans)</td><td>Rovo</td><td>Gemini (Workspace plans)</td><td>Its own assistant</td></tr>
     <tr><th scope="row">Decisions</th><td class="us">A record with an answer and a reason; a successor supersedes it</td><td>A page or database you design</td><td>A decision template</td><td>A doc</td><td>A page</td></tr>
-    <tr><th scope="row">Data in documents</th><td class="us">Records in the page; tables and charts read them</td><td>Databases, views</td><td>Tables, macros</td><td>Tables, linked Sheets charts</td><td>Prose</td></tr>
-    <tr><th scope="row">Tasks</th><td class="us">None; not a task manager</td><td>Databases, boards</td><td>Jira next door</td><td>Checklists</td><td>None</td></tr>
-    <tr><th scope="row">Issue tracker</th><td class="us">GitHub only</td><td>Integrations</td><td>Jira</td><td>None</td><td>GitHub, Linear and others</td></tr>
-    <tr><th scope="row">Permissions</th><td class="us">Members and admins, by GitHub account</td><td>Per page and workspace</td><td>Enterprise grade</td><td>Per document</td><td>Per workspace</td></tr>
-    <tr><th scope="row">Platforms</th><td class="us">macOS and Linux so far; browser on anything</td><td>Web, desktop, mobile</td><td>Web, mobile</td><td>Web, mobile</td><td>Web</td></tr>
-    <tr><th scope="row">Price</th><td class="us">Free; you host</td><td>Per seat</td><td>Per seat</td><td>Per seat</td><td>Hosted, paid</td></tr>
+    <tr><th scope="row">Data in documents</th><td class="us">Records in the page; tables and charts read them</td><td>Databases, views, charts</td><td>Tables, macros, databases</td><td>Tables, linked Sheets charts</td><td>Tables, diagrams, LaTeX</td></tr>
+    <tr><th scope="row">Tasks</th><td class="us">None; not a task manager</td><td>Databases, boards</td><td>Native tasks; Jira next door</td><td>Checklists, assignable on Workspace accounts</td><td>None</td></tr>
+    <tr><th scope="row">Issue tracker</th><td class="us">GitHub references; plain links elsewhere</td><td>GitHub and Jira previews and sync</td><td>Jira</td><td>Add-ons, Jira smart chips</td><td>GitHub, Linear and others</td></tr>
+    <tr><th scope="row">Permissions</th><td class="us">Members and admins, by GitHub account</td><td>Per page and workspace</td><td>Per space and page; SSO</td><td>Per document</td><td>Per document and folder</td></tr>
+    <tr><th scope="row">Platforms</th><td class="us">macOS and Linux; the editor is a browser tab served on that computer, desktop and iPad</td><td>Web, desktop, mobile</td><td>Web, mobile</td><td>Web, mobile</td><td>Web</td></tr>
+    <tr><th scope="row">Price</th><td class="us">Free; you host and run it</td><td>Free plan; per seat above</td><td>Free up to 10 users; per seat above</td><td>Free with a Google account; Workspace per seat</td><td>Usage-based; seat plans; enterprise</td></tr>
   </tbody>
 </table></div>
 
-<div class="col"><h3 class="mh">Open source and source-available</h3></div>
+<div class="col"><h3 class="mh">Open source, source-available and local</h3></div>
 <div class="matrix wide"><table>
   <thead><tr><th>&nbsp;</th><th class="us">Uberblick</th><th>Outline</th><th>AFFiNE</th><th>Logseq</th><th>Trilium</th><th>Obsidian</th><th>Jupyter</th><th>Markdown in the repo</th></tr></thead>
   <tbody>
-    <tr><th scope="row">Licence</th><td class="us">MIT</td><td>BSL 1.1, source-available</td><td>MIT community edition</td><td>AGPL-3.0</td><td>AGPL-3.0</td><td>Proprietary, free</td><td>BSD</td><td>Whatever the repo has</td></tr>
+    <tr><th scope="row">Licence</th><td class="us">MIT</td><td>BSL 1.1, source-available</td><td>MIT client; source-available backend</td><td>AGPL-3.0</td><td>AGPL-3.0</td><td>Proprietary, free</td><td>BSD</td><td>The repo's, usually</td></tr>
     <tr><th scope="row">Built for</th><td class="us">Product and engineering teams with agents</td><td>Team wiki</td><td>Pages and canvas, a Notion and Miro replacement</td><td>One person's notes, outliner</td><td>One person's notes, by design</td><td>One person's notes</td><td>Reproducible analysis</td><td>Engineers, in the repo</td></tr>
-    <tr><th scope="row">Where it lives</th><td class="us">A copy on each computer, synced by one Docker container you run</td><td>Their cloud, or Docker with Postgres, Redis and S3</td><td>Local first; their cloud or Docker</td><td>Files on your disk</td><td>Local app or Docker server</td><td>Files on your disk</td><td>Files on your disk or a hosted kernel</td><td>Git</td></tr>
-    <tr><th scope="row">Offline</th><td class="us">Always</td><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
-    <tr><th scope="row">Co-editing</th><td class="us">Real time, comments beside the text</td><td>Real time</td><td>Real time</td><td>Single user; sync in beta</td><td>Single user</td><td>Single user; paid sync</td><td>Per file; real time in JupyterLab</td><td>Through pull requests</td></tr>
-    <tr><th scope="row">Agents</th><td class="us">MCP first: search, read, edit one block, comment, update data; reads required before writes</td><td>Built-in MCP: search, read, edit</td><td>In-app assistant</td><td>Plugins</td><td>Opt-in; notes exposed over MCP; REST API</td><td>Edit the files; CLI and plugins</td><td>Run the cells; edit the files</td><td>Edit the files; commit</td></tr>
-    <tr><th scope="row">Built-in AI</th><td class="us">None; bring your own agent over MCP</td><td>AI answers in search</td><td>In-app assistant</td><td>None; plugins</td><td>Opt-in, your provider</td><td>None; plugins</td><td>Jupyter AI, your provider</td><td>None</td></tr>
-    <tr><th scope="row">Decisions</th><td class="us">A record with an answer and a reason; a successor supersedes it</td><td>A doc</td><td>A page</td><td>A block</td><td>A note</td><td>A note</td><td>Not its job</td><td>An ADR file</td></tr>
-    <tr><th scope="row">Data in documents</th><td class="us">Records in the page; tables and charts read them</td><td>Tables</td><td>Databases</td><td>Queries over blocks</td><td>Collections, scripts</td><td>Plugins</td><td>Anything computable</td><td>Static tables</td></tr>
-    <tr><th scope="row">Tasks</th><td class="us">None; not a task manager</td><td>None</td><td>Databases, kanban</td><td>Task blocks</td><td>Task lists</td><td>Plugins</td><td>None</td><td>Checklists</td></tr>
-    <tr><th scope="row">Issue tracker</th><td class="us">GitHub only</td><td>Integrations</td><td>None</td><td>None</td><td>None</td><td>Plugins</td><td>None</td><td>The repo's own</td></tr>
-    <tr><th scope="row">Permissions</th><td class="us">Members and admins, by GitHub account</td><td>Per collection; OIDC</td><td>Per workspace</td><td>Filesystem</td><td>Filesystem</td><td>Filesystem</td><td>Filesystem or JupyterHub</td><td>Repository access</td></tr>
-    <tr><th scope="row">Platforms</th><td class="us">macOS and Linux so far; browser on anything</td><td>Web</td><td>Web, desktop, mobile</td><td>Desktop, mobile</td><td>Desktop, web</td><td>Desktop, mobile</td><td>Anywhere Python runs</td><td>Anywhere</td></tr>
-    <tr><th scope="row">Price</th><td class="us">Free; you host</td><td>Per seat hosted; free self-hosted</td><td>Free; paid cloud</td><td>Free</td><td>Free</td><td>Free; paid sync and publish</td><td>Free</td><td>Free</td></tr>
+    <tr><th scope="row">Where it lives</th><td class="us">A copy on each computer, synced by a hub you run with Docker Compose</td><td>Their cloud, or Docker with Postgres and Redis</td><td>Local first; their cloud or Docker</td><td>Files on your disk; a local database in the DB version</td><td>Local app or Docker server</td><td>Files on your disk</td><td>Files on your disk or a hosted kernel</td><td>Git</td></tr>
+    <tr><th scope="row">Offline</th><td class="us">Yes; edits sync when the hub is reachable</td><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+    <tr><th scope="row">Co-editing</th><td class="us">Real time, with comments</td><td>Real time, with comments</td><td>Real time, with comments</td><td>Single user; DB version real time, in alpha</td><td>Single user</td><td>Single user; paid sync; plugins for live editing</td><td>Real time with the collaboration extension on a shared server</td><td>Branches and pull requests</td></tr>
+    <tr><th scope="row">Agents</th><td class="us">MCP first: search, read, edit one block, comment, update data; pages tagged as guidance must be read before writing</td><td>Built-in MCP: search, read, edit</td><td>Official MCP: search and read; writes rolling out</td><td>DB version: built-in MCP and CLI; OG: the files, plugins</td><td>Opt-in MCP with note tools; REST API</td><td>Edit the files; CLI and plugins</td><td>Run the cells; edit the files</td><td>Edit the files; commit</td></tr>
+    <tr><th scope="row">Built-in AI</th><td class="us">None; bring your own agent over MCP</td><td>AI answers in search (paid editions)</td><td>In-app assistant (AI plan)</td><td>None; plugins</td><td>Opt-in, your provider</td><td>None; plugins</td><td>Jupyter AI extension, your provider</td><td>None</td></tr>
+    <tr><th scope="row">Decisions</th><td class="us">A record with an answer and a reason; a successor supersedes it</td><td>A doc</td><td>A page</td><td>A block</td><td>A note</td><td>A note</td><td>Markdown cells beside the evidence</td><td>An ADR file</td></tr>
+    <tr><th scope="row">Data in documents</th><td class="us">Records in the page; tables and charts read them</td><td>Tables; attributes in paid editions</td><td>Databases</td><td>Queries over blocks; DB version adds properties and tables</td><td>Collections, scripts</td><td>Properties and Bases built in; plugins</td><td>Anything computable</td><td>Static tables; scripts or CI to generate them</td></tr>
+    <tr><th scope="row">Tasks</th><td class="us">None; not a task manager</td><td>Checklists</td><td>Databases, kanban</td><td>Task blocks</td><td>Task lists</td><td>Checklists and task search; plugins</td><td>None</td><td>Checklists</td></tr>
+    <tr><th scope="row">Issue tracker</th><td class="us">GitHub references; plain links elsewhere</td><td>Link previews</td><td>None</td><td>None</td><td>None</td><td>Plugins</td><td>None</td><td>The repo's own</td></tr>
+    <tr><th scope="row">Permissions</th><td class="us">Members and admins, by GitHub account</td><td>Per collection and document; SSO</td><td>Per workspace</td><td>Filesystem</td><td>App login, protected notes</td><td>Filesystem</td><td>Filesystem or JupyterHub</td><td>Repository access</td></tr>
+    <tr><th scope="row">Platforms</th><td class="us">macOS and Linux; the editor is a browser tab served on that computer, desktop and iPad</td><td>Web, desktop apps, mobile web</td><td>Web, desktop, mobile</td><td>Desktop, mobile; DB version also web</td><td>Desktop, web</td><td>Desktop, mobile</td><td>Anywhere Python runs</td><td>Anywhere</td></tr>
+    <tr><th scope="row">Price</th><td class="us">Free; you host and run it</td><td>Hosted by team size; free Community self-hosted, paid editions</td><td>Free; paid cloud and self-hosted team plans</td><td>Free; paid hosted sync</td><td>Free</td><td>Free; paid sync and publish</td><td>Free</td><td>Free</td></tr>
   </tbody>
 </table></div>
-<div class="col"><p class="small">Facts about other tools come from their public documentation on the day of writing and will drift. Tell us where we are wrong and we will fix it.</p></div>
+<div class="col"><p class="small">Facts about other tools were checked against their public documentation on 22 October 2026 and will drift. Tell us where we are wrong and we will fix it.</p></div>
