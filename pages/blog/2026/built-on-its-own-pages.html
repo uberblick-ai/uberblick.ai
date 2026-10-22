@@ -22,7 +22,6 @@
       <tr><td>Issues the loop closed with a merged pull request</td><td>[from the delivery report]</td></tr>
       <tr><td>Of those, merged without a person touching the code</td><td>[from the delivery report]</td></tr>
       <tr><td>Pull requests whose corpus update changed a page</td><td>[from the delivery report]</td></tr>
-      <tr><td>Runs refused by the server for unread guidance, then completed</td><td>[from the delivery report]</td></tr>
       <tr><td>Runs a person had to stop</td><td>[from the delivery report]</td></tr>
     </tbody>
   </table></div>
@@ -33,7 +32,7 @@
   <ul>
     <li><strong>The pages.</strong> Fifty pages in one workspace: a product principles page, the CLI's intent per command, the MCP server's contracts, the "Web UI:" design pages, and the decision topics. Six of them carry the guidance tag.</li>
     <li><strong>The loop.</strong> <a href="https://agents.uberblick.ai">ub-agents</a> on GitHub Actions, four roles in a few lines of YAML, steered by labels: needs-preparation, ready, needs-review, ready-to-merge. Any agent runtime; we run Claude Code and Codex side by side.</li>
-    <li><strong>The rule.</strong> The MCP server refuses every write from a process that has not read the guidance pages in the last ten minutes, and lists them. The agents' instructions add four lines: start from the sidebar, cite by id, call <code>find_decisions</code> for your issue, update the page in the pull request.</li>
+    <li><strong>The rule.</strong> The MCP server names the guidance pages when an agent connects and asks it to read the ones that apply before its first write. The agents' instructions add four lines: start from the sidebar, cite by id, call <code>find_decisions</code> for your issue, update the page in the pull request.</li>
     <li><strong>The person.</strong> I read the issue the preparer wrote, approve or reject the decisions agents propose, and read the corpus update in each pull request. I do not read most of the code.</li>
   </ul>
   </section>
@@ -52,6 +51,6 @@
 
   <section class="q" id="next"><h2>Next</h2>
   <p>Stage 2 is about decisions: whether a record written by an agent and approved by a person keeps a question closed across the runs that follow, and what the history looks like after a month. Stage 3 is the one we are least sure of: the loop proposing changes to its own rules from retrospectives, with a person deciding each one. Nothing changes automatically from a retro; that is the rule we will test hardest.</p>
-  <p>If you want to try the first stage on your own repository: <a href="/docs/install">install</a>, tag three pages as guidance, and put the four lines from <a href="/docs/instructions">Agent instructions</a> into your agent's instructions. Then watch the first refusal.</p>
+  <p>If you want to try the first stage on your own repository: <a href="/docs/install">install</a>, tag three pages as guidance, and put the four lines from <a href="/docs/instructions">Agent instructions</a> into your agent's instructions. Then read the corpus update in the first pull request.</p>
   </section>
 </article>

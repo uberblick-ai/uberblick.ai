@@ -67,15 +67,18 @@
 
 <section class="blk" id="mcp">
 <div class="blk-h"><h2>An opinionated MCP: the right context, nothing more.</h2><a href="/docs/agents">Agents over MCP</a></div>
-<p class="blk-intro">An agent gets the pages its change needs and not the workspace: the sidebar says where to start, search finds the rest, and the decisions linked to its issue come with it. Second, the few pages tagged as guidance are required reading: the server refuses a write from an agent that has not read them, and names them. No prompt engineering, no hoping.</p>
-<div class="flow" role="img" aria-label="An agent calls edit_block; the server refuses with guidance_required and lists the unread pages; the agent reads them with get_doc; the write is accepted for ten minutes of edits.">
-  <div class="step"><span class="k">1 · agent</span><b>Calls <code>edit_block</code></b><span>on a page in the workspace</span></div>
-  <span class="arr" aria-hidden="true"></span>
-  <div class="step no"><span class="k">2 · server</span><b>Refuses: <code>guidance_required</code></b><span>unread: Product principles, Web UI: typography</span></div>
-  <span class="arr" aria-hidden="true"></span>
-  <div class="step"><span class="k">3 · agent</span><b>Reads both with <code>get_doc</code></b><span>the same pages people pinned</span></div>
-  <span class="arr" aria-hidden="true"></span>
-  <div class="step ok"><span class="k">4 · server</span><b>Accepts the write</b><span>and every write for ten minutes</span></div>
+<p class="blk-intro">An agent gets the pages its change needs without cluttering its context window. The server sorts the relevant from the irrelevant: it names the few pages tagged as guidance when the agent connects, the decisions linked to the issue come with one call, and search finds the rest. Implementation agents get pointers to the right pages and read them over the local MCP server. No prompt engineering, no context spamming, no hoping.</p>
+<div class="calls" role="img" aria-label="The MCP calls of one change: on connect the server points at two guidance pages; find_decisions for the issue returns the record in force; the agent reads the principles page and the record, searches for the block to change, and edits that one block. Three pages of fifty-two were in its context.">
+  <div class="cap"><span>One change, what the agent read</span><span>#2142 · Apply the retry limit</span></div>
+  <ol>
+    <li><span class="k">connect</span><span class="t">Workspace guidance: before your first write, read what applies with <code>get_doc</code>: Product principles, Writing pages</span><span class="r">2 pointers</span></li>
+    <li><span class="k">find_decisions</span><span class="t">#2142</span><span class="r">Retry limit on sync · in force</span></li>
+    <li><span class="k">get_doc</span><span class="t">Product principles</span><span class="r">1.9 KB</span></li>
+    <li><span class="k">get_doc</span><span class="t">Retry limit on sync</span><span class="r">0.8 KB</span></li>
+    <li><span class="k">search</span><span class="t">"retry"</span><span class="r">Sync: retry and backoff · 1 block</span></li>
+    <li><span class="k">edit_block</span><span class="t">Sync: retry and backoff › paragraph 4</span><span class="r ok">accepted</span></li>
+  </ol>
+  <p class="sum"><b>3 pages of 52</b> in the context window. The other 49 stayed where they were.</p>
 </div>
 </section>
 

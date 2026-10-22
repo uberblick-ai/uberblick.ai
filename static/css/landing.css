@@ -116,13 +116,28 @@ mark.sel { background: oklch(0.85 0.12 75 / 55%); color: inherit; border-radius:
 #term { min-height: 198px; }
 .blk .block { margin: 0; }
 
-/* The MCP flow: four steps in a row, stacked on a phone. The looping row ends with a return arrow. */
+/* The MCP call log: one change, the calls it made, what each one brought into context. */
+.calls { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); margin: 0 0 18px; overflow: hidden; }
+.calls .cap { display: flex; justify-content: space-between; gap: 12px; padding: 8px 14px; border-bottom: 1px solid var(--line); font: 500 12px var(--mono); color: var(--muted); letter-spacing: 0.02em; }
+.calls ol { list-style: none; margin: 0; padding: 4px 0; }
+.calls li { display: grid; grid-template-columns: 128px minmax(0, 1fr) auto; gap: 14px; align-items: baseline; padding: 7px 14px; font-size: 15.5px; line-height: 1.45; }
+.calls li + li { border-top: 1px solid color-mix(in oklch, var(--line), transparent 50%); }
+.calls .k { font: 500 13.5px var(--mono); color: var(--accent); }
+.calls .t code { font-size: 0.92em; }
+.calls .r { font: 500 13.5px var(--mono); color: var(--muted); text-align: right; white-space: nowrap; }
+.calls .r.ok { color: var(--fg); }
+.calls .sum { margin: 0; padding: 10px 14px; border-top: 1px solid var(--line); background: var(--tint); font-size: 15.5px; }
+@media (max-width: 899px) {
+  .calls li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .calls .r { text-align: left; white-space: normal; }
+}
+/* The ub-agents loop: four steps in a row, stacked on a phone. The row ends with a return arrow. */
 .flow { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); gap: 10px; align-items: stretch; margin: 0 0 18px; }
 .flow .step { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 4px; align-content: start; min-width: 0; background: var(--panel); }
 .flow .step .k { font: 500 11px var(--mono); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
-.flow .step b { font-size: 14.5px; font-weight: 600; line-height: 1.35; }
+.flow .step b { font-size: 16px; font-weight: 600; line-height: 1.35; }
 .flow .step b code { font-weight: 500; font-size: 0.92em; }
-.flow .step > span:last-child { font-size: 13px; color: var(--muted); line-height: 1.45; }
+.flow .step > span:last-child { font-size: 14.5px; color: var(--muted); line-height: 1.45; }
 .flow .step.no { border-color: var(--accent); }
 .flow .step.no .k { color: var(--accent); }
 .flow .step.ok { background: var(--tint); border-color: transparent; }
@@ -145,7 +160,7 @@ mark.sel { background: oklch(0.85 0.12 75 / 55%); color: inherit; border-radius:
 .vplay { width: 64px; height: 64px; border-radius: 50%; background: var(--accent); position: relative; box-shadow: 0 8px 24px oklch(0.5 0.2 290 / 25%) }
 .vplay::after { content: ""; position: absolute; left: 25px; top: 19px; border-left: 20px solid var(--on-accent); border-top: 13px solid transparent; border-bottom: 13px solid transparent }
 .vlabel { font: 500 13px var(--mono); color: var(--muted); letter-spacing: 0.02em }
-.vnote { font-size: 15px; color: var(--muted); margin: 12px 0 0; max-width: 72ch }
+.vnote { font-size: 16.5px; color: var(--muted); margin: 12px 0 0; max-width: 72ch }
 
 /* What a document can hold: muted thumbnails of the blocks. */
 .holds { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px }
@@ -155,8 +170,8 @@ mark.sel { background: oklch(0.85 0.12 75 / 55%); color: inherit; border-radius:
 .holds .pic img { width: 100%; height: 100%; object-fit: contain; filter: saturate(0.35) contrast(0.95); opacity: 0.85; transition: filter .2s, opacity .2s }
 .holds a:hover .pic img { filter: none; opacity: 1 }
 .holds .pic .d { display: none }
-.holds .n { font: 500 14.5px var(--mono); color: var(--fg) }
-.holds .d { font-size: 15px; color: var(--muted); line-height: 1.45 }
+.holds .n { font: 500 15px var(--mono); color: var(--fg) }
+.holds .d { font-size: 16px; color: var(--muted); line-height: 1.45 }
 .holds .more a { background: transparent; border-style: dashed; align-content: center }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .holds .pic .l { display: none } :root:not([data-theme="light"]) .holds .pic .d { display: block } }
 :root[data-theme="dark"] .holds .pic .l { display: none } :root[data-theme="dark"] .holds .pic .d { display: block }

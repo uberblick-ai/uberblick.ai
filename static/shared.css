@@ -103,7 +103,7 @@ img { max-width: 100%; display: block }
 .blk-h { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 24px; margin-bottom: 20px }
 .blk-h h2 { font-size: clamp(23px, 2.8vw, 28px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; margin: 0; text-wrap: balance }
 .blk-h a { font-size: 15px; white-space: nowrap }
-.blk-intro { color: var(--muted); font-size: 16px; margin: -8px 0 20px }
+.blk-intro { color: var(--muted); font-size: 17.5px; margin: -8px 0 20px }
 .q { margin-top: 40px }
 .q > h2 { font-size: 21px; font-weight: 600; margin: 0 0 12px }
 .q > h2::before { content: "## "; color: var(--muted); font-weight: 400 }
@@ -124,7 +124,7 @@ img { max-width: 100%; display: block }
 .dir .d { font-size: 16px }
 .dir .d span { display: block; font-size: 14px; color: var(--muted); margin-top: 2px }
 .changes { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line) }
-.changes li { display: grid; grid-template-columns: 110px 96px minmax(0, 1fr); gap: 4px 16px; padding-block: 10px; border-bottom: 1px solid var(--line); font-size: 15.5px; align-items: baseline }
+.changes li { display: grid; grid-template-columns: 110px 96px minmax(0, 1fr); gap: 4px 16px; padding-block: 10px; border-bottom: 1px solid var(--line); font-size: 16.5px; align-items: baseline }
 .changes time { font-family: var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; font-size: 13px }
 .changes .tag { justify-self: start }
 .about { margin-top: 88px; padding-top: 28px; border-top: 1px solid var(--line) }
