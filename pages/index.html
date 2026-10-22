@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/css/landing.css">
 </head>
 <div class="hero">
-  <p class="kicker">Built on its own pages · MIT license</p>
+  <p class="kicker">Open source · MIT license</p>
   <h1>A knowledge base for humans and agents alike.</h1>
   <p class="lede">The plans, decisions and numbers behind your software, in one workspace your coding agents read before they build and keep up to date after. People review in the browser; agents work over MCP; delivery stays on GitHub. Local-first, synced by a hub you run. <a href="/docs/motivation">Read our motivation</a>.</p>
   <div class="cta"><div class="tabs"><div class="tablist" role="tablist" aria-label="Install"><button role="tab" id="t-brew" aria-selected="true" aria-controls="p-brew" type="button">Homebrew</button><button role="tab" id="t-cc" aria-selected="false" aria-controls="p-cc" type="button">Claude Code</button><button role="tab" id="t-cx" aria-selected="false" aria-controls="p-cx" type="button">Codex</button></div><div class="panel sh" role="tabpanel" id="p-brew" aria-labelledby="t-brew"><code>brew install uberblick-ai/tap/uberblick</code><button class="copy" type="button">Copy</button></div><div class="panel sh" role="tabpanel" id="p-cc" aria-labelledby="t-cc" hidden><code>ub mcp install claude</code><button class="copy" type="button">Copy</button></div><div class="panel sh" role="tabpanel" id="p-cx" aria-labelledby="t-cx" hidden><code>ub mcp install codex</code><button class="copy" type="button">Copy</button></div></div></div>
@@ -107,11 +107,11 @@
 
 <section class="blk" id="decision">
 <div class="blk-h"><h2>A decision looks like this.</h2><a href="/docs/decisions">Decisions</a></div>
-<p class="blk-intro">From our own product workspace, as the editor shows it. The answer is the first thing on the page and carries who decided it and when; the reason follows. When the question comes up again, a new record supersedes this one on the same topic, and the history stays.</p>
+<p class="blk-intro">As the editor shows it. The question is the title. The record on top is under review: a proposed answer, the report it rests on, and the RFC page where the discussion happens. The history below keeps every record on the topic, the answer in force and the ones it replaced, so nobody has to ask why twice.</p>
 <figure class="shot">
-  <div class="bar"><span><b>Where does the web UI use monospace?</b> · Uberblick product</span><span>decision</span></div>
-  <img class="l" src="/img/decision-light.png" width="1280" height="661" alt="A decision record in the Uberblick editor: the question as the title, an answer marked In force and decided by Ben, the reason below it, and a history row for the record.">
-  <img class="d" src="/img/decision-dark.png" width="1280" height="661" alt="The same decision record in dark mode.">
+  <div class="bar"><span><b>What are supported devices?</b> · Web UI</span><span>decision</span></div>
+  <img class="l" src="/img/decision-light.png" width="1280" height="918" alt="A decision topic in the Uberblick editor: the question as the title, an open proposal marked Under review with its evidence and RFC linked, and a history with the answer in force and a superseded record.">
+  <img class="d" src="/img/decision-dark.png" width="1280" height="918" alt="The same decision topic in dark mode.">
 </figure>
 </section>
 
