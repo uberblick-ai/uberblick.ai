@@ -1,0 +1,25 @@
+<head>
+<title>Check the setup · Uberblick docs</title>
+<meta name="description" content="ub doctor checks the workspace binding, the local database, the login, the hub, the clock and the MCP client, and names the fix for each problem.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/install">Install and update</a></p>
+  <h1>Check the setup</h1>
+  <p class="lede">Two commands tell you whether this computer is set up right, and what to fix when it is not.</p>
+</div>
+<article class="col">
+  <section class="q">
+  <p><code>ub doctor</code> looks at the project you run it in and names the fix for each problem. It checks the workspace binding, the local database, the stored login, the hub, the clock against the hub, and whether an MCP client is registered for this project. Checks that cannot run yet say why.</p>
+  <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub doctor">Copy</button></div><pre><span class="p">$</span> ub doctor
+<span class="o">✓ workspace   Uberblick product, from ./.uberblick.json
+✓ database    ~/.local/share/uberblick/&lt;workspace-id&gt;.sqlite
+✓ login       ben at hub.example.com
+✓ hub         reachable, protocol 6
+✓ clock       within 2 s of the hub
+! mcp         MCP client is not set up for this project
+              fix: ub mcp install claude</span></pre></section>
+  <p><code>ub status</code> is the short version: workspace, where the selection came from, local storage, the client and hub versions and the last sync. Both take <code>--json</code> for scripts.</p>
+  </section>
+  <p class="next">Next: <a href="/docs/install/update">Update</a>.</p>
+</article>

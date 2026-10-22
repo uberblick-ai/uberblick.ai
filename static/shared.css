@@ -54,6 +54,9 @@ img { max-width: 100%; display: block }
 .side ul ul a { font-family: var(--mono); display: block; padding: 2px 0 2px 10px; margin-left: -13px; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; overflow-wrap: anywhere }
 .side ul ul a:hover { color: var(--fg); border-left-color: var(--line) }
 .side ul ul a.on { color: var(--fg); border-left-color: var(--accent) }
+.side ul ul a.in { color: var(--fg) }
+.side ul ul ul.sub { margin: 2px 0 6px; padding-left: 12px; border-left: 0 }
+.side ul ul ul.sub a { font-size: 13.5px; margin-left: -13px; padding-left: 10px }
 .side .plain a { display: block; padding: 3px 0; color: var(--muted); text-decoration: none }
 .side .plain a:hover, .side .plain a.on { color: var(--fg) }
 .main { min-width: 0 }

@@ -139,7 +139,7 @@ ASIDE = """  <details class="side" open>
 # Each section has its own sidebar and sees nothing else: docs pages the docs tree, guides the
 # guides, blog pages the posts. The landing page, Compare and Not found have none.
 DOCS = [
-    ('Start', [('/docs/motivation', 'Motivation'), ('/docs/install', 'Install and update'), ('/docs/workspaces', 'Workspaces'), ('/docs/editor', 'The editor'), ('/docs/faq', 'FAQ')]),
+    ('Start', [('/docs/motivation', 'Motivation'), ('/docs/install', 'Install and update', [('/docs/install', 'Install'), ('/docs/install/check', 'Check the setup'), ('/docs/install/update', 'Update'), ('/docs/install/remove', 'Remove it')]), ('/docs/workspaces', 'Workspaces'), ('/docs/editor', 'The editor'), ('/docs/faq', 'FAQ')]),
     ('Agents', [('/docs/agents', 'Agents over MCP'), ('/docs/guidance', 'Guidance pages'), ('/docs/decisions', 'Decisions'), ('/docs/instructions', 'Agent instructions')]),
     ('Blocks', [('/docs/custom-markdown', 'Custom Markdown'), ('/docs/ablauf', 'Ablauf diagrams'), ('/docs/wireframes', 'Wireframes'), ('/docs/charts', 'Charts and data tables'), ('/docs/cards', 'Cards'), ('/docs/figma', 'Figma')]),
     ('Sharing', [('/docs/hub', 'Run a hub'), ('/docs/access', 'Access and membership')]),
@@ -322,18 +322,29 @@ def section(path, posts=()):
 
 
 def sidebar(path, groups):
+    """A link may carry sub-pages as a third item; they are listed only while the reader is on
+    the topic or one of its sub-pages, like a docs tree that opens where you are."""
     def link(href, label):
         on = ' class="on"' if href == path else ''
         return f'<a{on} href="{href}">{label}</a>'
+    def item(entry):
+        href, label, *rest = entry
+        subs = rest[0] if rest else []
+        inside = subs and (path == href or any(path == h for h, _ in subs))
+        on = ' class="on"' if path == href and not inside else (' class="in"' if inside else '')
+        html = f'<a{on} href="{href}">{label}</a>'
+        if inside:
+            html += '<ul class="sub">' + ''.join(f'<li>{link(h, l)}</li>' for h, l in subs) + '</ul>'
+        return f'<li>{html}</li>'
     out, groups_html = [], []
     for title, links in groups:
         if title is None:
             if groups_html:
                 out.append('      <ul>' + ''.join(groups_html) + '</ul>\n')
                 groups_html = []
-            out.append('      <ul class="plain">' + ''.join(f'<li>{link(h, l)}</li>' for h, l in links) + '</ul>\n')
+            out.append('      <ul class="plain">' + ''.join(item(e) for e in links) + '</ul>\n')
         else:
-            groups_html.append(f'<li><span class="grp">{title}</span><ul>' + ''.join(f'<li>{link(h, l)}</li>' for h, l in links) + '</ul></li>')
+            groups_html.append(f'<li><span class="grp">{title}</span><ul>' + ''.join(item(e) for e in links) + '</ul></li>')
     if groups_html:
         out.append('      <ul>' + ''.join(groups_html) + '</ul>\n')
     return ''.join(out)
