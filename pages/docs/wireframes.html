@@ -1,0 +1,39 @@
+<head>
+<title>Wireframes · Uberblick docs</title>
+<meta name="description" content="Sketch a screen in a few lines of text, one element per line, indented for nesting; the editor draws it. The format is 0.x and says so.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Blocks</p>
+  <h1>Wireframes</h1>
+  <p class="lede">A screen sketch as text: one element per line with a kind, a variant and a label, indented for nesting. An agent writes it, the editor draws it, and the source still reads as an outline. The format is 0.x and may change between minor versions.</p>
+</div>
+<article class="col">
+  <section class="q" id="wireframe"><h2>Source beside drawing</h2>
+  <p>A screenshot of a mock-up is a dead end: nobody can edit it, and an agent cannot write one. A <code>wireframe</code> fence is a sketch as text, one element per line with a kind, a variant and a label, indented for nesting. There is nothing to balance, so an agent gets it right, and the source still reads as an outline. The editor draws it. The format is <a href="https://github.com/uberblick-ai/wireframe-md">wireframe-md</a>, published as <code>@uberblick/wireframe</code>; it is 0.x and may change between minor versions.</p>
+  <div class="tabs ex"><div class="tablist" role="tablist" aria-label="wireframe example"><button role="tab" id="t-wireframe-v" aria-selected="true" aria-controls="p-wireframe-v" type="button">Displayed</button><button role="tab" id="t-wireframe-m" aria-selected="false" aria-controls="p-wireframe-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```wireframe
+dialog Archive “Release plan 0.5”?
+  text Readers keep the page under a muted banner. Restore brings it back.
+  row.end
+    button.focus Cancel
+    button.danger Archive
+```">Copy</button></div>
+  <div class="panel" role="tabpanel" id="p-wireframe-v" aria-labelledby="t-wireframe-v"><img class="l" src="/img/blocks/wireframe-light.png" alt="The wireframe block as the editor shows it" loading="lazy"><img class="d" src="/img/blocks/wireframe-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-wireframe-m" aria-labelledby="t-wireframe-m" hidden><pre>```wireframe
+dialog Archive “Release plan 0.5”?
+  text Readers keep the page under a muted banner. Restore brings it back.
+  row.end
+    button.focus Cancel
+    button.danger Archive
+```</pre></div></div>
+  </section>
+
+  <section class="q" id="write"><h2>Writing one</h2>
+  <ul>
+    <li>The first line is the container: <code>dialog</code>, <code>page</code>, <code>panel</code> or <code>card</code>, then its title.</li>
+    <li>Each further line is <code>kind[.variant] label</code>, indented two spaces per level of nesting: <code>text</code>, <code>input</code>, <code>button</code>, <code>row</code>, <code>list</code>, <code>table</code> and so on.</li>
+    <li>Variants give the detail a reader needs and nothing more: <code>button.focus</code>, <code>button.danger</code>, <code>row.end</code>.</li>
+  </ul>
+  <p>The grammar is in the <a href="https://github.com/uberblick-ai/wireframe-md">wireframe-md repository</a>, published as <code>@uberblick/wireframe</code>, and an agent gets it with <code>get_help("markdown")</code>. A wireframe is for the shape of a screen in a design page, not for pixels; when the real screen exists, replace the block with a screenshot or a <a href="/docs/figma">Figma block</a>.</p>
+  </section>
+</article>

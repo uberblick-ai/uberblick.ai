@@ -1,0 +1,57 @@
+<head>
+<title>Built on its own pages, stage 1: read before you write · Uberblick blog</title>
+<meta name="description" content="How Uberblick is built by an agent loop that starts every issue from the product's own pages, what the server enforces, what a person still decides, and where it went wrong this month.">
+<meta name="date" content="2026-10-22">
+<meta name="author" content="Ben">
+<meta name="kind" content="building note">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/blog">Blog</a> / Building note</p>
+  <h1>Built on its own pages, stage 1: read before you write</h1>
+  <p class="byline"><time>2026-10-22</time> · Ben · <span class="tag">Building note</span></p>
+  <p class="lede">Uberblick is built by the loop it is made for: issues on GitHub, agents in four roles, and a workspace of pages that say what the product should do. This is the first of three notes on how that goes. The question for this one: can an agent be made to read the product's intent before it changes the product?</p>
+</div>
+<article class="col">
+
+  <section class="q" id="board"><h2>The board</h2>
+  <p>The numbers below come from the delivery report in our workspace. They are a snapshot for the two weeks before this post; the live page moves every day.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Two weeks to 22 October</th><th>Count</th></tr></thead>
+    <tbody>
+      <tr><td>Issues the loop closed with a merged pull request</td><td>[from the delivery report]</td></tr>
+      <tr><td>Of those, merged without a person touching the code</td><td>[from the delivery report]</td></tr>
+      <tr><td>Pull requests whose corpus update changed a page</td><td>[from the delivery report]</td></tr>
+      <tr><td>Runs refused by the server for unread guidance, then completed</td><td>[from the delivery report]</td></tr>
+      <tr><td>Runs a person had to stop</td><td>[from the delivery report]</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">The bracketed cells are filled from the report on the day the post goes out; nothing on this page is a number we did not measure.</p>
+  </section>
+
+  <section class="q" id="setup"><h2>How we ran it</h2>
+  <ul>
+    <li><strong>The pages.</strong> Fifty pages in one workspace: a product principles page, the CLI's intent per command, the MCP server's contracts, the "Web UI:" design pages, and the decision topics. Six of them carry the guidance tag.</li>
+    <li><strong>The loop.</strong> <a href="https://agents.uberblick.ai">ub-agents</a> on GitHub Actions, four roles in a few lines of YAML, steered by labels: needs-preparation, ready, needs-review, ready-to-merge. Any agent runtime; we run Claude Code and Codex side by side.</li>
+    <li><strong>The rule.</strong> The MCP server refuses every write from a process that has not read the guidance pages in the last ten minutes, and lists them. The agents' instructions add four lines: start from the sidebar, cite by id, call <code>find_decisions</code> for your issue, update the page in the pull request.</li>
+    <li><strong>The person.</strong> I read the issue the preparer wrote, approve or reject the decisions agents propose, and read the corpus update in each pull request. I do not read most of the code.</li>
+  </ul>
+  </section>
+
+  <section class="q" id="held"><h2>What held</h2>
+  <p>Every agent handled the refusal without instruction; the error names the pages, and reading them is one call each. No pull request in the period changed a behaviour a decision record had settled. The corpus update in the pull request turned out to be the strongest part of the loop: it is where a reviewer, human or agent, notices that the page and the code disagree, and in most of those cases the page was right.</p>
+  </section>
+
+  <section class="q" id="broke"><h2>Where it went wrong</h2>
+  <ul>
+    <li><strong>The shared database.</strong> Every checkout on a machine uses the same workspace copy. An agent running branch code with a newer migration migrated my real workspace, and main then logged a compaction failure on every start. No data was lost; it was loud and it took a day to find. The fix is an issue, not a page.</li>
+    <li><strong>Reading is not understanding.</strong> One implementer read the typography page, as required, and then built a monospace table header anyway. The reviewer caught it against the page. The server can guarantee the page was in the context; it cannot guarantee it was used. That is what the reviewer role is for, and it earned its keep.</li>
+    <li><strong>Pages ahead of the code.</strong> A page may describe intended behaviour that has not shipped. Twice an agent treated an intended behaviour as a bug in the code and "fixed" it in the wrong direction. The rule now reads: pages describe intent; never make the page say less than it did because the code does less.</li>
+  </ul>
+  </section>
+
+  <section class="q" id="next"><h2>Next</h2>
+  <p>Stage 2 is about decisions: whether a record written by an agent and approved by a person keeps a question closed across the runs that follow, and what the history looks like after a month. Stage 3 is the one we are least sure of: the loop proposing changes to its own rules from retrospectives, with a person deciding each one. Nothing changes automatically from a retro; that is the rule we will test hardest.</p>
+  <p>If you want to try the first stage on your own repository: <a href="/docs/install">install</a>, tag three pages as guidance, and put the four lines from <a href="/docs/instructions">Agent instructions</a> into your agent's instructions. Then watch the first refusal.</p>
+  </section>
+</article>

@@ -1,0 +1,41 @@
+<head>
+<title>Read before you write · Uberblick docs</title>
+<meta name="description" content="Tag the pages that matter as guidance. The MCP server refuses every write from an agent that has not read them in the last ten minutes, and names the pages.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Agents</p>
+  <h1>Read before you write</h1>
+  <p class="lede">Telling an agent to read the principles page does not make it read the principles page. Uberblick moves the rule from the prompt into the server: pages tagged as guidance must have been read before any write, and a write that comes too early is refused with the list of what is unread.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="tag"><h2>Mark the pages</h2>
+  <p>In workspace settings, choose the tag that marks guidance; by default it is <code>guidance</code>. Tag the pages an agent must never work without: the product principles, the writing rules, the page that says what the product does not do. Three to six pages is the right number. A page tagged guidance is still an ordinary page; the tag only puts it on the required reading list.</p>
+  </section>
+
+  <section class="q" id="refusal"><h2>What the refusal looks like</h2>
+  <p>The first write from a fresh MCP session fails. The failure is a normal tool error with a code, a sentence and the unread pages by id and title, so the agent knows exactly what to do next.</p>
+  <section class="block code"><div class="cap"><span>edit_block · refused</span></div><pre>{
+  "code": "guidance_required",
+  "message": "Read the workspace guidance before changing documents.",
+  "unread": [
+    { "uuid": "7c1e…", "title": "Product principles" },
+    { "uuid": "a90f…", "title": "Web UI: typography" }
+  ]
+}</pre></section>
+  <p>The agent reads each page with <code>get_doc</code> and calls the write again. Nothing was written by the refused call. Every agent we have run handles this without instruction, because the error says what it wants.</p>
+  </section>
+
+  <section class="q" id="lease"><h2>The ten-minute lease</h2>
+  <p>Completing the reads starts a lease in that server process: for ten minutes every write goes through, even if the guidance changes meanwhile. After that, fresh reads of the current guidance are required again, so an agent that works for an hour re-reads the pages a few times and picks up edits a person made in between. Restarting the server discards the lease. The lease is per process, so two agents in two terminals each read for themselves.</p>
+  </section>
+
+  <section class="q" id="briefing"><h2>The briefing</h2>
+  <p>Besides the pages, the server carries a short briefing that explains this rule and the shape of its failures, and <code>get_help</code> returns it under the <code>orientation</code> topic. The refusal points there too. Reads are never gated: <code>get_doc</code>, <code>search</code>, <code>get_data</code> and the rest work from the first call, so an agent that only reads is never slowed down.</p>
+  </section>
+
+  <section class="q" id="not"><h2>What it does not do</h2>
+  <p>It does not check that the agent understood the pages, and it cannot. It makes sure the pages were in the context when the write happened, which is the part a prompt cannot guarantee. Judgement stays with the reviewer, and with the <a href="/docs/decisions">decision records</a> an agent is told to consult for the issue it works on.</p>
+  </section>
+</article>

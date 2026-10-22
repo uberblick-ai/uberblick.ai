@@ -1,14 +1,14 @@
 <head>
-<title>Uberblick · Local-first documents for people and agents</title>
-<meta name="description" content="A local-first workspace for the plans, research and decisions behind your software. People write in the browser; coding agents read and edit the same documents over MCP. Open source, on your computer, synced by a hub you run.">
+<title>Uberblick · A knowledge base for humans and agents alike</title>
+<meta name="description" content="A knowledge base for humans and agents alike: the plans, decisions and numbers behind your software, written mostly by coding agents over MCP and reviewed by people in the browser. Local-first, open source, synced by a hub you run. Delivery stays on GitHub.">
 <link rel="stylesheet" href="/css/landing.css">
 </head>
 <div class="hero">
-  <p class="kicker">Local-first documents · MIT license</p>
-  <h1>Local-first documents for people and agents.</h1>
-  <p class="lede">A workspace for the plans, research and decisions behind your software. You write in a browser; your coding agent reads and edits the same documents over MCP. Everything is stored on your computer, and a hub syncs it to the people you share with.</p>
+  <p class="kicker">Built on its own pages · MIT license</p>
+  <h1>A knowledge base for humans and agents alike.</h1>
+  <p class="lede">The plans, decisions and numbers behind your software, in one workspace your coding agents read before they build and keep up to date after. People review in the browser; agents work over MCP; delivery stays on GitHub. Local-first, synced by a hub you run.</p>
   <div class="cta"><div class="tabs"><div class="tablist" role="tablist" aria-label="Install"><button role="tab" id="t-brew" aria-selected="true" aria-controls="p-brew" type="button">Homebrew</button><button role="tab" id="t-cc" aria-selected="false" aria-controls="p-cc" type="button">Claude Code</button><button role="tab" id="t-cx" aria-selected="false" aria-controls="p-cx" type="button">Codex</button></div><div class="panel sh" role="tabpanel" id="p-brew" aria-labelledby="t-brew"><code>brew install uberblick-ai/tap/uberblick</code><button class="copy" type="button">Copy</button></div><div class="panel sh" role="tabpanel" id="p-cc" aria-labelledby="t-cc" hidden><code>ub mcp install claude</code><button class="copy" type="button">Copy</button></div><div class="panel sh" role="tabpanel" id="p-cx" aria-labelledby="t-cx" hidden><code>ub mcp install codex</code><button class="copy" type="button">Copy</button></div></div><a href="#demo">See a document →</a></div>
-  <div class="stats"><div class="stat"><b>26</b><span>tools over MCP</span></div><div class="stat"><b>3</b><span>commands to install</span></div><div class="stat"><b>0</b><span>accounts to start</span></div><div class="stat"><b>1</b><span>container to share</span></div></div>
+  <div class="stats"><div class="stat"><b>27</b><span>tools over MCP</span></div><div class="stat"><b>3</b><span>commands to install</span></div><div class="stat"><b>0</b><span>accounts to start</span></div><div class="stat"><b>1</b><span>container to share</span></div></div>
 </div>
 
 <section class="blk" id="why"><h2>The docs folder is where context goes to die.</h2>
@@ -75,7 +75,7 @@
 
 <section class="blk" id="ub-agents">
 <div class="blk-h"><h2>Works best with ub-agents.</h2><a href="https://agents.uberblick.ai">agents.uberblick.ai</a></div>
-<p class="blk-intro">Uberblick holds what the product should do. <a href="https://agents.uberblick.ai">ub-agents</a> is the loop that hands that to agents on GitHub: roles in a few lines of YAML, driven by labels, running on Actions with any agent and no server. Together they close the loop: every issue starts from the pages, and every pull request brings them up to date. It is how Uberblick itself is built.</p>
+<p class="blk-intro">Uberblick holds what the product should do; it does not track tasks. Delivery lives on GitHub, and <a href="https://agents.uberblick.ai">ub-agents</a> is the loop that runs it there: roles in a few lines of YAML, driven by labels, on Actions, with any agent and no server. Every issue starts from the pages and every pull request brings them up to date. Retrospectives propose changes to the pages and to the loop's own rules; a person decides each one. It is how Uberblick itself is built, and <a href="/blog/2026/built-on-its-own-pages">we write down how that goes</a>.</p>
 <div class="flow loop" role="img" aria-label="An issue is filed; the preparer links the pages it depends on; the implementer reads them over MCP and builds; the pull request carries a corpus update; the pages stay true and the next issue starts from them.">
   <div class="step"><span class="k">issue</span><b>Filed with pointers</b><span>to the pages it depends on</span></div>
   <span class="arr" aria-hidden="true"></span>
@@ -92,11 +92,11 @@
 <div class="blk-h"><h2>What a document can hold.</h2><a href="/docs/custom-markdown">Custom Markdown</a></div>
 <p class="blk-intro">Markdown, plus the few additions that let an idea be drawn instead of described. Each one is text with a source form, so an agent can write it and a person can read it, and each ships as its own package.</p>
 <ul class="dir">
-  <li><a href="/docs/custom-markdown#ablauf"><span class="n">ablauf</span><span class="d">Flow diagrams as text where the author places the nodes and the renderer only draws.<span>Replaces Mermaid.</span></span></a></li>
-  <li><a href="/docs/custom-markdown#wireframe"><span class="n">wireframe</span><span class="d">A screen sketch in a few lines of text, drawn by the editor.<span>Format 0.x; it may still change.</span></span></a></li>
-  <li><a href="/docs/custom-markdown#chart"><span class="n">chart</span><span class="d">Line charts and data tables drawn from records stored in the document.<span>When an agent updates the records, the chart updates with them.</span></span></a></li>
-  <li><a href="/docs/custom-markdown#card"><span class="n">card</span><span class="d">A prose card with a label, a title, a footer and buttons.<span>For a recommendation, a warning or a next step an agent proposes.</span></span></a></li>
-  <li><a href="/docs/custom-markdown#figma"><span class="n">figma</span><span class="d">A Figma file, frame, prototype or board, with a caption.<span>Nothing contacts Figma until the reader opens it.</span></span></a></li>
+  <li><a href="/docs/ablauf"><span class="n">ablauf</span><span class="d">Flow diagrams as text where the author places the nodes and the renderer only draws.<span>Replaces Mermaid.</span></span></a></li>
+  <li><a href="/docs/wireframes"><span class="n">wireframe</span><span class="d">A screen sketch in a few lines of text, drawn by the editor.<span>Format 0.x; it may still change.</span></span></a></li>
+  <li><a href="/docs/charts"><span class="n">chart</span><span class="d">Line charts and data tables drawn from records stored in the document.<span>When an agent updates the records, the chart updates with them.</span></span></a></li>
+  <li><a href="/docs/cards"><span class="n">card</span><span class="d">A prose card with a label, a title, a footer and buttons.<span>For a recommendation, a warning or a next step an agent proposes.</span></span></a></li>
+  <li><a href="/docs/figma"><span class="n">figma</span><span class="d">A Figma file, frame, prototype or board, with a caption.<span>Nothing contacts Figma until the reader opens it.</span></span></a></li>
 </ul>
 </section>
 
@@ -127,7 +127,7 @@ ub mcp install claude">Copy</button></span></div>
 </section>
 
 <section class="blk" id="changes">
-<div class="blk-h"><h2>Recent changes.</h2><a href="https://github.com/uberblick-ai/uberblick-2/blob/main/CHANGELOG.md">Full changelog</a></div>
+<div class="blk-h"><h2>Recent changes.</h2><a href="/changelog">Full changelog</a></div>
 <ul class="changes">
   <!-- recent changes -->
 </ul>

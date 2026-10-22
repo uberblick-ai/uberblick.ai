@@ -1,0 +1,60 @@
+<head>
+<title>Configuration · Uberblick docs</title>
+<meta name="description" content="Where the workspace selection comes from, which environment variables override it, and which files live where on macOS and Linux.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Reference</p>
+  <h1>Configuration</h1>
+  <p class="lede">There is no settings file to edit. Selection comes from the project, credentials from one private file, and two environment variables cover the cases where a process needs a different workspace than the directory it runs in.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="selection"><h2>Where selection comes from</h2>
+  <ol class="steps">
+    <li><b><code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code> in the environment.</b> When set, they win for that process. <code>UB_WORKSPACE_ID</code> is required; <code>UB_HUB_URL</code> is a hub address, or <code>local</code> for a workspace with no hub, and is needed until this machine has a record of the workspace.</li>
+    <li><b>The nearest <code>.uberblick.json</code></b> above the current directory. Written by <code>ub workspace create</code> and <code>ub workspace use</code>; commit it.</li>
+    <li><b>Nothing.</b> Commands that need a workspace say so and name the two ways to get one.</li>
+  </ol>
+  <p>An environment binding still in force after you change the project file is reported, so a stale shell export does not surprise you. The legacy <code>WORKSPACE_ID</code> and <code>HUB_URL</code> are refused with a message.</p>
+  </section>
+
+  <section class="q" id="agents"><h2>Several workspaces for one agent</h2>
+  <p>An MCP client can register the server more than once under different names, each entry with its own <code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code> in its environment. <code>ub mcp install --print</code> gives the entry to adapt. Each server process then serves one workspace, and the agent sees two servers with the same tools.</p>
+  <section class="block code"><div class="cap"><span>.mcp.json · two workspaces</span></div><pre>{
+  "mcpServers": {
+    "uberblick": { "command": "ub", "args": ["mcp", "serve"] },
+    "uberblick-design": {
+      "command": "ub", "args": ["mcp", "serve"],
+      "env": { "UB_WORKSPACE_ID": "9b71…", "UB_HUB_URL": "https://hub.example.com" }
+    }
+  }
+}</pre></section>
+  </section>
+
+  <section class="q" id="files"><h2>Files and where they live</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>What</th><th>Where</th></tr></thead>
+    <tbody>
+      <tr><td>Project binding</td><td><code>.uberblick.json</code> in the project, found by walking up from the current directory</td></tr>
+      <tr><td>Workspace databases</td><td><code>~/.local/share/uberblick/&lt;workspace-id&gt;.sqlite</code>, one per workspace, shared by every checkout on the machine</td></tr>
+      <tr><td>Login and device credential</td><td><code>~/.config/uberblick/credentials.json</code>, private to the user, never copied into an MCP entry</td></tr>
+      <tr><td>Client config</td><td><code>~/.config/uberblick/config.json</code></td></tr>
+    </tbody>
+  </table></div>
+  <p><code>XDG_CONFIG_HOME</code> and <code>XDG_DATA_HOME</code> move the two directories on every platform; relative or empty values are ignored. macOS uses the same dot directories, not Application Support, so a backup script works unchanged on both.</p>
+  </section>
+
+  <section class="q" id="env"><h2>Environment variables</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Variable</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td><code>UB_WORKSPACE_ID</code></td><td>Select this workspace for the process, overriding the project file</td></tr>
+      <tr><td><code>UB_HUB_URL</code></td><td>The hub for that workspace, or <code>local</code>; only with <code>UB_WORKSPACE_ID</code></td></tr>
+      <tr><td><code>BROWSER</code></td><td>The command <code>ub open</code> and <code>ub auth login</code> use to open a page; <code>none</code> prints the address instead</td></tr>
+      <tr><td><code>XDG_CONFIG_HOME</code>, <code>XDG_DATA_HOME</code></td><td>Move the config and data directories</td></tr>
+    </tbody>
+  </table></div>
+  <p>Hub-side settings, such as the host name and the Tailscale route, live in the hub's <code>.env</code> and are on <a href="/docs/hub">Run a hub</a>.</p>
+  </section>
+</article>

@@ -1,0 +1,64 @@
+<head>
+<title>CLI reference · Uberblick docs</title>
+<meta name="description" content="Every ub command on one line, grouped as the help prints them: auth, workspace, mcp, open, status, doctor, data, update.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Reference</p>
+  <h1>CLI reference</h1>
+  <p class="lede">The <code>ub</code> client has eight commands. Three principles hold across all of them: a bare command prints its help and never acts; a command that needs a login stops and tells you to sign in, and never starts a sign-in itself; anything that reports takes <code>--json</code> for scripts.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="all"><h2>All commands</h2>
+  <section class="block terminal"><div class="cap"><span>ub --help</span></div><pre>auth login [hub]                     sign in to a hub with GitHub
+auth status [hub] [--json]           check the stored login and hub administration
+auth logout [--all-devices] [hub]    sign this computer out of a hub
+
+workspace create &lt;name&gt;              create and select a local-only workspace
+workspace use &lt;link|id&gt;              fetch a shared workspace or select a local one
+workspace list [--json]              workspaces this machine has a database for
+workspace fork                       copy this workspace independently and select the copy
+workspace promote &lt;hub&gt;              upload, verify and connect this local workspace
+workspace remove &lt;id|prefix&gt; [--yes] delete this computer's copy of a workspace
+workspace member add|list|role|remove   grant and manage access as a workspace admin
+
+mcp install &lt;client&gt; [--user] [--print]   register the server with claude or codex
+mcp serve                            the MCP server itself, run by the client
+
+open [--no-browser] [--port n] [--verbose]   serve the editor for this project
+status [--json]                      workspace, selection source, storage, versions, sync
+doctor [--json]                      check the setup and name the fix for each problem
+data get &lt;doc&gt; [&lt;collection&gt;]        print a document's data summary or one collection
+data update &lt;doc&gt; --file &lt;path|-&gt;    apply update_data operations from a file
+update                               update a Homebrew installation</pre></section>
+  </section>
+
+  <section class="q" id="auth"><h2>auth</h2>
+  <p><code>login</code> opens GitHub's device flow for the given hub or the project's hub and stores a device credential for this computer; on a fresh hub the first login claims it. <code>status</code> makes one read-only request and says whether the stored login is accepted and whether you are a hub admin; exit 1 means the hub could not answer, not that you are not an admin. <code>logout</code> revokes this computer, or every device with <code>--all-devices</code>. Local-only work needs no login. Details: <a href="/docs/access">Access and membership</a>.</p>
+  </section>
+
+  <section class="q" id="workspace"><h2>workspace</h2>
+  <p><code>create</code> and <code>use</code> both end by writing the binding into the nearest <code>.uberblick.json</code>, or a new one in the current directory. <code>use</code> takes a hub link with the workspace id as its last segment, a workspace id, or a unique prefix of one this machine already has; it fetches, verifies, then binds, and never merges two workspaces. <code>fork</code> and <code>promote</code> are described on <a href="/docs/workspaces">Workspaces</a>. <code>member add</code> asks for confirmation; pass <code>--yes</code> without a terminal. <code>remove</code> deletes only this computer's copy.</p>
+  </section>
+
+  <section class="q" id="mcp"><h2>mcp</h2>
+  <p><code>install claude</code> or <code>install codex</code> runs the client's own <code>mcp add</code> with a plain <code>ub mcp serve</code> entry named <code>uberblick</code>, for this project or, with <code>--user</code>, for every project. It edits no file itself, reports <em>already installed</em> on a second run and never replaces an entry it did not write. Any other client gets the snippet with <code>--print</code>. <code>serve</code> is what the client runs; you do not start it by hand.</p>
+  </section>
+
+  <section class="q" id="open"><h2>open, status, doctor</h2>
+  <p><code>open</code> serves the editor for the bound workspace with a hub behind it and opens the browser; it runs until Ctrl-C, prints the address only with <code>--no-browser</code>, and <code>--verbose</code> adds hub, sync and startup details. <code>BROWSER=none</code> in the environment does the same as <code>--no-browser</code>. <code>status</code> connects briefly to the hub for a live answer and prints the workspace, where its selection came from, local storage, the client and hub versions and the last full sync acknowledgement; each problem names its fix. <code>doctor</code> runs the full checks: workspace, database, login, hub, clock and MCP registration.</p>
+  </section>
+
+  <section class="q" id="data"><h2>data</h2>
+  <p><code>get</code> prints a document's data summary, or one collection as JSON, to stdout or <code>--out</code>. <code>update</code> applies a file of <code>update_data</code> operations, <code>-</code> for stdin, and <code>--dry-run</code> validates without writing. <code>update</code> skips the guidance reads that MCP writes require, which is why it is a terminal command for scripts and not an agent tool. See <a href="/docs/charts">Charts and data tables</a>.</p>
+  </section>
+
+  <section class="q" id="update"><h2>update</h2>
+  <p>Runs <code>brew update</code> and <code>brew upgrade</code> for the copy of <code>ub</code> on your path. A source checkout is left alone. See <a href="/docs/install">Install and update</a>.</p>
+  </section>
+
+  <section class="q" id="exit"><h2>Exit codes and output</h2>
+  <p>0 is success or a confirmed answer, 1 is a failure or an answer the hub could not confirm, 2 is a usage error. Reports go to stdout, warnings to stderr, and <code>--json</code> prints exactly one JSON object on stdout and nothing else there.</p>
+  </section>
+</article>

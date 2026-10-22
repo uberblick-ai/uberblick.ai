@@ -1,0 +1,61 @@
+<head>
+<title>Agent instructions · Uberblick docs</title>
+<meta name="description" content="What to put in AGENTS.md or CLAUDE.md so an agent starts from the pinned pages, cites by id, checks the decisions for its issue and updates the pages in the pull request. Our own rules as the example.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Agents</p>
+  <h1>Agent instructions</h1>
+  <p class="lede">The server enforces reading; your instructions decide the rest. This page is the part of our own <code>AGENTS.md</code> that concerns the workspace, with the reasons. Copy it, then cut what your team does not need.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="rules"><h2>The rules, as we run them</h2>
+  <section class="block code"><div class="cap"><span>AGENTS.md · the workspace section</span><button type="button" data-copy="## The workspace (Uberblick over MCP)
+
+- Product intent lives in the workspace, not in this repository. Start from the
+  documents pinned in the sidebar (get_sidebar) when you do not know the project.
+- Discover documents with list_docs and search; use list_tags for current tag
+  names before filtering by tag. Decisions are listed only with kind: decision.
+- Cite pages by title and id, discovered at runtime. Never pin an id in a
+  reusable instruction. An id the workspace no longer has is a stale pointer:
+  find the live successor by search and note the replacement.
+- Before a product-sensitive choice, call find_decisions for the issue you work
+  on and read what comes back. Do not reopen a decided question in code.
+- Edit the block that is wrong with edit_block. Do not replace a page to change
+  a sentence. Never delete and reinsert a block to change its type.
+- Pages describe intended behaviour, which may be ahead of the code. Update the
+  owning page in the pull request: which page, which block, what it now says.
+- Do not load the whole workspace. Read what the change touches.">Copy</button></div><pre>## The workspace (Uberblick over MCP)
+
+- Product intent lives in the workspace, not in this repository. Start from the
+  documents pinned in the sidebar (get_sidebar) when you do not know the project.
+- Discover documents with list_docs and search; use list_tags for current tag
+  names before filtering by tag. Decisions are listed only with kind: decision.
+- Cite pages by title and id, discovered at runtime. Never pin an id in a
+  reusable instruction. An id the workspace no longer has is a stale pointer:
+  find the live successor by search and note the replacement.
+- Before a product-sensitive choice, call find_decisions for the issue you work
+  on and read what comes back. Do not reopen a decided question in code.
+- Edit the block that is wrong with edit_block. Do not replace a page to change
+  a sentence. Never delete and reinsert a block to change its type.
+- Pages describe intended behaviour, which may be ahead of the code. Update the
+  owning page in the pull request: which page, which block, what it now says.
+- Do not load the whole workspace. Read what the change touches.</pre></section>
+  </section>
+
+  <section class="q" id="why"><h2>Why each line is there</h2>
+  <ul>
+    <li><strong>Start from the sidebar.</strong> The sidebar is curated by people. An agent that starts from search alone finds the most recent page, not the most important one.</li>
+    <li><strong>Cite by id, discovered at runtime.</strong> Titles change and pages get superseded. An instruction file with ids in it rots in a week; a runtime lookup does not.</li>
+    <li><strong>Decisions by issue.</strong> The decision that governs an issue is linked from the record, so <code>find_decisions</code> is one call and needs no memory of last month.</li>
+    <li><strong>Edit the block.</strong> Replacing a page destroys comment anchors and the history of every other block. The server keeps block ids stable for exactly this reason.</li>
+    <li><strong>Update the page in the PR.</strong> This is the line that keeps the workspace true. A reviewer checks the corpus update like any other part of the diff.</li>
+    <li><strong>Do not load everything.</strong> Context is finite and the guidance pages are already required reading; the rest should be pulled by the change.</li>
+  </ul>
+  </section>
+
+  <section class="q" id="roles"><h2>With ub-agents</h2>
+  <p>In the <a href="https://agents.uberblick.ai">ub-agents</a> loop the same rules apply to each role with one addition each. The preparer scans the workspace and puts the links an implementer will need into the issue. The implementer builds against the pages and writes the corpus update. The reviewer checks the result against the pages, not against the issue text. The retrospective may propose a change to the pages or to these rules; a person decides. How that looks in practice is on <a href="/use-cases/product-intent">Product intent that agents read before they build</a>.</p>
+  </section>
+</article>

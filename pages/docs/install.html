@@ -1,0 +1,44 @@
+<head>
+<title>Install and update · Uberblick docs</title>
+<meta name="description" content="Install the ub client with Homebrew on macOS or Linux, check the setup with ub doctor, and update it with ub update.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Start</p>
+  <h1>Install and update</h1>
+  <p class="lede">One Homebrew formula gives you the <code>ub</code> client: the editor, the MCP server and the terminal commands. It runs on Apple Silicon macOS and on Linux x86_64. Nothing needs an account until you share a workspace.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="install"><h2>Install</h2>
+  <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="brew install uberblick-ai/tap/uberblick
+ub --version">Copy</button></div><pre><span class="p">$</span> brew install uberblick-ai/tap/uberblick
+<span class="p">$</span> ub --version
+<span class="o">0.4.8</span></pre></section>
+  <p>Homebrew on Linux works the same way. There is no Windows build; see the <a href="/docs/faq">FAQ</a>. The first workspace is two commands away: <a href="/docs/workspaces">Workspaces</a>.</p>
+  </section>
+
+  <section class="q" id="check"><h2>Check the setup</h2>
+  <p><code>ub doctor</code> looks at the project you run it in and names the fix for each problem. It checks the workspace binding, the local database, the stored login, the hub, the clock against the hub, and whether an MCP client is registered for this project. Checks that cannot run yet say why.</p>
+  <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub doctor">Copy</button></div><pre><span class="p">$</span> ub doctor
+<span class="o">✓ workspace   Uberblick product, from ./.uberblick.json
+✓ database    ~/.local/share/uberblick/&lt;workspace-id&gt;.sqlite
+✓ login       ben at hub.example.com
+✓ hub         reachable, protocol 6
+✓ clock       within 2 s of the hub
+! mcp         MCP client is not set up for this project
+              fix: ub mcp install claude</span></pre></section>
+  <p><code>ub status</code> is the short version: workspace, where the selection came from, local storage, the client and hub versions and the last sync. Both take <code>--json</code> for scripts.</p>
+  </section>
+
+  <section class="q" id="update"><h2>Update</h2>
+  <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub update">Copy</button></div><pre><span class="p">$</span> ub update
+<span class="o">brew update … brew upgrade uberblick-ai/tap/uberblick … 0.4.8</span></pre></section>
+  <p>It runs Homebrew's own update and upgrade for the copy of <code>ub</code> that is on your path, wherever you run it. A source checkout is not touched; update that with <code>git pull</code> and <code>mise run setup</code>.</p>
+  <p>Client and hub share a protocol version. When a release changes it, <code>ub status</code> says <em>update required</em> on the side that is behind, and the <a href="/changelog">changelog</a> says what to do. Restart running MCP servers and <code>ub open</code> after an update; they keep the version they started with.</p>
+  </section>
+
+  <section class="q" id="uninstall"><h2>Remove it</h2>
+  <p><code>brew uninstall uberblick</code> removes the client. Workspace copies stay in <code>~/.local/share/uberblick</code> and the login in <code>~/.config/uberblick</code> until you delete them; <code>ub workspace remove</code> deletes one copy, <code>ub auth logout</code> one login. Where these live on each platform is in <a href="/docs/configuration">Configuration</a>.</p>
+  </section>
+</article>

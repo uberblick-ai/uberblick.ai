@@ -1,0 +1,41 @@
+<head>
+<title>Decisions · Uberblick docs</title>
+<meta name="description" content="A decision record is a document kind: the question as the title, the answer in force with who decided it and when, the reasoning, and a history that stays. Agents find them by issue with find_decisions.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Agents</p>
+  <h1>Decisions</h1>
+  <p class="lede">A decision made in a chat is gone by Thursday. In Uberblick a decision is a record: a question, the answer in force, who settled it and when, the reasoning, and every earlier answer underneath. Agents propose, people decide, and the next agent that touches the issue finds the record before it writes a line.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="record"><h2>What a record is</h2>
+  <figure class="shot">
+    <div class="bar"><span><b>Where does the web UI use monospace?</b> · Uberblick product</span><span>decision</span></div>
+    <img class="l" src="/img/decision-light.png" width="1424" height="924" alt="A decision record in the Uberblick editor: the question as the title, an answer marked In force and decided by Ben, the reason below it, and a history row for the record.">
+    <img class="d" src="/img/decision-dark.png" width="1424" height="924" alt="The same decision record in dark mode.">
+  </figure>
+  <p>A decision topic has one title, the question, and one or more records. The record in force shows its answer first, with the person who decided it and the date; the reasoning and the discussion follow. A later record on the same topic supersedes the earlier one, which stays in the history. Records carry a stage: open, in force, superseded, rejected, withdrawn, or conflict when two answers claim to be in force.</p>
+  </section>
+
+  <section class="q" id="propose"><h2>An agent proposes</h2>
+  <p>When an agent hits a choice the pages do not settle, it creates a record with <code>create_doc</code> of kind decision: the question, its proposed answer and the reasoning, with the GitHub issue linked in the prose. The record is open. The agent does not decide; it leaves the stage open and says so in the issue. A record on an existing topic is created as a successor and inherits the title.</p>
+  </section>
+
+  <section class="q" id="settle"><h2>A person settles it</h2>
+  <p>In the browser, the topic page shows the open record with an answer editor. Approving puts the record in force under your name and date. Rejecting needs a reason, which is stored. Later, <strong>Alter decision</strong> on the topic opens a new record with the current answer prefilled, so changing a decision is the same act as making one and the history keeps both. Over MCP the equivalent is <code>set_status</code>, which an agent may use to withdraw its own open proposal but which records a person's answer only when one is given.</p>
+  </section>
+
+  <section class="q" id="find"><h2>The next agent finds it</h2>
+  <section class="block code"><div class="cap"><span>find_decisions</span></div><pre>{ "github_ref": "uberblick-ai/uberblick-2#1551" }
+
+→ [ { "uuid": "d4b2…", "title": "Where does the web UI use monospace?",
+      "state": "in-force", "decided_by": "Ben", "decided_at": "2026-10-10" } ]</pre></section>
+  <p><code>find_decisions</code> returns every live record whose prose links the issue or pull request, from the local index, without calling GitHub. Our agent instructions make the preparer, the implementer and the reviewer call it for the issue they work on, so a decision from last month shapes this month's change without anyone remembering it. <code>list_docs</code> with <code>kind: decision</code> lists all topics; the unfiltered listing leaves them out on purpose.</p>
+  </section>
+
+  <section class="q" id="where"><h2>Where decisions show up</h2>
+  <p>On the topic page itself, in <strong>All documents</strong> on one line with a stage pill, in the sidebar when pinned, and as a condensed block at the end of every page that links to the topic, so a design page shows the decisions that govern it. Archiving a topic archives all its records; restoring brings the topic back first.</p>
+  </section>
+</article>

@@ -1,0 +1,64 @@
+<head>
+<title>Ablauf diagrams · Uberblick docs</title>
+<meta name="description" content="Draw a flow as text: the author places the nodes in columns and rows, the renderer only draws and reports every crossing with a line number.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Blocks</p>
+  <h1>Ablauf diagrams</h1>
+  <p class="lede">A flow diagram as a few lines of text an agent can write and a person can diff, where the author places the nodes and the renderer never moves anything. This is what replaced Mermaid in Uberblick; the format lives in its own repository and the block follows it.</p>
+</div>
+<article class="col">
+  <section class="q" id="ablauf"><h2>Source beside drawing</h2>
+  <p>Flow diagrams are the first thing a team wants in a design doc, and Mermaid gets half of it right: a few lines of text an agent can write, diff and review. The other half, layout, is all algorithm, so one added node reshuffles the whole chart and nobody has a handle to grab. <a href="https://github.com/uberblick-ai/ablauf">Ablauf</a> keeps the text and gives the layout to the author: the source names the columns, puts each node in a row, and says which side an edge leaves and enters. The renderer measures the text, draws in one house style for light and dark, and reports every crossing or overlap with a line number. It never moves anything, so an agent gets to a clean diagram from the text and the diagnostics alone, without looking at the picture. The format is early and lives in its own repository; the block in Uberblick follows it. Since 0.4.5 Mermaid is gone, so a <code>mermaid</code> fence is an ordinary code block with that language and is never drawn.</p>
+  <div class="tabs ex"><div class="tablist" role="tablist" aria-label="ablauf example"><button role="tab" id="t-ablauf-v" aria-selected="true" aria-controls="p-ablauf-v" type="button">Displayed</button><button role="tab" id="t-ablauf-m" aria-selected="false" aria-controls="p-ablauf-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```ablauf
+flow v0
+columns rework main
+
+pill edit_block col=main tone=agent &quot;agent calls edit_block&quot;
+box server &quot;checks the guidance lease&quot;
+end applied &quot;Edit applied&quot;
+
+pill guidance_required col=rework row=server tone=rework
+box get_doc &quot;agent reads the pages it was told to&quot;
+
+edit_block --&gt; server
+server --&gt; applied : read within ten minutes
+server --&gt; guidance_required tone=rework : not read
+guidance_required --&gt; get_doc tone=rework
+get_doc --&gt; edit_block tone=rework from=left to=left label=end : calls again
+```">Copy</button></div>
+  <div class="panel" role="tabpanel" id="p-ablauf-v" aria-labelledby="t-ablauf-v"><img class="l" src="/img/blocks/ablauf-light.png" alt="The Ablauf block as the editor shows it: an agent calls edit_block, the server checks the guidance lease, an edit applied when the pages were read within ten minutes, otherwise guidance_required, the agent reads the pages with get_doc and calls again" loading="lazy"><img class="d" src="/img/blocks/ablauf-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-ablauf-m" aria-labelledby="t-ablauf-m" hidden><pre>```ablauf
+flow v0
+columns rework main
+
+pill edit_block col=main tone=agent &quot;agent calls edit_block&quot;
+box server &quot;checks the guidance lease&quot;
+end applied &quot;Edit applied&quot;
+
+pill guidance_required col=rework row=server tone=rework
+box get_doc &quot;agent reads the pages it was told to&quot;
+
+edit_block --&gt; server
+server --&gt; applied : read within ten minutes
+server --&gt; guidance_required tone=rework : not read
+guidance_required --&gt; get_doc tone=rework
+get_doc --&gt; edit_block tone=rework from=left to=left label=end : calls again
+```</pre></div></div>
+  </section>
+
+  <section class="q" id="why"><h2>Why the author places the nodes</h2>
+  <p>Automatic layout reshuffles the whole chart when one node is added, so a reviewer cannot tell a change in meaning from a change in position, and an agent cannot fix an ugly picture because it has nothing to hold on to. In ablauf the source names the columns, every node sits in a column and a row, and every edge says which side it leaves and enters. Layout changes only when the text changes. The renderer measures text, draws in one house style for light and dark, and reports every crossing or overlap with a line number, so an agent can get to a clean diagram from the diagnostics alone.</p>
+  </section>
+
+  <section class="q" id="write"><h2>Writing one</h2>
+  <ul>
+    <li><code>flow v0</code> opens the block and <code>columns a b c</code> names the lanes, left to right.</li>
+    <li>A node line is <code>kind name [col=… row=… tone=…] "label"</code>. Kinds are <code>box</code>, <code>pill</code>, <code>end</code> and a few more; omitted <code>col</code> and <code>row</code> continue the previous node.</li>
+    <li>An edge is <code>from --&gt; to [from=side to=side label=side tone=…] : text</code>.</li>
+    <li>Tones name the role of a node or edge, such as <code>agent</code> or <code>rework</code>; the renderer maps them to colours.</li>
+  </ul>
+  <p>The full grammar is in the <a href="https://github.com/uberblick-ai/ablauf">ablauf repository</a>, and an agent gets it with <code>get_help("ablauf")</code>. Frameless by default and centred on the page; a caption line goes above the fence as ordinary prose.</p>
+  </section>
+</article>

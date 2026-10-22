@@ -121,7 +121,7 @@ img { max-width: 100%; display: block }
 .dir .d { font-size: 14.5px }
 .dir .d span { display: block; font-size: 13px; color: var(--muted); margin-top: 2px }
 .changes { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line) }
-.changes li { display: grid; grid-template-columns: 110px 70px minmax(0, 1fr); gap: 4px 16px; padding-block: 10px; border-bottom: 1px solid var(--line); font-size: 14px; align-items: baseline }
+.changes li { display: grid; grid-template-columns: 110px 96px minmax(0, 1fr); gap: 4px 16px; padding-block: 10px; border-bottom: 1px solid var(--line); font-size: 14px; align-items: baseline }
 .changes time { font-family: var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; font-size: 13px }
 .changes .tag { justify-self: start }
 .about { margin-top: 88px; padding-top: 28px; border-top: 1px solid var(--line) }

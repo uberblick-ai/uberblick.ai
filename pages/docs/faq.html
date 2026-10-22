@@ -1,0 +1,44 @@
+<head>
+<title>FAQ · Uberblick docs</title>
+<meta name="description" content="The blunt questions: Windows, phones, a hosted version, cost, what leaves your machine, using it without agents, and where your files are.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Start</p>
+  <h1>FAQ</h1>
+  <p class="lede">Short answers to the questions people ask before they install anything.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="windows"><h2>Does it run on Windows?</h2>
+  <p>Not natively. The client is built for Apple Silicon macOS and Linux x86_64. WSL on Windows runs the Linux build, including the editor and the MCP server, and that is what we test against when someone asks.</p>
+  </section>
+
+  <section class="q" id="phone"><h2>Can I read it on my phone?</h2>
+  <p>No. The editor supports desktop browsers and iPad. We would rather do that well than badly on a phone, and the audience edits with a keyboard. If you need to show someone a page, <code>export_markdown</code> gives it to you as a file.</p>
+  </section>
+
+  <section class="q" id="hosted"><h2>Is there a hosted version?</h2>
+  <p>Not yet. Today you run the hub yourself: one Docker container on a computer the team can reach, see <a href="/docs/hub">Run a hub</a>. A hosted hub with the same client is on the list; what exists today is in the <a href="/changelog">changelog</a>, not here.</p>
+  </section>
+
+  <section class="q" id="cost"><h2>What does it cost?</h2>
+  <p>Nothing. Client and hub are MIT licensed and the whole thing is on GitHub. Running a hub costs you a small machine. There is no plan to charge for the software; if a hosted version comes, that will be the paid part.</p>
+  </section>
+
+  <section class="q" id="leaves"><h2>What leaves my machine?</h2>
+  <p>With a local-only workspace, nothing. With a hub, your documents go to that hub and to the other members' computers, encrypted in transit; clients refuse an unencrypted hub that is not on the same machine. Signing in uses GitHub's device flow, so the hub learns your GitHub login and nothing else. Uberblick itself has no telemetry and phones nobody. The Figma block contacts Figma only when a reader opens it.</p>
+  </section>
+
+  <section class="q" id="without-agents"><h2>Can I use it without agents?</h2>
+  <p>Yes, it is a document editor with offline sync, and some people use it only for that. But it is designed around agents writing most of the text and people reviewing it, and several things only make sense with them: guidance pages, decision records linked to issues, the data behind charts. Without an agent you will find it plain.</p>
+  </section>
+
+  <section class="q" id="files"><h2>Where are my files?</h2>
+  <p>In one SQLite database per workspace under <code>~/.local/share/uberblick</code> (or your XDG data directory). It is yours; back it up, copy it, open it. There is no proprietary cloud copy. <code>export_markdown</code> turns any page into a Markdown file, with the blocks as fenced source so another tool can at least show them.</p>
+  </section>
+
+  <section class="q" id="github"><h2>Does it track tasks?</h2>
+  <p>No, and it will not. Delivery happens on GitHub: issues, pull requests, labels and Actions. Uberblick holds the pages those issues point at, and the <a href="https://agents.uberblick.ai">ub-agents</a> loop runs on GitHub alone. We are exclusive to GitHub for now; GitLab or Linear may follow if people ask for them.</p>
+  </section>
+</article>

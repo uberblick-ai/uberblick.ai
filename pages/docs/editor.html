@@ -1,0 +1,42 @@
+<head>
+<title>The editor · Uberblick docs</title>
+<meta name="description" content="What you do in the browser: the sidebar of pinned pages, the document with its TL;DR and blocks, comments beside the text, the All documents list and the settings.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Start</p>
+  <h1>The editor</h1>
+  <p class="lede">The browser is where a person reads what the agents wrote, adjusts it, comments and settles what an agent should not decide. It is a plain document editor with a sidebar, and it stays out of the way. Desktop and iPad; phones are not supported.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="shot"><h2>What it looks like</h2>
+  <figure class="shot">
+    <div class="bar"><span><b>Where does the web UI use monospace?</b> · Uberblick product</span><span>decision</span></div>
+    <img class="l" src="/img/decision-light.png" width="1424" height="924" alt="The Uberblick editor: a sidebar of pinned pages on the left, a decision record in the main column with its answer, who decided it and when, and a history row.">
+    <img class="d" src="/img/decision-dark.png" width="1424" height="924" alt="The same view in dark mode.">
+    <figcaption>A decision record from our own workspace. Screenshots of an ordinary page and of a comment thread follow when the page is finished.</figcaption>
+  </figure>
+  </section>
+
+  <section class="q" id="sidebar"><h2>The sidebar</h2>
+  <p>The sidebar is curated, not a file tree. It holds named groups of pinned pages in the order someone put them, and nothing else. The pages that matter most sit at the top, because that is where an agent starts too: <code>get_sidebar</code> returns exactly this list. Everything that is not pinned is still alive and reachable from <strong>All documents</strong> and search; it is only not on the shelf. The footer shows the workspace, where it syncs to and any sync problem.</p>
+  </section>
+
+  <section class="q" id="document"><h2>A document</h2>
+  <p>A page has a title, an optional one-line description and an optional TL;DR card, then blocks: paragraphs, headings, lists, tables, code, and the <a href="/docs/custom-markdown">blocks Uberblick adds</a>. Each block has a stable id, which is what an agent edits and what a comment anchors to. The header shows a sync dot and the revision; the same revision an agent sees in <code>get_doc</code>, so "rev 1f3a" means the same thing to both of you.</p>
+  <p>Links to other pages are references by id, so they survive renames and count as backlinks. A link to a GitHub issue or pull request renders as a pill with its state.</p>
+  </section>
+
+  <section class="q" id="comments"><h2>Comments beside the text</h2>
+  <p>Select text and comment; the thread sits in the right rail next to the block it is about. Agents open and answer threads too, with <code>annotate</code>, and they see which threads are open on a page before they edit it. Resolving a thread keeps it in the page's history. This is where most of the review between a person and an agent happens: short questions on the exact sentence, not a chat about the page.</p>
+  </section>
+
+  <section class="q" id="all"><h2>All documents and search</h2>
+  <p><strong>All documents</strong> lists every live page with tabs by kind, filters by tag and status and one search box. Decision records show on one line with a stage pill. Search matches word fragments and tag names and is the same index an agent's <code>search</code> uses. Archived pages are listed separately and can be restored or, on a hub, deleted for good.</p>
+  </section>
+
+  <section class="q" id="settings"><h2>Settings</h2>
+  <p>Three groups. <strong>Workspace</strong>: name, tags, which pages count as guidance for agents, members and roles. <strong>User</strong>: your name, theme, notifications. <strong>Hub</strong>: for hub administrators, the workspaces on this hub and their state. The command palette reaches all of it.</p>
+  </section>
+</article>

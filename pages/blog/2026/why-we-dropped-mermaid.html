@@ -1,0 +1,38 @@
+<head>
+<title>Why we dropped Mermaid · Uberblick blog</title>
+<meta name="description" content="An agent-written diagram nobody could place, the decision record that ended it, the ablauf answer, and what it cost.">
+<meta name="date" content="2026-10-21">
+<meta name="author" content="Ben">
+<meta name="kind" content="design note">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/blog">Blog</a> / Design note</p>
+  <h1>Why we dropped Mermaid</h1>
+  <p class="byline"><time>2026-10-21</time> · Ben · <span class="tag">Design note</span></p>
+  <p class="lede">We added Mermaid in 0.4.4 and removed it in 0.4.5, eleven days later. This is the story of the diagram that made us do it, and of what we built instead.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="diagram"><h2>The diagram</h2>
+  <p>An agent preparing an issue about the review gate wrote a Mermaid flow into the design page: nine nodes, twelve edges, correct in every detail. It was also unreadable. Two edges crossed the main path, the rework loop ran across the top instead of back along the side, and the person reviewing wrote one comment: "move the retry box to the left". The agent tried. Every attempt reflowed the whole picture, because Mermaid lays out by algorithm and the source has no notion of left. After four rounds the agent proposed removing a node to make the layout converge, which would have made the diagram wrong.</p>
+  <p>That was the moment. A diagram an agent cannot repair from feedback is a diagram an agent cannot own, and in our workspace agents own most of the pages.</p>
+  </section>
+
+  <section class="q" id="record"><h2>The record</h2>
+  <p>The preparer wrote the trade-off into a decision record: keep Mermaid and accept pictures nobody can place, or remove it and draw flows in a format where the author places the nodes. It linked the issue and left the record open. I approved the second answer the same afternoon. The record is still the reason the <code>ablauf</code> block exists; the <a href="/use-cases/decisions">use case on decisions</a> shows how it held when "Mermaid import" came up later.</p>
+  </section>
+
+  <section class="q" id="ablauf"><h2>The answer</h2>
+  <p>Ablauf is a small text format: name the columns, put each node in a column and a row, say which side an edge leaves and enters. The renderer measures text, draws in one house style, and reports every crossing and overlap with a line number. It never moves anything. That last property is the whole point: an agent told "the arrows cross at line 14" can fix line 14. The format lives in <a href="https://github.com/uberblick-ai/ablauf">its own repository</a> and works without Uberblick; 0.4.8 draws it in the editor.</p>
+  </section>
+
+  <section class="q" id="cost"><h2>What it cost</h2>
+  <ul>
+    <li>A renderer of our own, about a week of loop work, and a format that is still 0.x.</li>
+    <li>Every existing Mermaid fence became a code block. The loop converted the ones on pinned pages; the rest were left as source and a few were deleted as not worth keeping.</li>
+    <li>Diagram kinds Mermaid had and ablauf does not: sequence diagrams, Gantt charts, class diagrams. We have not missed them yet. When we do, the answer is another small format with the same rule, not Mermaid back.</li>
+  </ul>
+  <p>If your team draws with Mermaid and is happy, nothing here says stop. It says that for pages written mostly by agents, the author has to hold the layout.</p>
+  </section>
+</article>

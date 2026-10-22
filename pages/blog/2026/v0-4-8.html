@@ -1,0 +1,45 @@
+<head>
+<title>v0.4.8: ablauf in the document, one hub image · Uberblick blog</title>
+<meta name="description" content="Flow diagrams drawn in the editor, an Alter decision dialog, and a hub that runs from plain Docker Compose downloads. What changed and why.">
+<meta name="date" content="2026-10-20">
+<meta name="author" content="Ben">
+<meta name="kind" content="release">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/blog">Blog</a> / Release</p>
+  <h1>v0.4.8: ablauf in the document, one hub image</h1>
+  <p class="byline"><time>2026-10-20</time> · Ben · <span class="tag">Release</span></p>
+  <p class="lede">Three things in this release. Ablauf flows are drawn in the editor instead of shown as source. Changing a decision is one dialog. And the hub runs and updates from files you download from the release, so <code>ub hub</code> is gone.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="ablauf"><h2>Flows drawn in the page</h2>
+  <p>Since 0.4.5 an <code>ablauf</code> fence was the right way to write a flow, but the editor showed the text. Now it draws the diagram, in the page's own colours for light and dark, and the source stays one click away. The renderer still never moves a node: the author places them, and crossings are reported with a line number. The format lives in <a href="https://github.com/uberblick-ai/ablauf">its own repository</a>; how to write one is on <a href="/docs/ablauf">Ablauf diagrams</a>.</p>
+  <figure class="shot">
+    <div class="bar"><span>The guidance gate, as a page shows it</span><span>ablauf</span></div>
+    <img class="l" src="/img/blocks/ablauf-light.png" alt="An ablauf flow drawn in the editor: an agent calls edit_block, the server checks the guidance lease, the edit is applied or refused">
+    <img class="d" src="/img/blocks/ablauf-dark.png" alt="The same flow in dark mode.">
+  </figure>
+  </section>
+
+  <section class="q" id="alter"><h2>Alter decision</h2>
+  <p>A decision topic now has an <strong>Alter decision</strong> button. It opens a new record with the current answer prefilled in a proper editor; approve it and the topic shows the new answer with the old one in its history. Before this, changing a decision meant creating a successor by hand and most people edited the old record instead, which lost the history. Every record in a topic now also carries the topic's one title, and the history uses simpler indicators.</p>
+  </section>
+
+  <section class="q" id="hub"><h2>One hub image, plain Compose</h2>
+  <p><code>ub hub</code>, the client command that deployed a hub, is removed. Each hub release now publishes <code>compose.yml</code>, <code>remote.env.example</code>, <code>remote.https.yml</code> and <code>remote.tailscale.yml</code> as release downloads, and you run the hub with Docker Compose like any other service. The image backs up its database before a newer release opens it, refuses a database written by a newer release, and declares container health. If you deployed with <code>ub hub</code>, REMOTE.md has the one-time move to downloaded files. <a href="/docs/hub">Run a hub</a> is updated.</p>
+  </section>
+
+  <section class="q" id="also"><h2>Also</h2>
+  <ul>
+    <li>Charts draw series as grouped bars or behind lines, take series axis ranges and reference lines.</li>
+    <li>A curated set of inline icons renders from shortcode text in prose and card labels.</li>
+    <li>MCP writes nested and ordered list items.</li>
+    <li><code>ub status</code> shows the client and hub versions together.</li>
+    <li>Web search matches word fragments; tag names are accepted in any case.</li>
+    <li>The web app, the hub and this site have the ub favicon and app icons.</li>
+  </ul>
+  <p>The full list is in the <a href="/changelog#v0.4.8">changelog</a>. Update with <code>ub update</code> and pull the new hub image; no sign-in is needed again this time.</p>
+  </section>
+</article>

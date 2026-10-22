@@ -1,0 +1,59 @@
+<head>
+<title>Reports with the numbers inside · Uberblick</title>
+<meta name="description" content="The delivery report and the CI health report pinned in our own workspace: a skill writes records into the page's data, charts read them, and a card carries the one recommendation a person should act on.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<section class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/use-cases">Use cases</a></p>
+  <h1>Reports with the numbers inside.</h1>
+  <p class="lede">A report that pastes a chart is stale the next morning and nobody can tell. In Uberblick the numbers are records stored in the page, the chart is a mapping onto them, and the agent that gathers the numbers writes records instead of prose. The report stays true because the data does.</p>
+</section>
+
+<div class="col">
+<section class="q"><h2>Two pages we keep pinned</h2>
+<p>The <strong>Delivery report</strong> says what the loop shipped this week: pull requests opened and merged per day, how many needed a person, how many runs were wasted and why. The <strong>CI health report</strong> says how often the merge gate was red and which check caused it. Both are pinned at the top of the sidebar, both are read by people on Monday, and neither is written by a person.</p>
+</section>
+
+<section class="q"><h2>How a page gets its numbers</h2>
+<ol class="steps">
+  <li><b>A skill gathers.</b> A GitHub Action runs a small skill that asks GitHub for the week's pull requests and check runs and turns them into records: one per day, with the fields the charts need.</li>
+  <li><b>It writes records, not sentences.</b> <code>ub data update "Delivery report" --file week.json</code> applies one validated batch to the page's <code>pull_requests</code> collection. Records that fail the schema are kept and marked; the chart leaves them out and says how many.</li>
+  <li><b>The charts refresh.</b> The line chart and the data table on the page map onto the collection, so they show the new week with no edit to the page.</li>
+  <li><b>An agent writes the paragraph and the card.</b> With the numbers in place, an agent writes two sentences of what changed and a card with the one recommendation, linking the issue it rests on. A person reads, comments on the sentence that is wrong, and the agent fixes that block.</li>
+</ol>
+</section>
+
+<section class="q"><h2>What it looks like</h2>
+<div class="tabs ex"><div class="tablist" role="tablist" aria-label="chart example"><button role="tab" id="t-chart-v" aria-selected="true" aria-controls="p-chart-v" type="button">Displayed</button><button role="tab" id="t-chart-m" aria-selected="false" aria-controls="p-chart-m" type="button">Markdown</button></div>
+  <div class="panel" role="tabpanel" id="p-chart-v" aria-labelledby="t-chart-v"><img class="l" src="/img/blocks/chart-light.png" alt="A line chart of pull requests opened and merged per day, drawn from the page's records" loading="lazy"><img class="d" src="/img/blocks/chart-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-chart-m" aria-labelledby="t-chart-m" hidden><pre>```chart
+{
+  "version": 1,
+  "type": "line",
+  "title": "Pull requests per day",
+  "collection": "pull_requests",
+  "x": {"field": "day", "type": "date"},
+  "y": [
+    {"field": "opened", "label": "Opened"},
+    {"field": "merged", "label": "Merged"}
+  ]
+}
+```</pre></div></div>
+<p>The card at the end of the report is the only part a reader has to act on. Its button opens the discussion in Claude Code with the question already asked.</p>
+<div class="tabs ex"><div class="tablist" role="tablist" aria-label="card example"><button role="tab" id="t-card-v" aria-selected="true" aria-controls="p-card-v" type="button">Displayed</button><button role="tab" id="t-card-m" aria-selected="false" aria-controls="p-card-m" type="button">Markdown</button></div>
+  <div class="panel" role="tabpanel" id="p-card-v" aria-labelledby="t-card-v"><img class="l" src="/img/blocks/card-light.png" alt="A card titled Cut the retry limit to two, with a Discuss in Claude Code button" loading="lazy"><img class="d" src="/img/blocks/card-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-card-m" aria-labelledby="t-card-m" hidden><pre>:::card
+label: Recommendation
+title: Cut the retry limit to two
+footer: From the delivery report of 16 October
+button: [Discuss in Claude Code](claude://code/new?prompt=Review%20the%20retry%20limit) filled blue
+button: [Open the issue](https://github.com/uberblick-ai/uberblick-2/issues/1588)
+
+Three of this week's wasted runs were third retries on the same failure. A limit of two would have stopped each one a run earlier.
+:::</pre></div></div>
+</section>
+
+<section class="q"><h2>Why not a dashboard</h2>
+<p>A dashboard shows numbers without the reasoning; a report explains numbers it cannot show. This page is both, and the agent that explains has the same records in front of it that the chart draws. When a number looks wrong, the person comments on the chart's caption and the agent checks the records, not a screenshot. <a href="/docs/charts">Charts and data tables</a> has the shapes.</p>
+</section>
+</div>

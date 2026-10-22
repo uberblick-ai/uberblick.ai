@@ -1,0 +1,40 @@
+<head>
+<title>Decisions that stay decided · Uberblick</title>
+<meta name="description" content="How one decision record, Support for Mermaid, kept a question answered across a removal, a replacement and a dozen agent runs, and what the history looks like when the question came back.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<section class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/use-cases">Use cases</a></p>
+  <h1>Decisions that stay decided.</h1>
+  <p class="lede">Agents are good at reopening questions. Each run starts fresh, finds the same trade-off and proposes the same fix a person already said no to. A decision record ends that: the answer is on a page, linked from the issue, and every agent that touches the issue reads it first.</p>
+</section>
+
+<div class="col">
+<section class="q"><h2>The question</h2>
+<p>In October our agents were drawing flow diagrams in design pages with Mermaid, and the pictures were bad in a way nobody could fix: automatic layout moved every node when one was added, and an agent that was told "the arrows cross" had nothing to grab. Removing Mermaid would mean a few dozen pages lost their diagrams. Keeping it meant more pages like them.</p>
+</section>
+
+<section class="q"><h2>The record</h2>
+<section class="block decision" aria-label="Decision record: Support for Mermaid"><div class="cap"><span>Decision · decided 15 October 2026</span><span>Uberblick product workspace</span></div>
+  <div class="body">
+    <h3>Support for Mermaid</h3>
+    <p class="answer"><strong>Not supported.</strong> Mermaid fences are ordinary code blocks and are never drawn. Flow diagrams use ablauf, where the author places the nodes and the renderer only draws and reports crossings.</p>
+    <p class="why">Automatic layout has no handle an agent or a person can hold: every change reflows the picture, so review cannot tell a change in meaning from a change in position. A text format with explicit placement keeps the diff readable and lets an agent repair a diagram from diagnostics alone. The cost is a renderer of our own, which is small, and re-drawing existing diagrams, which the loop can do.</p>
+    <div class="links"><span>Decided by Ben</span><span>Links uberblick-ai/uberblick-2#1715</span><span>Supersedes record of 11 October</span></div>
+  </div>
+</section>
+<p>The record was proposed by the agent that prepared the issue, with the trade-off written out and the stage left open. Ben approved it in the browser; the answer went in force under his name and date. The earlier record on the same topic, from the week Mermaid was added, is one row below it in the history.</p>
+</section>
+
+<section class="q"><h2>What happened next</h2>
+<ol class="steps">
+  <li><b>The removal shipped in 0.4.5.</b> The implementer called <code>find_decisions</code> for the issue, read the record, and removed the renderer without proposing a toggle to keep it. Its pull request's corpus update changed one block on the Custom Markdown page.</li>
+  <li><b>The replacement shipped in 0.4.8.</b> Ablauf went from a format in its own repository to a block drawn in the editor. The preparer of that issue found the same record and cited it as the reason the block exists.</li>
+  <li><b>The question came back.</b> A later issue asked for "Mermaid import". The preparer found the record, quoted the answer in the issue, and proposed a narrower job instead: convert the old Mermaid fences to ablauf once. That is what got built.</li>
+</ol>
+</section>
+
+<section class="q"><h2>Changing a decision</h2>
+<p>When the answer should change, <strong>Alter decision</strong> on the topic page opens a new record with the current answer prefilled. The person edits, approves, and the topic shows the new answer with the old one in its history. Nothing is overwritten and nothing has to be remembered. <a href="/docs/decisions">How decision records work</a>.</p>
+</section>
+</div>

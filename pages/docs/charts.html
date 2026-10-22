@@ -1,0 +1,56 @@
+<head>
+<title>Charts and data tables · Uberblick docs</title>
+<meta name="description" content="Numbers live in named collections of records inside the document; a chart or data table block holds only the mapping, so when an agent updates the records every chart updates too.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Blocks</p>
+  <h1>Charts and data tables</h1>
+  <p class="lede">A document owns named collections of JSON records beside its prose. A chart or a data table is a few lines that say which collection and which fields. When an agent writes new records, every block that reads them refreshes, and nobody pastes a stale image again.</p>
+</div>
+<article class="col">
+  <section class="q" id="chart"><h2>Source beside drawing</h2>
+  <p>A chart pasted as an image is stale the day after. Here a document owns named collections of JSON records beside its prose, and a <code>chart</code> fence holds only the mapping: which collection, which fields. The values live in the records, so when an agent writes new ones with <code>update_data</code>, every chart and table that reads them refreshes, and the source stays a few lines of JSON that are easy to review.</p>
+  <div class="tabs ex"><div class="tablist" role="tablist" aria-label="chart example"><button role="tab" id="t-chart-v" aria-selected="true" aria-controls="p-chart-v" type="button">Displayed</button><button role="tab" id="t-chart-m" aria-selected="false" aria-controls="p-chart-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```chart
+{
+  &quot;version&quot;: 1,
+  &quot;type&quot;: &quot;line&quot;,
+  &quot;title&quot;: &quot;Pull requests per day&quot;,
+  &quot;collection&quot;: &quot;pull_requests&quot;,
+  &quot;x&quot;: {&quot;field&quot;: &quot;day&quot;, &quot;type&quot;: &quot;date&quot;},
+  &quot;y&quot;: [
+    {&quot;field&quot;: &quot;opened&quot;, &quot;label&quot;: &quot;Opened&quot;},
+    {&quot;field&quot;: &quot;merged&quot;, &quot;label&quot;: &quot;Merged&quot;}
+  ]
+}
+```">Copy</button></div>
+  <div class="panel" role="tabpanel" id="p-chart-v" aria-labelledby="t-chart-v"><img class="l" src="/img/blocks/chart-light.png" alt="The chart block as the editor shows it" loading="lazy"><img class="d" src="/img/blocks/chart-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-chart-m" aria-labelledby="t-chart-m" hidden><pre>```chart
+{
+  &quot;version&quot;: 1,
+  &quot;type&quot;: &quot;line&quot;,
+  &quot;title&quot;: &quot;Pull requests per day&quot;,
+  &quot;collection&quot;: &quot;pull_requests&quot;,
+  &quot;x&quot;: {&quot;field&quot;: &quot;day&quot;, &quot;type&quot;: &quot;date&quot;},
+  &quot;y&quot;: [
+    {&quot;field&quot;: &quot;opened&quot;, &quot;label&quot;: &quot;Opened&quot;},
+    {&quot;field&quot;: &quot;merged&quot;, &quot;label&quot;: &quot;Merged&quot;}
+  ]
+}
+```</pre></div></div>
+  <p>A line chart takes one x field, a number or a date, and one to eight numeric y series with optional labels and units. <code>layout: "panels"</code> draws one small chart per series; <code>missing</code> decides whether a gap breaks or bridges a line. The same block with <code>"type":"table"</code> and up to thirty <code>columns</code>, each with a field and a text, number, date or link format, is a data table with sorting. Both omit records that fail the collection's schema and say how many they left out.</p>
+  </section>
+
+  <section class="q" id="data"><h2>Where the numbers live</h2>
+  <p>Each document has a data area: named collections, each with a JSON schema and records with an id and a value. Agents read it with <code>get_data</code> and write it with <code>update_data</code>, one validated batch per call: set the schema, replace or delete records, upsert whole records. Records that fail the schema are kept, marked invalid, and left out of every chart with a count of how many were skipped. From the terminal, <code>ub data get &lt;doc&gt; &lt;collection&gt;</code> prints a collection as JSON and <code>ub data update &lt;doc&gt; --file ops.json</code> applies a batch, which is how a script or an Action feeds a report.</p>
+  </section>
+
+  <section class="q" id="types"><h2>Line, bar, table</h2>
+  <ul>
+    <li><strong>Line</strong>: one x field, a number or a date, one to eight numeric series with labels and units. <code>layout: "panels"</code> draws one small chart per series; <code>missing</code> says whether a gap breaks or bridges the line.</li>
+    <li><strong>Bar</strong>: the same mapping with <code>"type":"bar"</code>; several series draw as grouped bars, and a series can draw as bars behind lines. Series can carry their own axis range and reference lines.</li>
+    <li><strong>Table</strong>: <code>"type":"table"</code> with up to thirty <code>columns</code>, each a field and a text, number, date or link format. Sortable in the editor.</li>
+  </ul>
+  <p>The exact shape is in <code>get_help("data")</code>. Charts render in the editor and export as their source fence, so the numbers are never lost.</p>
+  </section>
+</article>

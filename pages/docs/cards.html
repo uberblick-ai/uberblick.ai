@@ -1,0 +1,39 @@
+<head>
+<title>Cards · Uberblick docs</title>
+<meta name="description" content="Give a recommendation a shape: a label, a title, a body, a footer and buttons that open a link or start a discussion in Claude Code or Codex.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Blocks</p>
+  <h1>Cards</h1>
+  <p class="lede">A report that ends in "we recommend" loses the recommendation in the paragraph above it. A card gives it a shape, and a button can carry the reader straight into Claude Code or Codex with the discussion already set up.</p>
+</div>
+<article class="col">
+  <section class="q" id="card"><h2>Source beside drawing</h2>
+  <p>A report that ends in "we recommend" loses the recommendation in the paragraph above it. A card gives it a shape: an optional label, a required title, an optional body and footer, and link buttons. Agents use it for the one thing a reader should act on, and a button can open the discussion straight in Claude Code or Codex.</p>
+  <div class="tabs ex"><div class="tablist" role="tablist" aria-label="card example"><button role="tab" id="t-card-v" aria-selected="true" aria-controls="p-card-v" type="button">Displayed</button><button role="tab" id="t-card-m" aria-selected="false" aria-controls="p-card-m" type="button">Markdown</button><button class="copy" type="button" data-copy=":::card
+label: Recommendation
+title: Cut the retry limit to two
+footer: From the delivery report of 16 October
+button: [Discuss in Claude Code](claude://code/new?prompt=Review%20the%20retry%20limit) filled blue
+button: [Open the issue](https://github.com/uberblick-ai/uberblick-2/issues/1588)
+
+Three of this week&#x27;s wasted runs were third retries on the same failure. A limit of two would have stopped each one a run earlier.
+:::">Copy</button></div>
+  <div class="panel" role="tabpanel" id="p-card-v" aria-labelledby="t-card-v"><img class="l" src="/img/blocks/card-light.png" alt="The card block as the editor shows it" loading="lazy"><img class="d" src="/img/blocks/card-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-card-m" aria-labelledby="t-card-m" hidden><pre>:::card
+label: Recommendation
+title: Cut the retry limit to two
+footer: From the delivery report of 16 October
+button: [Discuss in Claude Code](claude://code/new?prompt=Review%20the%20retry%20limit) filled blue
+button: [Open the issue](https://github.com/uberblick-ai/uberblick-2/issues/1588)
+
+Three of this week&#x27;s wasted runs were third retries on the same failure. A limit of two would have stopped each one a run earlier.
+:::</pre></div></div>
+  <p>Header lines are <code>label:</code>, <code>title:</code>, <code>footer:</code> and <code>button:</code>, in any order; the first blank line ends the header and the rest is the body. A button is one Markdown link to an <code>https://</code> address or to <code>claude://code/new</code>, <code>claude-cli://open</code> or <code>codex://new</code>, followed by an optional style (<code>outline</code> or <code>filled</code>) and colour (<code>neutral</code>, <code>blue</code>, <code>green</code> or <code>violet</code>).</p>
+  </section>
+
+  <section class="q" id="use"><h2>When to use one</h2>
+  <p>For the one thing on a page a reader should act on: the recommendation at the end of a report, the warning at the top of a runbook, the next step after a review. One card per page is the norm; a page full of cards is a list wearing boxes. Agents that write reports put the card last and link the issue or the record it rests on in the footer.</p>
+  </section>
+</article>

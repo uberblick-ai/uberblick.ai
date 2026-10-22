@@ -1,0 +1,54 @@
+<head>
+<title>Flows and screens drawn as text · Uberblick</title>
+<meta name="description" content="The agent loop as an ablauf flow with its gates and a screen from a design page as a wireframe: diagrams an agent can write and a reviewer can diff, source beside drawing.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<section class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/use-cases">Use cases</a></p>
+  <h1>Flows and screens drawn as text.</h1>
+  <p class="lede">The two pictures every design page wants are a flow and a screen. Both are text in Uberblick, so an agent writes them, a reviewer diffs them, and the picture changes only when the meaning does.</p>
+</section>
+
+<div class="col">
+<section class="q"><h2>The agent loop as a flow</h2>
+<p>Our page <strong>UB Agent loop</strong> describes how an issue moves from filed to merged through the preparer, implementer, reviewer and integrator roles, and where a person has to step in. Its first block is the flow. The source puts each role in a column and each gate in a row; the <em>rework</em> edges run back on the left so a reader sees at a glance which failures loop and which stop.</p>
+<div class="tabs ex"><div class="tablist" role="tablist" aria-label="ablauf example"><button role="tab" id="t-ablauf-v" aria-selected="true" aria-controls="p-ablauf-v" type="button">Displayed</button><button role="tab" id="t-ablauf-m" aria-selected="false" aria-controls="p-ablauf-m" type="button">Markdown</button></div>
+  <div class="panel" role="tabpanel" id="p-ablauf-v" aria-labelledby="t-ablauf-v"><img class="l" src="/img/blocks/ablauf-light.png" alt="An ablauf flow: an agent calls edit_block, the server checks the guidance lease, the edit is applied or refused with guidance_required, the agent reads and calls again" loading="lazy"><img class="d" src="/img/blocks/ablauf-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-ablauf-m" aria-labelledby="t-ablauf-m" hidden><pre>```ablauf
+flow v0
+columns rework main
+
+pill edit_block col=main tone=agent "agent calls edit_block"
+box server "checks the guidance lease"
+end applied "Edit applied"
+
+pill guidance_required col=rework row=server tone=rework
+box get_doc "agent reads the pages it was told to"
+
+edit_block --&gt; server
+server --&gt; applied : read within ten minutes
+server --&gt; guidance_required tone=rework : not read
+guidance_required --&gt; get_doc tone=rework
+get_doc --&gt; edit_block tone=rework from=left to=left label=end : calls again
+```</pre></div></div>
+<p class="small">The flow shown is the guidance gate from the same page; the full loop flow is drawn when its page is final.</p>
+<p>When the retrospective proposed a second review gate, the agent that wrote the proposal added one row to the source. The pull request diff showed three new lines and one changed edge, and the reviewer could read the change without opening the editor. The renderer reported no crossings; had it reported one, the agent would have seen the line number and moved the node.</p>
+</section>
+
+<section class="q"><h2>A screen from a design page</h2>
+<p>The "Web UI:" pages from our design review describe screens before they exist. The archive dialog started as this wireframe. An agent wrote it from the page's prose, a person changed one line to make the dangerous button the second one, and the implementer built what the wireframe shows.</p>
+<div class="tabs ex"><div class="tablist" role="tablist" aria-label="wireframe example"><button role="tab" id="t-wireframe-v" aria-selected="true" aria-controls="p-wireframe-v" type="button">Displayed</button><button role="tab" id="t-wireframe-m" aria-selected="false" aria-controls="p-wireframe-m" type="button">Markdown</button></div>
+  <div class="panel" role="tabpanel" id="p-wireframe-v" aria-labelledby="t-wireframe-v"><img class="l" src="/img/blocks/wireframe-light.png" alt="A wireframe of an archive dialog with explanatory text and Cancel and Archive buttons" loading="lazy"><img class="d" src="/img/blocks/wireframe-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-wireframe-m" aria-labelledby="t-wireframe-m" hidden><pre>```wireframe
+dialog Archive “Release plan 0.5”?
+  text Readers keep the page under a muted banner. Restore brings it back.
+  row.end
+    button.focus Cancel
+    button.danger Archive
+```</pre></div></div>
+</section>
+
+<section class="q"><h2>Why text</h2>
+<p>A picture an agent cannot write is a picture an agent cannot keep up to date. Both formats are small, live in their own repositories and work without Uberblick; the editor draws them and <code>export_markdown</code> hands them back as fences. <a href="/docs/ablauf">Ablauf diagrams</a> and <a href="/docs/wireframes">Wireframes</a> have the grammar.</p>
+</section>
+</div>
