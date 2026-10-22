@@ -13,40 +13,48 @@
   <section class="q" id="create"><h2>Create one</h2>
   <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace create &quot;My Workspace&quot;
 ub open">Copy</button></div><pre><span class="p">$</span> ub workspace create "My Workspace"
-<span class="o">created local workspace 3f0c… and selected it in ./.uberblick.json</span>
+<span class="o">created    My Workspace (b3eea2f9-a8dc-40f2-a3d9-b27742620b1f, local)
+wrote      ~/Projects/notes/.uberblick.json
+open it with: ub open</span>
 <span class="p">$</span> ub open
-<span class="o">Editor at http://127.0.0.1:7777 Keep this terminal open.</span></pre></section>
+<span class="o">web        http://127.0.0.1:13379/
+workspace  My Workspace (local)
+
+Ctrl-C to stop.</span></pre></section>
   <p>The workspace is local only and comes with a few starter documents. No hub, no login. What the two commands put on disk is in the guide <a href="/guides/first-workspace">Your first workspace</a>. <code>ub open</code> serves the editor for the bound workspace until you stop it; <code>--no-browser</code> prints the address instead of opening one.</p>
   </section>
 
   <section class="q" id="binding"><h2>What the binding does</h2>
   <p>Commands and MCP servers look for the nearest <code>.uberblick.json</code> above the directory they start in. That is the whole selection mechanism: there is no current workspace on the machine, only the one a directory points at. Commit the file so everyone who clones the repository, and every agent that runs in it, lands in the same workspace.</p>
   <section class="block code"><div class="cap"><span>.uberblick.json</span></div><pre>{
-  "workspaceId": "3f0c2a1e-…",
-  "hubUrl": "https://hub.example.com"
+  "workspaceId": "uberblick-3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f",
+  "hubUrl": "wss://hub.example.com/ws"
 }</pre></section>
-  <p>Two environment variables, <code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code>, override the file for one shell or one agent process; see <a href="/docs/cli/binding">Configuration</a>. A running agent keeps the workspace it started with, so restart it after changing the binding.</p>
+  <p>Two environment variables, <code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code>, override the file for one shell or one agent process; see <a href="/docs/cli/binding">Project binding</a>. A running agent keeps the workspace it started with, so restart it after changing the binding.</p>
   </section>
 
   <section class="q" id="use"><h2>Join a shared one</h2>
   <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth login https://hub.example.com
-ub workspace use https://hub.example.com/3f0c2a1e-…">Copy</button></div><pre><span class="p">$</span> ub auth login https://hub.example.com
-<span class="p">$</span> ub workspace use https://hub.example.com/3f0c2a1e-…
-<span class="o">fetched 48 documents, verified, bound in ./.uberblick.json</span></pre></section>
-  <p><code>ub workspace use</code> takes a hub link with the workspace id as its last segment, or an id of a workspace this machine already has. It fetches the whole workspace, verifies that the copy matches the hub and only then writes the binding. It never starts a sign-in and never merges two workspaces. Someone has to have granted you access first: <a href="/docs/cli/workspace#member">ub workspace member</a>.</p>
+ub workspace use https://hub.example.com/3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f">Copy</button></div><pre><span class="p">$</span> ub auth login https://hub.example.com
+<span class="p">$</span> ub workspace use https://hub.example.com/3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f
+<span class="o">fetched    Acme product from https://hub.example.com: 48 documents, 3 archived
+using      Acme product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f, https://hub.example.com)
+wrote      ~/Projects/acme/.uberblick.json
+open it with: ub open</span></pre></section>
+  <p><code>ub workspace use</code> takes a hub link with the workspace id as its last segment, or an id of a workspace this machine already has. It fetches the whole workspace and only then writes the binding. With a committed <code>.uberblick.json</code> in the clone, <code>ub auth login</code> alone is enough. It never starts a sign-in and never merges two workspaces. Someone has to have granted you access first: <a href="/docs/cli/workspace#member">ub workspace member</a>.</p>
   </section>
 
   <section class="q" id="list"><h2>See what this machine has</h2>
   <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace list">Copy</button></div><pre><span class="p">$</span> ub workspace list
-<span class="o">3f0c2a1e-…  Uberblick product   https://hub.example.com
-9b71d0c4-…  My Workspace</span></pre></section>
-  <p>One row per copy: id, name and the hub it syncs with, blank for a local-only workspace. <code>ub status</code> says which of them the current directory is bound to and whether it is in sync.</p>
+<span class="o">* 3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f | Acme product     | https://hub.example.com
+  b3eea2f9-a8dc-40f2-a3d9-b27742620b1f | My Workspace     | local</span></pre></section>
+  <p>One row per copy: id, name and the hub it syncs with, or <code>local</code>; the one this directory uses is marked. <code>ub status</code> says which of them the current directory is bound to and whether it is in sync.</p>
   </section>
 
   <section class="q" id="fork"><h2>Fork, promote, remove</h2>
   <ul>
     <li><code>ub workspace fork</code> copies the bound workspace into an independent local one with a new id, including local changes and archived documents, and binds the directory to the copy. The source is untouched. Use it to try a restructuring without anyone seeing it.</li>
-    <li><code>ub workspace promote &lt;hub&gt;</code> uploads a local-only workspace to a hub you administer, verifies the upload with a fresh client and then binds the project to the shared copy. Rerun it after an interruption; it resumes.</li>
+    <li><code>ub workspace promote &lt;hub&gt;</code> uploads a local-only workspace to a hub you administer, verifies the upload and then binds the project to the shared copy. Rerun it after an interruption; it resumes.</li>
     <li><code>ub workspace remove &lt;id&gt;</code> deletes this computer's copy and nothing else. The hub and the other computers keep theirs. MCP servers refuse to write to a removed workspace, so restart them.</li>
   </ul>
   </section>

@@ -38,19 +38,19 @@
   ]
 }
 ```</pre></div></div>
-  <p>A line chart takes one x field, a number or a date, and one to eight numeric y series with optional labels and units. <code>layout: "panels"</code> draws one small chart per series; <code>missing</code> decides whether a gap breaks or bridges a line. The same block with <code>"type":"table"</code> and up to thirty <code>columns</code>, each with a field and a text, number, date or link format, is a data table with sorting. Both omit records that fail the collection's schema and say how many they left out.</p>
+  <p>In the editor, insert <strong>Line chart</strong> or <strong>Data table</strong> and edit the JSON source; over MCP an agent writes the same fence with the ordinary block tools. The mapping chooses a view, never the values: records sort by x, nothing is coerced, aggregated or derived, and a record that fails the collection's schema is left out and counted.</p>
   </section>
 
   <section class="q" id="data"><h2>Where the numbers live</h2>
-  <p>Each document has a data area: named collections, each with a JSON schema and records with an id and a value. Agents read it with <code>get_data</code> and write it with <code>update_data</code>, one validated batch per call: set the schema, replace or delete records, upsert whole records. Records that fail the schema are kept, marked invalid, and left out of every chart with a count of how many were skipped. From the terminal, <code>ub data get &lt;doc&gt; &lt;collection&gt;</code> prints a collection as JSON and <code>ub data update &lt;doc&gt; --file ops.json</code> applies a batch, which is how a script or an Action feeds a report.</p>
+  <p>Each document has a data area: named collections, each with a JSON schema and records with an id and a value. Agents read it with <code>get_data</code> and write it with <code>update_data</code>, one validated batch per call: set the schema, replace or delete records, upsert whole records. Records that fail the schema are kept, marked invalid, and left out of every chart with a count of how many were skipped. <code>get_doc</code> reports the collection names and counts beside the blocks. From the terminal, <a href="/docs/cli/data">ub data</a> prints a collection as JSON and applies a batch from a file, which is how a script or an Action feeds a report.</p>
   </section>
 
   <section class="q" id="types"><h2>Line, bar, table</h2>
   <ul>
-    <li><strong>Line</strong>: one x field, a number or a date, one to eight numeric series with labels and units. <code>layout: "panels"</code> draws one small chart per series; <code>missing</code> says whether a gap breaks or bridges the line.</li>
-    <li><strong>Bar</strong>: the same mapping with <code>"type":"bar"</code>; several series draw as grouped bars, and a series can draw as bars behind lines. Series can carry their own axis range and reference lines.</li>
-    <li><strong>Table</strong>: <code>"type":"table"</code> with up to thirty <code>columns</code>, each a field and a text, number, date or link format. Sortable in the editor.</li>
+    <li><strong>Line</strong>: <code>"type":"line"</code>, one <code>x</code> field of type number or date, and one to eight <code>y</code> series, each with a field and optional label, unit, axis range and reference line. <code>"layout":"panels"</code> draws one small chart per series with its latest value; <code>"limit"</code> keeps the latest N records; <code>"missing"</code> says whether a gap breaks or bridges the line.</li>
+    <li><strong>Bar</strong>: the same mapping with <code>"type":"bar"</code> on a series. A bar-only chart is still <code>"type":"line"</code> at the top; bars draw behind lines when they share a chart, on their own axis.</li>
+    <li><strong>Table</strong>: <code>"type":"table"</code> with one to thirty <code>columns</code>, each a field with an optional label and a text, number, date or link format, plus <code>sort</code> and <code>limit</code>. Readers sort the shown rows by clicking a header; that is never saved.</li>
   </ul>
-  <p>The exact shape is in <code>get_help("data")</code>. Charts render in the editor and export as their source fence, so the numbers are never lost.</p>
+  <p>A chart never draws more than 5,000 records. The full key list is in <code>get_help("data")</code>. Charts render in the editor and export as their source fence; Markdown keeps the mapping but not the data, so an export alone cannot recreate a view.</p>
   </section>
 </article>

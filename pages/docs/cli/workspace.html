@@ -1,74 +1,109 @@
 <head>
 <title>ub workspace · Uberblick docs</title>
-<meta name="description" content="Create, fork, promote, join, list, select and remove workspaces, and manage who has access to a shared one.">
+<meta name="description" content="Create, list, select, fork, promote and remove workspace copies, and manage who has access to a shared one.">
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
   <h1><code>ub workspace</code></h1>
-  <p class="lede">A workspace is one set of documents, kept in full on every computer that uses it. <code>ub workspace</code> creates one, binds a project directory to it, fetches a shared one from a hub, publishes a local one, and manages members. A bare <code>ub workspace</code> prints this help and does nothing.</p>
+  <p class="lede">A workspace is one set of documents that you and the agents you connect read and write together. <code>ub workspace</code> creates workspaces, lists the ones on this computer, selects the one a project uses, publishes a local one through a hub, and manages who has access there. An agent started in a project writes into the workspace that project uses, so <a href="/docs/cli/status">ub status</a> is the quick check before handing work to an agent.</p>
 </div>
 <article class="col">
 
   <section class="q" id="usage"><h2>Usage</h2>
-<section class="block code"><div class="cap"><span>help</span></div><pre>usage: ub workspace [command]
+<section class="block code"><div class="cap"><span>help</span></div><pre>$ ub workspace
+usage: ub workspace [command]
 
 commands:
-  create &lt;name&gt;               create and select a separate local-only workspace
-  fork                        copy this workspace independently and select the copy
-  promote &lt;hub&gt;               upload, verify and connect this local workspace
-  member &lt;command&gt;            grant workspace access and manage members
-  list [--json]               workspaces this machine has a database for
-  use &lt;link|id&gt;               fetch a shared workspace or select a local replica
-  remove &lt;id|prefix&gt; [--yes]  delete this computer&#x27;s copy of a workspace</pre></section>
+  create &lt;name&gt;    # Create a new local workspace. New workspaces always start locally
+  list             # List all available workspaces on this machine
+  use &lt;link|id&gt;    # Use a workspace in this project: a hub link someone shared, or a workspace from list
+  remove &lt;id|prefix&gt; [--yes] # Delete this computer&#x27;s copy of a workspace
+  fork             # Create an independent local copy with a new workspace UUID
+  promote &lt;hub&gt;    # Promote a local workspace to a remote hub
+  member &lt;command&gt; # Grant and manage access to a workspace on a hub (admins only)</pre></section>
+  <p>A bare <code>ub workspace</code> prints this help and never acts. <code>create</code>, <code>use</code>, <code>fork</code> and <code>promote</code> write the project's <code>.uberblick.json</code>; what that file holds and how it is found is on <a href="/docs/cli/binding">Project binding</a>.</p>
   </section>
 
   <section class="q" id="create"><h2>create</h2>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace create &quot;Acme product&quot;">Copy</button></div><pre><span class="p">$</span> ub workspace create &quot;Acme product&quot;
-<span class="o">created Acme product (3f9c…) with starter documents
-bound ./.uberblick.json to it</span></pre></section>
-  <p>A local-only workspace with two starter pages, selected in this directory's <code>.uberblick.json</code>. No hub, no login. What lands on disk is on <a href="/guides/first-workspace">Your first workspace</a>.</p>
-  </section>
-
-  <section class="q" id="use"><h2>use</h2>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace use https://hub.example.com/3f9c0a1e-…
-ub workspace use 3f9c">Copy</button></div><pre><span class="p">$</span> ub workspace use https://hub.example.com/3f9c0a1e-…
-<span class="p">$</span> ub workspace use 3f9c</pre></section>
-  <p>Binds the project to a workspace, writing the nearest <code>.uberblick.json</code> or creating one here. A hub link has the workspace id as its last segment; a browser document address is not a workspace link. An id, a decorated <code>slug-uuid</code> or a unique prefix selects a workspace this machine already has. A shared workspace is fetched in full and verified before the binding is written; two workspaces are never merged. Needs a login for a hub workspace, and says so instead of starting one.</p>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace create &quot;My Workspace&quot;">Copy</button></div><pre><span class="p">$</span> ub workspace create &quot;My Workspace&quot;
+<span class="o">created    My Workspace (b3eea2f9-a8dc-40f2-a3d9-b27742620b1f, local)
+wrote      ~/Projects/notes/.uberblick.json
+previous   Acme product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f, https://hub.example.com)
+switch back with: ub workspace use 3f0c2a1e
+open it with: ub open</span></pre></section>
+  <p>Seeds a new local workspace with a few starter documents and binds the current directory to it. No hub, no login. When it replaces a binding it names the previous workspace and the command that switches back. Promotion to a hub can come later; the id and the history stay the same.</p>
   </section>
 
   <section class="q" id="list"><h2>list</h2>
 <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace list">Copy</button></div><pre><span class="p">$</span> ub workspace list
-<span class="o">3f9c0a1e-…  Acme product        hub.example.com  (current)
-8b2d4c77-…  Design notes        local</span></pre></section>
-  <p>Every workspace this machine has a database for, with the one in force marked and the hub it was recorded from, or <code>local</code>. Reads the local replicas only. <code>--json</code> for scripts.</p>
+<span class="o">* 3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f | Acme product     | https://hub.example.com
+  9b71d0c4-2e5f-4a8b-b3c6-1d2e3f4a5b6c | Research notes   | local</span></pre></section>
+  <p>Every workspace this computer has a copy of, with the one this project uses marked. The last field is the hub this computer syncs it with, or <code>local</code>. It reads the local copies only and works offline. With no binding in reach it still lists them and notes <em>No workspace selected (no .uberblick.json found)</em>. <code>--json</code> for scripts.</p>
   </section>
 
-  <section class="q" id="fork"><h2>fork and promote</h2>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace fork
-ub workspace promote https://hub.example.com">Copy</button></div><pre><span class="p">$</span> ub workspace fork
-<span class="p">$</span> ub workspace promote https://hub.example.com</pre></section>
-  <p><code>fork</code> copies this project's workspace into an independent local one with a new id and the same documents, and selects the copy; the source is untouched. <code>promote</code> uploads a local-only workspace to a hub, verifies the upload with a fresh client and only then binds the project to the hub copy. It needs a prior <code>ub auth login</code> to that hub, and the account must be a hub admin; rerun it after an interruption and it resumes. A workspace already on a hub cannot be promoted.</p>
+  <section class="q" id="use"><h2>use</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace use 9b71d0c4">Copy</button></div><pre><span class="p">$</span> ub workspace use 9b71d0c4
+<span class="o">using      Research notes (9b71d0c4-2e5f-4a8b-b3c6-1d2e3f4a5b6c, local)
+wrote      ~/Projects/notes/.uberblick.json
+previous   Acme product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f, https://hub.example.com)
+switch back with: ub workspace use 3f0c2a1e</span></pre></section>
+  <p>Selects this project's workspace and writes the binding. An id, or a unique prefix of one, selects a copy this computer already has. A hub link, <code>https://hub.example.com/&lt;workspace-id&gt;</code>, fetches the workspace from that hub first; it needs a prior <a href="/docs/cli/auth">ub auth login</a> and says so instead of starting one. A document address from the browser is not a workspace link. Two workspaces are never merged, and the browser's workspace switcher changes only the view; this binding decides where agents write.</p>
+  </section>
+
+  <section class="q" id="fork"><h2>fork</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace fork">Copy</button></div><pre><span class="p">$</span> ub workspace fork
+<span class="o">forked     Acme product (c81e2f4a-5d6b-4e7f-8a9b-0c1d2e3f4a5b, local)
+wrote      ~/Projects/notes/.uberblick.json
+previous   Acme product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f, https://hub.example.com)
+switch back with: ub workspace use 3f0c2a1e</span></pre></section>
+  <p>Copies the selected workspace into an independent local one with a new id and the same name and documents, local changes and archived documents included, and selects the copy. The source is untouched and no sign-in is needed. Rename the fork in the editor's workspace settings; publish it with <code>promote</code>.</p>
+  </section>
+
+  <section class="q" id="promote"><h2>promote</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth login https://hub.example.com
+ub workspace promote https://hub.example.com">Copy</button></div><pre><span class="p">$</span> ub auth login https://hub.example.com
+<span class="p">$</span> ub workspace promote https://hub.example.com
+<span class="o">uploading  My Workspace (b3eea2f9-a8dc-40f2-a3d9-b27742620b1f) to https://hub.example.com
+verified   42 documents, including archived ones
+promoted   My Workspace (b3eea2f9-a8dc-40f2-a3d9-b27742620b1f, https://hub.example.com)
+wrote      ~/Projects/notes/.uberblick.json
+share link: https://hub.example.com/b3eea2f9-a8dc-40f2-a3d9-b27742620b1f
+commit .uberblick.json so teammates only need ub auth login</span></pre></section>
+  <p>Uploads the local workspace to a hub as it is: same id, same history, archived documents included. The upload is verified before the project is switched to the hub copy. It needs a sign-in and the account must be a hub admin; the uploader becomes the workspace's admin. Without a sign-in nothing is uploaded and the workspace stays local. Interrupted? Run it again and it resumes. Promote is not a switch, so there is no switch-back line; it prints the share link to pass on.</p>
   </section>
 
   <section class="q" id="member"><h2>member</h2>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace member add dana --role member
-ub workspace member list">Copy</button></div><pre><span class="p">$</span> ub workspace member add dana --role member
+<section class="block code"><div class="cap"><span>help</span></div><pre>$ ub workspace member
+usage: ub workspace member &lt;command&gt;
+
+commands:
+  add &lt;github-handle&gt; [--role admin|member] [--yes]  # Confirm the GitHub account, then grant access
+  list [--json]                              # Members, their account IDs and roles
+  role &lt;member&gt; &lt;admin|member&gt;               # Change a member&#x27;s role
+  remove &lt;member&gt;                            # End a member&#x27;s access on every device</pre></section><section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace member add dana
+ub workspace member list">Copy</button></div><pre><span class="p">$</span> ub workspace member add dana
+<span class="o">Grant access on https://hub.example.com to workspace 3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f for &quot;dana&quot; (GitHub account 480938) as member? [y/N] y
+added &quot;dana&quot; (GitHub account 480938) as member
+Access is discovered on sign-in or credential renewal; select the workspace explicitly with `ub workspace use https://hub.example.com/3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f`.</span>
 <span class="p">$</span> ub workspace member list
-<span class="o">grant dana (account 8213…) member of Acme product on hub.example.com? [y/N] y
-ben    1024…  admin
-dana   8213…  member</span></pre></section>
-  <p>Access to a shared workspace, as a workspace admin. Members are GitHub accounts; there are no Uberblick accounts. <code>add</code> resolves a GitHub login at the hub and asks for confirmation, <code>--yes</code> confirms without a terminal. <code>role</code> switches between <code>member</code> and <code>admin</code>; <code>remove</code> ends access on every device. The last admin cannot be demoted or removed.</p>
-  <p>Two roles in a workspace: a <strong>member</strong> reads and writes every document, from the browser and over MCP; an <strong>admin</strong> also manages members and the workspace settings. Reading and writing are not separate rights. A third role lives on the hub: the <strong>hub admin</strong> sees every workspace on it, suspends and restores them, and is the only one who can promote a new workspace onto it. The first account to sign in on a fresh hub claims that role; the operator appoints more with <code>ub-hub hub-admin add</code>, see <a href="/docs/hub">Run a hub</a>.</p>
+<span class="o">hub https://hub.example.com; workspace 3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f
+
+&quot;octocat&quot; (GitHub account 371)   | Octo Cat   | admin
+&quot;dana&quot; (GitHub account 480938)   | Dana Lee   | member</span></pre></section>
+  <p>Access to a shared workspace, managed by a workspace admin with an existing sign-in. Members are GitHub accounts; there are no Uberblick accounts, and belonging to a GitHub organisation or repository grants nothing. <code>add</code> looks the handle up on GitHub and asks before granting; <code>--yes</code> confirms in scripts. The grant is immediate, needs no acceptance, and is bound to the permanent account id, so a renamed handle keeps its access. <code>remove</code> ends access on every device without signing anyone out; documents already on their disk stay there. The last admin cannot be demoted or removed. A local workspace has no members: <code>member list</code> says so and exits 1.</p>
+  <p>Two roles in a workspace. A <strong>member</strong> reads and writes every document, in the browser and over MCP; reading and writing are not separate rights. A <strong>workspace admin</strong> also manages members and the workspace settings. A third role lives on the hub: the <strong>hub admin</strong> sees every workspace on it, suspends and restores them, and is the only one who can promote a new workspace onto it. It grants no document access by itself. The first account to sign in on a fresh hub holds it; the operator appoints more with <code>ub-hub hub-admin add</code>, see <a href="/docs/hub">Run a hub</a>.</p>
   </section>
 
   <section class="q" id="remove"><h2>remove</h2>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace remove 8b2d --yes">Copy</button></div><pre><span class="p">$</span> ub workspace remove 8b2d --yes</pre></section>
-  <p>Deletes this computer's copy of one workspace and nothing else: bindings, logins and other workspaces stay. A workspace on a hub can be fetched again with <code>use</code>; local changes the hub has not acknowledged are lost. For a local-only workspace this may be the only copy. Switch away first and stop any <code>ub open</code> serving it.</p>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace remove 9b71d0c4">Copy</button></div><pre><span class="p">$</span> ub workspace remove 9b71d0c4
+<span class="o">Delete this computer&#x27;s copy of workspace 9b71d0c4-2e5f-4a8b-b3c6-1d2e3f4a5b6c? This is the only copy of this local-only workspace. [y/N] y
+removed 9b71d0c4-2e5f-4a8b-b3c6-1d2e3f4a5b6c from this computer</span></pre></section>
+  <p>Deletes this computer's copy of one workspace and nothing else: hubs, bindings and logins stay. A workspace on a hub can be fetched again with <code>use</code> and its link, which the prompt repeats; changes the hub has not acknowledged are lost, and the prompt warns about them. For a local-only workspace this is the only copy. The selected workspace and one that <code>ub open</code> is serving cannot be removed; <code>--yes</code> skips the question and is required without a terminal. Agents with the workspace open refuse writes until restarted.</p>
   </section>
 
   <section class="q" id="scenarios"><h2>Scenarios</h2>
-  <dl class="scen"><dt>Start alone, share later</dt><dd><code>create</code> today, work locally, then <code>promote</code> to a hub when a second person arrives. The id and the history stay the same.</dd><dt>Two projects, one workspace</dt><dd>Run <code>use</code> in each project directory with the same id. Both bindings point at the one local copy.</dd><dt>Try something without touching the shared workspace</dt><dd><code>fork</code>, experiment, and either <code>promote</code> the fork or <code>remove</code> it.</dd><dt>Someone leaves</dt><dd><code>member remove</code> ends their access on every device. Documents already on their disk stay there; revocation cannot reach into a computer.</dd></dl>
+  <dl class="scen"><dt>Start alone, share later</dt><dd><code>create</code> today, work locally, <code>promote</code> when a second person arrives. Then commit <code>.uberblick.json</code>.</dd><dt>Join a workspace a colleague shared</dt><dd>With the committed binding: clone, <code>ub auth login</code>, which reads the hub from the file, and <code>ub status</code>. Without it: <code>ub auth login &lt;hub&gt;</code>, then <code>ub workspace use</code> with the link they sent.</dd><dt>Give a colleague access</dt><dd><code>ub workspace member add dana --yes</code>; they sign in and select the link. Access is discovered on sign-in, so an account that was already signed in sees the workspace at its next credential renewal or login.</dd><dt>Check which workspace an agent will write to</dt><dd><code>ub status</code> in the project directory. The browser switcher does not change it.</dd><dt>Try something without touching the shared workspace</dt><dd><code>fork</code>, experiment, then <code>promote</code> the fork under a new name or <code>remove</code> it.</dd><dt>Someone leaves</dt><dd><code>member remove</code> ends their access on every device. Their local copy stays on their disk; revocation cannot reach into a computer.</dd></dl>
   </section>
   <p class="next">Next: <a href="/docs/cli/mcp">ub mcp</a>.</p>
 </article>

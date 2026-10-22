@@ -6,42 +6,65 @@
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
   <h1><code>ub auth</code></h1>
-  <p class="lede">A local workspace needs no login. Sharing one does: <code>ub auth</code> signs this computer in to a hub with GitHub's device flow and stores a credential for this computer only. Nothing is copied into an MCP entry, and no command ever starts a sign-in on its own.</p>
+  <p class="lede"><code>ub auth</code> signs this computer in to a hub so it can sync shared workspaces. A local workspace needs no sign-in. No command ever starts a login on its own: one that needs it stops and names <code>ub auth login</code>.</p>
 </div>
 <article class="col">
 
   <section class="q" id="usage"><h2>Usage</h2>
-<section class="block code"><div class="cap"><span>help</span></div><pre>usage: ub auth [command]
+<section class="block code"><div class="cap"><span>help</span></div><pre>$ ub auth
+usage: ub auth [command]
 
 commands:
-  login [hub]            sign in to a hub with GitHub
-  status [hub] [--json]  check the stored login and current hub administration
-  logout [hub]           sign this computer out; --all-devices signs out all of yours</pre></section>
+  login [hub]            # Sign in to a hub with GitHub
+  status [hub] [--json]  # Check the stored login and current hub administration
+  logout [hub]           # Sign this computer out of a hub; --all-devices signs out all of yours</pre></section>
+  <p>A bare <code>ub auth</code> prints this help and does nothing. Each subcommand takes a hub address; without one it uses the hub of this project's binding. A hub on another computer must be <code>https://</code> or <code>wss://</code>; a cleartext address is refused before anything is sent, with the secure form named.</p>
   </section>
 
   <section class="q" id="login"><h2>login</h2>
 <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth login https://hub.example.com">Copy</button></div><pre><span class="p">$</span> ub auth login https://hub.example.com
-<span class="o">Open https://github.com/login/device and enter the code ABCD-1234
-… signed in as ben; this computer holds a device credential for hub.example.com</span></pre></section>
-  <p>Open the address, enter the code, done. The command completes on its own and never asks for keyboard input; in a local terminal the approval page opens by itself, over SSH only the address and code are printed. The hub learns your GitHub login and nothing else. The credential belongs to this computer, expires after 30 days and renews itself while in use. Without a hub argument the project's bound hub is used. Signing in grants no workspace access by itself; a workspace admin does that with <a href="/docs/cli/workspace#member">ub workspace member</a>. On a fresh hub the first login claims it and makes that account the hub admin.</p>
+<span class="o">hub        https://hub.example.com
+open       https://github.com/login/device
+code       WDJB-MJHT
+waiting for approval…
+signed in  octocat on https://hub.example.com
+available workspaces:
+  3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f | Acme product
+  4f0b9c2e-7a1d-4e6b-9c35-8d2e1f6a0b47 | Design reviews</span></pre></section>
+  <p>Open the address, enter the code, approve. The terminal finishes on its own; GitHub names the Uberblick app, not the hub. The hub learns your GitHub login and nothing else. Login does not change the project binding and does not download every workspace: the next step is usually <a href="/docs/cli/workspace#use">ub workspace use</a> with a link, unless the repository already carries a <code>.uberblick.json</code>, in which case nothing more is needed.</p>
+  <p>The credential belongs to this computer. It lasts 30 days and renews itself after 15 while anything syncs, without another GitHub approval. Signing in grants no workspace access by itself; a workspace admin does that with <a href="/docs/cli/workspace#member">ub workspace member</a>. On a fresh, unclaimed hub the first login claims it: that account becomes hub admin and admin of the default workspace, and login warns before the approval so you do it before anyone else can.</p>
   </section>
 
   <section class="q" id="status"><h2>status</h2>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth status">Copy</button></div><pre><span class="p">$</span> ub auth status
-<span class="o">hub.example.com accepts this computer&#x27;s login as ben
-hub admin: yes</span></pre></section>
-  <p>One read-only request: does the hub still accept the stored login, and is this account a hub admin. Exit 1 means the hub could not answer, not that you are not an admin. <code>--json</code> prints one object for scripts.</p>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth status https://hub.example.com">Copy</button></div><pre><span class="p">$</span> ub auth status https://hub.example.com
+<span class="o">hub        https://hub.example.com
+stored account  octocat (github)
+stored available workspaces:
+  3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f | Acme product
+hub&#x27;s current answer:
+login (hub)  accepted
+hub admin (hub)  no</span></pre></section>
+  <p>The stored login and the workspaces it knew at the last sign-in, then one read-only question to the hub: is this login still accepted, and is the account a hub admin. It never renews or writes anything. Exit 0 for a confirmed answer either way, including a local binding with no hub; exit 1 when the hub could not confirm, which is not the same as not being an admin. <code>--json</code> prints the same report as one object.</p>  <div class="tablewrap"><table>
+    <thead><tr><th>Outcome</th><th>Exit</th><th>Next step</th></tr></thead>
+    <tbody>
+      <tr><td><code>hub-admin</code>, <code>not-hub-admin</code></td><td>0</td><td>None</td></tr>
+      <tr><td><code>no-hub</code></td><td>0</td><td>Local work needs no login; name a hub to check one</td></tr>
+      <tr><td><code>not-signed-in</code>, <code>login-refused</code></td><td>1</td><td><code>ub auth login &lt;hub&gt;</code></td></tr>
+      <tr><td><code>update-required</code></td><td>1</td><td>Update the side the message names</td></tr>
+      <tr><td><code>hub-unreachable</code>, <code>hub-error</code></td><td>1</td><td>Check the network, or ask whoever runs the hub</td></tr>
+    </tbody>
+  </table></div>
   </section>
 
   <section class="q" id="logout"><h2>logout</h2>
 <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth logout
 ub auth logout --all-devices https://hub.example.com">Copy</button></div><pre><span class="p">$</span> ub auth logout
 <span class="p">$</span> ub auth logout --all-devices https://hub.example.com</pre></section>
-  <p>Revokes this computer on the hub and removes its login here. With <code>--all-devices</code> every device of your account on that hub is revoked, this one last; that is how a lost laptop is handled from any computer still signed in. Workspace memberships, the project binding and the local workspace copies stay.</p>
+  <p>Revokes this computer on the hub and removes its login here. Sync with that hub stops; workspace copies, memberships and the project binding stay. With <code>--all-devices</code> every device of your GitHub account on that hub is revoked, this one last. If the hub cannot be reached, nothing is revoked and the login is kept, exit 1; a revocation the hub could not confirm still removes the login and says the computer is not yet revoked, to be finished from another signed-in computer.</p>
   </section>
 
   <section class="q" id="scenarios"><h2>Scenarios</h2>
-  <dl class="scen"><dt>A teammate joins a shared workspace</dt><dd>They install <code>ub</code>, run <code>ub auth login</code> with the hub, and an admin grants them access. Then <code>ub workspace use</code> with the link fetches the workspace.</dd><dt>An agent host or an Actions runner</dt><dd>It signs in once like any other computer and holds its own credential, which can be revoked on its own. An agent uses the login of the computer it runs on.</dd><dt>A hub says the login is not accepted</dt><dd><code>ub auth status</code> says why. A credential older than 30 days that the hub refuses is removed; sign in again.</dd><dt>A laptop is lost</dt><dd>From any computer that is still signed in: <code>ub auth logout --all-devices</code>, then sign the remaining computers in again.</dd></dl>
+  <dl class="scen"><dt>Signed in, but the workspace is missing</dt><dd>Your account may have no grant yet, or the hub has suspended the workspace. Ask a workspace admin to add your GitHub account, or a hub admin to restore it. Sync picks up new access without another login.</dd><dt>Claim a fresh hub</dt><dd>Sign in before anyone else can. After the claim, login offers the complete <code>ub workspace use</code> command for the default workspace; running it writes the binding. Login never binds on its own.</dd><dt>Retire a lost or passed-on computer</dt><dd>If you still have it, log out there. Otherwise <code>ub auth logout --all-devices &lt;hub&gt;</code> from any computer with a valid login, then sign back in on the ones you keep.</dd><dt>A computer was away for more than 30 days</dt><dd>Its credential expired with no grace period. <code>ub open</code> and agents keep working on the local copy; <code>ub auth login</code> again and the pending changes reach the hub.</dd><dt>An agent host or an Actions runner</dt><dd>It signs in once like any other computer and holds its own credential, which can be revoked on its own. An agent can also use its own GitHub account; the grant rules are the same.</dd></dl>
   </section>
   <p class="next">Next: <a href="/docs/cli/workspace">ub workspace</a>.</p>
 </article>

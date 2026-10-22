@@ -1,60 +1,97 @@
 <head>
 <title>Project binding · Uberblick docs</title>
-<meta name="description" content="Where the workspace selection comes from, which environment variables override it, and which files live where on macOS and Linux.">
+<meta name="description" content="How .uberblick.json binds a project to a workspace: what the file holds, how it is found, which commands write it, committing it, the UB_WORKSPACE_ID and UB_HUB_URL overrides, and how MCP entries follow it.">
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <div class="hero sub">
-  <p class="crumb"><a href="/">Uberblick</a> / Docs / CLI reference</p>
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
   <h1>Project binding</h1>
-  <p class="lede">There is no settings file to edit. Selection comes from the project, credentials from one private file, and two environment variables cover the cases where a process needs a different workspace than the directory it runs in.</p>
+  <p class="lede">A project picks its workspace with a <code>.uberblick.json</code> file. Every <code>ub</code> command that needs a workspace, and every agent started in the project, uses it. There is no current workspace on the machine, only the one a directory points at.</p>
 </div>
 <article class="col">
 
-  <section class="q" id="selection"><h2>Where selection comes from</h2>
-  <ol class="steps">
-    <li><b><code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code> in the environment.</b> When set, they win for that process. <code>UB_WORKSPACE_ID</code> is required; <code>UB_HUB_URL</code> is a hub address, or <code>local</code> for a workspace with no hub, and is needed until this machine has a record of the workspace.</li>
-    <li><b>The nearest <code>.uberblick.json</code></b> above the current directory. Written by <code>ub workspace create</code> and <code>ub workspace use</code>; commit it.</li>
-    <li><b>Nothing.</b> Commands that need a workspace say so and name the two ways to get one.</li>
-  </ol>
-  <p>An environment binding still in force after you change the project file is reported, so a stale shell export does not surprise you. The legacy <code>WORKSPACE_ID</code> and <code>HUB_URL</code> are refused with a message.</p>
+  <section class="q" id="file"><h2>What the file holds</h2>
+  <section class="block code"><div class="cap"><span>.uberblick.json · on a hub</span></div><pre>{
+  "workspaceId": "uberblick-3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f",
+  "hubUrl": "wss://hub.example.com/ws"
+}</pre></section>
+  <section class="block code"><div class="cap"><span>.uberblick.json · local</span></div><pre>{
+  "workspaceId": "uberblick-9b71d0c4-2e5f-4a8b-b3c6-1d2e3f4a5b6c",
+  "hubUrl": null
+}</pre></section>
+  <p>Two fields: <code>workspaceId</code>, and <code>hubUrl</code>, which is <code>null</code> for a local workspace. <code>ub</code> searches from the current directory up for the nearest file owned by you; one owned by another user is skipped and the search continues in the parent. Without a usable binding a command says so and stops. A binding selects a workspace; it cannot move this computer's copy to another hub. When a binding names a hub other than the one this computer recorded for the workspace, commands refuse and <code>ub status</code> reports the mismatch and the command that restores the selection.</p>
   </section>
 
-  <section class="q" id="agents"><h2>Several workspaces for one agent</h2>
-  <p>An MCP client can register the server more than once under different names, each entry with its own <code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code> in its environment. <code>ub mcp install --print</code> gives the entry to adapt. Each server process then serves one workspace, and the agent sees two servers with the same tools.</p>
-  <section class="block code"><div class="cap"><span>.mcp.json · two workspaces</span></div><pre>{
+  <section class="q" id="writes"><h2>Commands that write it</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Command</th><th>Writes</th></tr></thead>
+    <tbody>
+      <tr><td><code>ub workspace create</code></td><td>A new file in the current directory</td></tr>
+      <tr><td><code>ub workspace use</code></td><td>The nearest existing file you own, or a new one in the current directory</td></tr>
+      <tr><td><code>ub workspace fork</code></td><td>The completed local copy, in the nearest file you own or a new one here</td></tr>
+      <tr><td><code>ub workspace promote</code></td><td>The hub, in the nearest file you own; the workspace stays the same</td></tr>
+    </tbody>
+  </table></div>
+  <p>Each prints the path it wrote. The ones that switch the workspace also print the previous one and the command that switches back; <a href="/docs/cli/workspace">ub workspace</a> has the outputs.</p>
+  </section>
+
+  <section class="q" id="commit"><h2>Committing it</h2>
+  <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="git add .uberblick.json &amp;&amp; git commit -m &quot;Use the shared Uberblick workspace&quot;">Copy</button></div><pre><span class="p">$</span> git add .uberblick.json &amp;&amp; git commit -m "Use the shared Uberblick workspace"
+<span class="o"># a teammate</span>
+<span class="p">$</span> git clone https://github.com/acme/notes &amp;&amp; cd notes
+<span class="p">$</span> ub auth login
+<span class="p">$</span> ub open</pre></section>
+  <p>Commit the file after promoting. Teammates who clone the project then only need <code>ub auth login</code>, which reads the hub from the file, and every agent that runs in the checkout lands in the same workspace. The file holds no secrets. Do not commit a file that binds to a local-only workspace; nobody else can reach it.</p>
+  </section>
+
+  <section class="q" id="env"><h2>Environment overrides</h2>
+  <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="UB_WORKSPACE_ID=9b71d0c4-2e5f-4a8b-b3c6-1d2e3f4a5b6c ub status">Copy</button></div><pre><span class="p">$</span> UB_WORKSPACE_ID=9b71d0c4-2e5f-4a8b-b3c6-1d2e3f4a5b6c ub status
+<span class="p">$</span> UB_WORKSPACE_ID=3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f \
+  UB_HUB_URL=wss://hub.example.com/ws ub status   # first time on this machine</pre></section>
+  <ul>
+    <li><code>UB_WORKSPACE_ID</code> overrides the file for one shell session or one MCP entry. Alone, it uses that workspace with the hub this computer already knows for it, or local. The <code>uberblick-</code> prefix is optional.</li>
+    <li>Add <code>UB_HUB_URL</code>, a hub address or <code>local</code>, only for a workspace this computer does not have yet; without it the command stops and says so. It cannot replace this computer's record of a workspace's hub.</li>
+    <li><code>UB_HUB_URL</code> alone, or empty, is an error.</li>
+  </ul>
+  <p>A hub on another computer must be <code>wss://</code> or <code>https://</code>. Loopback addresses may use <code>ws://</code> or <code>http://</code>; a LAN address, a Docker alias or a Tailscale name does not count as loopback. A cleartext refusal sends no traffic and names the secure address. For a test hub on a cleartext port, <code>UB_INSECURE_HUBS</code> in the process environment lists exact <code>host:port</code> entries to allow; nothing stored on disk can supply that opt-in.</p>
+  </section>
+
+  <section class="q" id="agents"><h2>Agents and MCP entries</h2>
+  <section class="block code"><div class="cap"><span>.mcp.json</span></div><pre>{
+  "mcpServers": {
+    "uberblick": { "command": "ub", "args": ["mcp", "serve"] }
+  }
+}</pre></section>
+  <p><a href="/docs/cli/mcp">ub mcp install</a> registers a plain <code>ub mcp serve</code> with no workspace pinned, so every agent started in the project follows the file, and a <code>use</code> or <code>promote</code> moves all of them at once. A pin in the entry would silently keep agents on the old workspace after the file changes.</p>
+  <section class="block code"><div class="cap"><span>.mcp.json · one entry pinned to another workspace</span></div><pre>{
   "mcpServers": {
     "uberblick": { "command": "ub", "args": ["mcp", "serve"] },
     "uberblick-design": {
-      "command": "ub", "args": ["mcp", "serve"],
-      "env": { "UB_WORKSPACE_ID": "9b71…", "UB_HUB_URL": "https://hub.example.com" }
+      "command": "ub",
+      "args": ["mcp", "serve"],
+      "env": {
+        "UB_WORKSPACE_ID": "uberblick-4f0b9c2e-7a1d-4e6b-9c35-8d2e1f6a0b47",
+        "UB_HUB_URL": "wss://hub.example.com/ws"
+      }
     }
   }
 }</pre></section>
+  <p>If one entry really needs another workspace, set <code>UB_WORKSPACE_ID</code> in that entry's <code>env</code>; it overrides the file for that entry only. Above, <code>uberblick</code> follows <code>.uberblick.json</code> while <code>uberblick-design</code> always serves the design workspace on the hub. <code>UB_HUB_URL</code> is only needed until this computer has that workspace. The agent then sees two servers with the same tools.</p>
   </section>
 
-  <section class="q" id="files"><h2>Files and where they live</h2>
+  <section class="q" id="browser"><h2>Browser and agents</h2>
+  <p>The workspace switcher in the browser is for viewing. <code>.uberblick.json</code> decides where agents write; <a href="/docs/cli/status">ub status</a> shows which workspace that is.</p>
+  </section>
+
+  <section class="q" id="files"><h2>Files on this computer</h2>
   <div class="tablewrap"><table>
     <thead><tr><th>What</th><th>Where</th></tr></thead>
     <tbody>
       <tr><td>Project binding</td><td><code>.uberblick.json</code> in the project, found by walking up from the current directory</td></tr>
-      <tr><td>Workspace databases</td><td><code>~/.local/share/uberblick/&lt;workspace-id&gt;.sqlite</code>, one per workspace, shared by every checkout on the machine</td></tr>
-      <tr><td>Login and device credential</td><td><code>~/.config/uberblick/credentials.json</code>, private to the user, never copied into an MCP entry</td></tr>
-      <tr><td>Client config</td><td><code>~/.config/uberblick/config.json</code></td></tr>
+      <tr><td>Workspace copies</td><td><code>~/.local/share/uberblick/&lt;workspace-id&gt;.sqlite</code>, one per workspace, shared by every checkout on the computer</td></tr>
+      <tr><td>Logins and the local signing secret</td><td><code>~/.config/uberblick/credentials.json</code>, readable only by you, never copied into an MCP entry</td></tr>
     </tbody>
   </table></div>
-  <p><code>XDG_CONFIG_HOME</code> and <code>XDG_DATA_HOME</code> move the two directories on every platform; relative or empty values are ignored. macOS uses the same dot directories, not Application Support, so a backup script works unchanged on both.</p>
-  </section>
-
-  <section class="q" id="env"><h2>Environment variables</h2>
-  <div class="tablewrap"><table>
-    <thead><tr><th>Variable</th><th>Effect</th></tr></thead>
-    <tbody>
-      <tr><td><code>UB_WORKSPACE_ID</code></td><td>Select this workspace for the process, overriding the project file</td></tr>
-      <tr><td><code>UB_HUB_URL</code></td><td>The hub for that workspace, or <code>local</code>; only with <code>UB_WORKSPACE_ID</code></td></tr>
-      <tr><td><code>BROWSER</code></td><td>The command <code>ub open</code> and <code>ub auth login</code> use to open a page; <code>none</code> prints the address instead</td></tr>
-      <tr><td><code>XDG_CONFIG_HOME</code>, <code>XDG_DATA_HOME</code></td><td>Move the config and data directories</td></tr>
-    </tbody>
-  </table></div>
-  <p>Hub-side settings, such as the host name and the Tailscale route, live in the hub's <code>.env</code> and are on <a href="/docs/hub">Run a hub</a>.</p>
+  <p><code>XDG_CONFIG_HOME</code> and <code>XDG_DATA_HOME</code> move the two directories; macOS uses the same dot directories, so a backup script works unchanged on both. Hub-side settings live in the hub's <code>.env</code>, see <a href="/docs/hub">Run a hub</a>.</p>
   </section>
 </article>

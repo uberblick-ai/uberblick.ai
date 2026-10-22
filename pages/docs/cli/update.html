@@ -6,17 +6,39 @@
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
   <h1><code>ub update</code></h1>
-  <p class="lede">One command keeps the client current. It updates the copy of <code>ub</code> that is on your path, wherever you run it, and leaves a source checkout alone.</p>
+  <p class="lede"><code>ub update</code> updates a Homebrew installation. Which copy that is comes from where <code>ub</code> itself lives, never from the directory you are in. A source checkout is left alone.</p>
 </div>
 <article class="col">
 
   <section class="q" id="usage"><h2>Usage</h2>
-<section class="block code"><div class="cap"><span>help</span></div><pre>usage: ub update</pre></section>
+<section class="block code"><div class="cap"><span>help</span></div><pre>$ ub update --help
+usage: ub update
+
+Update a Homebrew installation: `brew update`, then
+`brew upgrade uberblick-ai/tap/uberblick`. Which copy that is comes from where
+`ub`&#x27;s own files live, never from the current directory.
+
+A source checkout is not updated. Run `git pull`, then `mise run setup`
+to update it instead. `ub update` leaves the checkout unchanged.
+
+options:
+  -h, --help        show this help</pre></section>
   </section>
 
   <section class="q" id="run"><h2>Run it</h2>
 <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub update">Copy</button></div><pre><span class="p">$</span> ub update
-<span class="o">brew update … brew upgrade uberblick-ai/tap/uberblick … 0.4.8</span></pre></section>
-  <p>Runs Homebrew's own update and upgrade. A source checkout is not touched; update that with <code>git pull</code> and <code>mise run setup</code>. Client and hub share a protocol version: when a release changes it, <code>ub status</code> says <em>update required</em> on the side that is behind and the <a href="/changelog">changelog</a> says what to do. Restart running MCP servers and <code>ub open</code> afterwards; they keep the version they started with.</p>
+<span class="o">copy       Homebrew (/opt/homebrew)
+updated    0.4.7 → 0.4.8
+restart ub open and running agents to use it</span></pre></section>
+  <p>Homebrew's own output goes to stderr; stdout carries only the result. When nothing is newer it prints <code>current  0.4.8, nothing to update</code>. Client and hub share a sync protocol: when a release changes it, <a href="/docs/cli/status">ub status</a> reads <em>update required</em> on the side that is behind and the <a href="/changelog">changelog</a> says what to do. Running MCP servers and <code>ub open</code> keep the version they started with; restart them.</p>
+  </section>
+
+  <section class="q" id="exit"><h2>Exit codes</h2>
+
+  <p>0 when the Homebrew copy is updated or already current. 1 for a source checkout, a copy <code>ub</code> does not know, or a failed Homebrew step. 2 for a usage error.</p>
+  </section>
+
+  <section class="q" id="scenarios"><h2>Scenarios</h2>
+  <dl class="scen"><dt>The hub needs a newer version</dt><dd>A hub that speaks a newer sync protocol refuses older clients. <code>ub status</code> shows <code>connection  refused: the hub needs a newer Uberblick</code>; work stays on this computer until <code>ub update</code>.</dd><dt>Running from a checkout</dt><dd><code>ub update: this `ub` runs from a source checkout. Run `git pull`, then `mise run setup` to update it. Nothing has changed.</code>, exit 1. Then <code>mise run build-web</code> before <code>ub open</code>.</dd><dt>A copy ub does not know</dt><dd>Installed from npm, or copied by hand: <code>ub update</code> refuses with exit 1 and leaves it unchanged. Update it the way it was installed.</dd></dl>
   </section>
 </article>

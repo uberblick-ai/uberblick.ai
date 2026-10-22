@@ -12,13 +12,19 @@
 
   <section class="q" id="start"><h2>Start one</h2>
   <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="mkdir -p ~/uberblick-remote &amp;&amp; cd ~/uberblick-remote
-docker cp $(docker create --platform linux/amd64 ghcr.io/uberblick-ai/hub:0.4.7):/release/. .
-cp remote.env.example .env
-sh bin/remote-compose.sh up --detach">Copy</button></div><pre><span class="p">$</span> mkdir -p ~/uberblick-remote &amp;&amp; cd ~/uberblick-remote
-<span class="p">$</span> docker cp $(docker create --platform linux/amd64 ghcr.io/uberblick-ai/hub:0.4.7):/release/. .
-<span class="p">$</span> cp remote.env.example .env
-<span class="p">$</span> sh bin/remote-compose.sh up --detach</pre></section>
-  <p>This copies the release's Compose files out of the hub image and starts the hub at <code>http://localhost:8080</code>, on this computer only. Documents and the claim live in named Docker volumes, so they survive restarts and updates; only <code>down --volumes</code> deletes them. It needs Docker Engine 28 or newer on Linux x86_64, or Docker Desktop on macOS.</p>
+for f in compose.yml remote.env.example remote.https.yml remote.tailscale.yml; do
+  curl -fL -o $f https://github.com/uberblick-ai/uberblick-2/releases/download/hub-v0.4.8/$f
+done
+cp remote.env.example .env &amp;&amp; chmod 600 .env
+docker compose config --quiet &amp;&amp; docker compose up -d
+docker compose exec hub ub-hub status">Copy</button></div><pre><span class="p">$</span> mkdir -p ~/uberblick-remote &amp;&amp; cd ~/uberblick-remote
+<span class="p">$</span> for f in compose.yml remote.env.example remote.https.yml remote.tailscale.yml; do
+    curl -fL -o $f https://github.com/uberblick-ai/uberblick-2/releases/download/hub-v0.4.8/$f
+  done
+<span class="p">$</span> cp remote.env.example .env &amp;&amp; chmod 600 .env
+<span class="p">$</span> docker compose config --quiet &amp;&amp; docker compose up -d
+<span class="p">$</span> docker compose exec hub ub-hub status</pre></section>
+  <p>Four files from one hub release, a private <code>.env</code> with <code>HUB_VERSION</code> set to that release, and plain Docker Compose. The hub listens on <code>http://localhost:8080</code> of this computer and nowhere else. Documents and the claim live in named Docker volumes, so <code>docker compose down</code> and <code>up -d</code> keep them; only <code>--volumes</code> deletes them. It needs Docker Engine 28 or newer and Compose 2.24 or newer on Linux x86_64, or Docker Desktop on macOS. The host needs no <code>ub</code> and no Node.</p>
   </section>
 
   <section class="q" id="claim"><h2>Claim it</h2>
@@ -26,21 +32,24 @@ sh bin/remote-compose.sh up --detach">Copy</button></div><pre><span class="p">$<
   </section>
 
   <section class="q" id="reach"><h2>Let other computers reach it</h2>
-  <p>Set one route in <code>.env</code>, then run <code>sh bin/remote-compose.sh up --detach --force-recreate</code>.</p>
+  <p>Set one route in <code>.env</code>, then <code>docker compose up -d</code> again. The hub serves TLS itself on the host name you give it; clients refuse an unencrypted hub on another computer, so there is no insecure mode to forget to turn off.</p>
   <div class="tablewrap"><table>
     <thead><tr><th>Route</th><th>In <code>.env</code></th></tr></thead>
     <tbody>
-      <tr><td>Tailscale, recommended (Linux)</td><td><code>WEB_HOST=machine.tailnet.ts.net</code> and <code>TAILSCALE_IP</code> from <code>tailscale ip -4</code></td></tr>
-      <tr><td>A public host name</td><td><code>WEB_HOST=hub.example.com</code>, with port 443 open</td></tr>
+      <tr><td>This computer only</td><td><code>COMPOSE_FILE=compose.yml</code>, the default</td></tr>
+      <tr><td>A public host name</td><td><code>WEB_HOST=hub.example.com</code> with port 443 open, and <code>COMPOSE_FILE=compose.yml:remote.https.yml</code></td></tr>
+      <tr><td>Tailscale (Linux)</td><td><code>WEB_HOST=machine.tailnet.ts.net</code>, <code>TAILSCALE_IP</code> from <code>tailscale ip -4</code>, and <code>COMPOSE_FILE=compose.yml:remote.https.yml:remote.tailscale.yml</code></td></tr>
     </tbody>
   </table></div>
   </section>
 
   <section class="q" id="connect"><h2>Connect a computer</h2>
-  <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth login https://hub.example.com">Copy</button></div><pre><span class="p">$</span> ub auth login https://hub.example.com
-<span class="p">$</span> ub workspace use wss://hub.example.com/ws/&lt;WORKSPACE_ID&gt;
+  <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth login https://hub.example.com
+ub workspace use https://hub.example.com/&lt;workspace-id&gt;
+ub open">Copy</button></div><pre><span class="p">$</span> ub auth login https://hub.example.com
+<span class="p">$</span> ub workspace use https://hub.example.com/&lt;workspace-id&gt;
 <span class="p">$</span> ub open</pre></section>
-  <p>Add people with <code>ub workspace member add &lt;github-handle&gt;</code>. To share a workspace you already have, run <code>ub workspace promote https://hub.example.com</code> in its project.</p>
+  <p>Add people with <a href="/docs/cli/workspace#member">ub workspace member add</a>. To share a workspace you already have, run <code>ub workspace promote https://hub.example.com</code> in its project and commit the <code>.uberblick.json</code> it writes; teammates then only need <code>ub auth login</code>.</p>
   </section>
 
   <section class="q" id="kamal"><h2>With Kamal</h2>
@@ -49,6 +58,14 @@ sh bin/remote-compose.sh up --detach">Copy</button></div><pre><span class="p">$<
   </section>
 
   <section class="q" id="operate"><h2>Keep it running</h2>
-  <p><code>sh bin/remote-compose.sh exec hub ub-hub status</code> shows the release and whether the hub is claimed; <code>ub-hub doctor</code>, <code>backup</code> and <code>restore</code> do the rest. To update, back up, copy the newer release's files over the old ones the same way, and recreate. Everything else is in <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/REMOTE.md">REMOTE.md</a>.</p>
+  <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="docker compose exec hub ub-hub status
+docker compose exec hub ub-hub doctor
+docker compose exec hub ub-hub backup
+docker compose logs --tail=100 hub caddy">Copy</button></div><pre><span class="p">$</span> docker compose exec hub ub-hub status
+<span class="p">$</span> docker compose exec hub ub-hub doctor
+<span class="p">$</span> docker compose exec hub ub-hub backup
+<span class="p">$</span> docker compose logs --tail=100 hub caddy</pre></section>
+  <p><code>ub-hub status</code> shows the release, the database state and whether the hub is claimed; <code>doctor</code> checks hub, database, storage, GitHub and clock and names the fix for each warning. <code>backup</code> prints the path of a backup to copy off the host; to restore, stop the hub and run <code>docker compose run --rm hub ub-hub restore &lt;path&gt;</code>. Everything runs in the containers and never starts, stops or updates them.</p>
+  <p>To update, back up first, fetch the newer release's four files the same way, keep <code>.env</code> and set <code>HUB_VERSION</code>, then <code>docker compose config --quiet &amp;&amp; docker compose pull &amp;&amp; docker compose up -d</code>. A release that changes the sync protocol needs the hub and every client updated in the same sitting; restart agents and <code>ub open</code> and reload browser tabs. Rollback and recovery are in <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/REMOTE.md">REMOTE.md</a>.</p>
   </section>
 </article>

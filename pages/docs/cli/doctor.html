@@ -6,31 +6,56 @@
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
   <h1><code>ub doctor</code></h1>
-  <p class="lede">Eight checks on the project you run it in, each with the fix spelled out: the workspace binding, the local database, the stored login, the hub, the clock, and whether an MCP client is registered for this project. Checks that cannot run yet say why.</p>
+  <p class="lede"><code>ub doctor</code> checks whether Uberblick works in this project and, for each problem, names the command that fixes it. Run it when an agent or the web app says offline, or when something will not sync. It only looks; it never repairs, creates or changes anything.</p>
 </div>
 <article class="col">
 
   <section class="q" id="usage"><h2>Usage</h2>
-<section class="block code"><div class="cap"><span>help</span></div><pre>usage: ub doctor [--json]
+<section class="block code"><div class="cap"><span>help</span></div><pre>$ ub doctor --help
+usage: ub doctor [--json]
+
+Check this project&#x27;s Uberblick setup and name the fix for each problem.
 
 options:
-  --json            the same checks as JSON on stdout, for scripts</pre></section>
+  --json    # The same checks as JSON on stdout, for scripts</pre></section>
   </section>
 
-  <section class="q" id="run"><h2>Run it</h2>
+  <section class="q" id="run"><h2>Output</h2>
 <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub doctor">Copy</button></div><pre><span class="p">$</span> ub doctor
-<span class="o">✓ workspace   Acme product, from ./.uberblick.json
-✓ database    ~/.local/share/uberblick/&lt;workspace-id&gt;.sqlite
-✓ login       ben at hub.example.com
-✓ hub         reachable, protocol 7
-✓ clock       within 2 s of the hub
-! mcp         MCP client is not set up for this project
-              fix: ub mcp install claude</span></pre></section>
-  <p>Exit 0 when every check passes, 1 otherwise. <code>--json</code> prints the same checks as one object, which is what a setup script or an agent reads.</p>
+<span class="o">uberblick 0.4.8
+
+ok    workspace   Acme product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f), from ~/Projects/acme/.uberblick.json
+ok    login       octocat on https://hub.example.com
+ok    database    ~/.local/share/uberblick/3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f.sqlite
+ok    hub         connected to https://hub.example.com; octocat has access
+ok    clock       within 2s of the hub
+skip  local hub   no local hub is used; this workspace syncs through https://hub.example.com
+skip  web server  127.0.0.1:13379 is not running; ub open starts it
+ok    mcp         Claude Code (.mcp.json)
+
+0 failed, 0 warnings, 6 passed, 2 skipped</span></pre></section>
+  <p>Eight checks, each one line: <code>ok</code>, <code>warn</code>, <code>FAIL</code> or <code>skip</code>, its name and what it found. A warning or failure adds an indented line with what to do. Checks after a failed one still run, so one run shows every problem. A check that does not apply is skipped and says why: for a local workspace, login, hub and clock are skipped and the local hub is checked instead.</p>  <div class="tablewrap"><table>
+    <thead><tr><th>Check</th><th>What it answers</th></tr></thead>
+    <tbody>
+      <tr><td>workspace</td><td>Does this project use a workspace, and which one?</td></tr>
+      <tr><td>login</td><td>For a workspace on a hub: is this computer signed in to that hub?</td></tr>
+      <tr><td>database</td><td>Can this computer read and write its copy of the workspace?</td></tr>
+      <tr><td>hub</td><td>Does the hub answer, and does this login have access to the workspace?</td></tr>
+      <tr><td>clock</td><td>Is this computer's clock close enough to the hub's for sign-in to work?</td></tr>
+      <tr><td>local hub</td><td>For a local workspace: is its hub running on the port the browser and agents use (default 1234)?</td></tr>
+      <tr><td>web server</td><td>Is the web app from <code>ub open</code> running on 127.0.0.1:13379?</td></tr>
+      <tr><td>mcp</td><td>Is an agent's MCP client set up for this project?</td></tr>
+    </tbody>
+  </table></div>
+  </section>
+
+  <section class="q" id="exit"><h2>Exit codes</h2>
+
+  <p>1 when any check fails, 0 otherwise, warnings included, so it works as a gate in scripts. Two things are warnings, not failures: a hub that cannot be reached, because work continues on this computer and syncs once the hub is back; and a missing MCP setup, because Uberblick works without agents. <code>--json</code> prints one object with the eight checks in a fixed order, each with <code>name</code>, <code>status</code>, <code>reason</code> and <code>fix</code>.</p>
   </section>
 
   <section class="q" id="scenarios"><h2>Scenarios</h2>
-  <dl class="scen"><dt>A new computer</dt><dd>Run it after <code>ub workspace use</code>; it walks you through login and MCP registration one fix at a time.</dd><dt>The agent cannot write</dt><dd>A clock that is off against the hub or a refused login shows up here before you look anywhere else.</dd></dl>
+  <dl class="scen"><dt>An agent or the web app says offline</dt><dd>Offline can mean the hub is unreachable, the login is missing or refused, or the clock is off. They look the same in the web app; doctor tells them apart: <code>warn  hub  timed out after 1.5s connecting to 203.0.113.7:443</code> is a warning, a refused login or a clock out of step is a failure.</dd><dt>No workspace in this project</dt><dd><code>FAIL  workspace  no .uberblick.json here or in any parent directory → ub workspace create &lt;name&gt;, or ub workspace use &lt;link|id&gt;</code>.</dd><dt>Signed in, but no access to the workspace</dt><dd><code>FAIL  hub  octocat has no access to the workspace, or it doesn't exist on this hub → ask a workspace admin to run: ub workspace member add octocat</code>.</dd><dt>Clock out of step</dt><dd>Sign-in proofs live for 60 seconds, so a clock that is minutes off makes the hub refuse every request. <code>FAIL  clock  4 min ahead of the hub → turn on automatic time in your system settings</code>.</dd><dt>Agent not connected</dt><dd><code>warn  mcp  MCP client is not set up for this project → ub mcp install claude (or codex)</code>. Fix it, then restart the agent.</dd></dl>
   </section>
   <p class="next">Next: <a href="/docs/cli/data">ub data</a>.</p>
 </article>

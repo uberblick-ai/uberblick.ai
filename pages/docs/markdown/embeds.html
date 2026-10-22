@@ -1,16 +1,16 @@
 <head>
 <title>Embeds · Uberblick docs</title>
-<meta name="description" content="Show a Figma file, frame, prototype or board on the page with a title and a caption. Nothing contacts Figma until the reader opens it.">
+<meta name="description" content="Show a live Figma file, frame, prototype or board on the page with a title and a caption. The reader's browser talks to Figma; the hub and ub never do.">
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / Custom Markdown</p>
   <h1>Embeds</h1>
-  <p class="lede">The one embed today is Figma. A Figma link in a paragraph says nothing until you click it. A Figma block holds one design reference with a title, a height and a caption, so the page shows what it points at. The embed loads only when the reader opens it.</p>
+  <p class="lede">An embed is visual content the editor draws from data stored in the document. <a href="/docs/markdown/diagrams">Diagrams</a>, <a href="/docs/markdown/wireframes">wireframes</a> and <a href="/docs/markdown/charts">charts</a> are embeds with pages of their own. The one that shows something from outside is Figma: a link in a paragraph says nothing until you click it, a Figma block shows the design itself with a title, a height and a caption.</p>
 </div>
 <article class="col">
-  <section class="q" id="figma"><h2>Source beside drawing</h2>
-  <p>A Figma link in a paragraph tells you nothing until you click it. A Figma block holds one design reference, a file, a frame, a prototype, a board or slides, with a title, a height and a caption, so the page shows what it points at. The embed loads only when the reader opens it; no part of Uberblick contacts Figma on its own.</p>
+  <section class="q" id="figma"><h2>Figma</h2>
+  <p>A Figma block holds one design reference, a file, a frame, a prototype, a FigJam board, slides or a community file, and shows it live at full column width with the caption below. Paste a Figma link on an empty line and it becomes a block; undo turns it back into the link. Click the preview to interact, or expand it to full screen.</p>
   <div class="tabs ex"><div class="tablist" role="tablist" aria-label="figma example"><button role="tab" id="t-figma-v" aria-selected="true" aria-controls="p-figma-v" type="button">Displayed</button><button role="tab" id="t-figma-m" aria-selected="false" aria-controls="p-figma-m" type="button">Markdown</button><button class="copy" type="button" data-copy=":::figma
 url: https://www.figma.com/design/SSYpfPlOlUAYWfvejqmb7k/Simple-Design-System--Community-?node-id=3-5
 title: Design system cover
@@ -26,10 +26,12 @@ height: 400
 
 Cover frame of the **Simple Design System** community file.
 :::</pre></div></div>
-  <p><code>url</code> is required and must be an <code>https</code> link on figma.com to a design, file, proto, board, slides or community file; the stored link keeps only the file key, the name and the node ids. <code>title</code> is plain text, <code>height</code> is 240 to 960 pixels and defaults to 480, and the caption after the blank line is inline Markdown.</p>
+  <p><code>url</code> is required and must be an <code>https</code> link on figma.com to a design, file, proto, board, slides or community file; the stored link keeps only the file key, the name, the node and the version, and drops share tracking. <code>title</code> is plain text and falls back to Figma's title, then the file name; <code>height</code> is 240 to 960 pixels and defaults to 480. The caption after the blank line is inline Markdown and can take comments. On GitHub the block reads as a paragraph with a working link.</p>
+  <p>An agent cannot see the frame, so the title and caption carry the meaning. It writes the lines between <code>:::figma</code> and <code>:::</code> with the ordinary block tools; an invalid link or height is refused with <code>invalid_figma</code> before anything is written, and <code>get_doc</code> returns the parsed file, node and kind beside the text.</p>
   </section>
 
   <section class="q" id="privacy"><h2>What reaches Figma</h2>
-  <p>The stored link keeps only the file key, the name and the node ids. The editor shows the title and a placeholder; a private file shows a placeholder that says so. Only when a reader opens the block does the browser load Figma's embed, with the reader's own Figma session. The hub and the MCP server never call Figma.</p>
+  <p>Only the reader's browser talks to Figma; the hub and <code>ub</code> never do, and no Figma token is stored anywhere. A viewer loads when its block comes near the screen, at most three at once, the rest show a placeholder with the block's title. Before loading, the browser asks Figma whether the file is public; a private or deleted file shows <em>Figma can't show this file publicly</em> with a button to load it and sign in. Figma can learn the hub's address, never the document or the workspace. Offline, the block shows its title, the note that the preview needs a connection, and the caption; printing shows the title and the link.</p>
+  <p>Other providers such as YouTube and Loom are not embeds today; a plain link does.</p>
   </section>
 </article>

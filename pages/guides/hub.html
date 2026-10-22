@@ -16,21 +16,25 @@
 
 <section class="q" id="start"><h2>2. Start the hub</h2>
 <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="mkdir -p ~/uberblick-remote &amp;&amp; cd ~/uberblick-remote
-docker cp $(docker create --platform linux/amd64 ghcr.io/uberblick-ai/hub:0.4.7):/release/. .
-cp remote.env.example .env
-sh bin/remote-compose.sh up --detach">Copy</button></div><pre><span class="p">$</span> mkdir -p ~/uberblick-remote &amp;&amp; cd ~/uberblick-remote
-<span class="p">$</span> docker cp $(docker create --platform linux/amd64 ghcr.io/uberblick-ai/hub:0.4.7):/release/. .
-<span class="p">$</span> cp remote.env.example .env
-<span class="p">$</span> sh bin/remote-compose.sh up --detach</pre></section>
-<p>The release ships its own Compose files inside the hub image; the second line copies them out. The hub is now listening on <code>http://localhost:8080</code> of that machine and nowhere else. Workspaces and the claim live in named Docker volumes, so restarts and updates keep them.</p>
+for f in compose.yml remote.env.example remote.https.yml remote.tailscale.yml; do
+  curl -fL -o $f https://github.com/uberblick-ai/uberblick-2/releases/download/hub-v0.4.8/$f
+done
+cp remote.env.example .env &amp;&amp; chmod 600 .env
+docker compose config --quiet &amp;&amp; docker compose up -d">Copy</button></div><pre><span class="p">$</span> mkdir -p ~/uberblick-remote &amp;&amp; cd ~/uberblick-remote
+<span class="p">$</span> for f in compose.yml remote.env.example remote.https.yml remote.tailscale.yml; do
+    curl -fL -o $f https://github.com/uberblick-ai/uberblick-2/releases/download/hub-v0.4.8/$f
+  done
+<span class="p">$</span> cp remote.env.example .env &amp;&amp; chmod 600 .env
+<span class="p">$</span> docker compose config --quiet &amp;&amp; docker compose up -d</pre></section>
+<p>Four files from one hub release and a private <code>.env</code> with <code>HUB_VERSION</code> set to that release; the <a href="https://github.com/uberblick-ai/uberblick-2/releases/latest">latest release</a> names it. The hub is now listening on <code>http://localhost:8080</code> of that machine and nowhere else. Workspaces and the claim live in named Docker volumes, so restarts and updates keep them.</p>
 </section>
 
 <section class="q" id="claim"><h2>3. Claim it</h2>
-<p>Open <code>http://localhost:8080</code> on that machine and choose <strong>Sign in with GitHub</strong>, or run <code>ub auth login http://localhost:8080</code> from it. The first GitHub account that signs in becomes the hub's administrator. Nothing else can claim it afterwards, so do this before you open the hub to the network. Further hub admins are appointed on the host with <code>ub-hub hub-admin add</code>.</p>
+<p>Open <code>http://localhost:8080</code> on that machine and choose <strong>Sign in with GitHub</strong>, or run <code>ub auth login http://localhost:8080</code> from it. The first GitHub account that signs in becomes the hub's administrator. Nothing else can claim it afterwards, so do this before you open the hub to the network. Further hub admins are appointed on the host with <code>docker compose exec hub ub-hub hub-admin add &lt;github-login&gt;</code>.</p>
 </section>
 
 <section class="q" id="reach"><h2>4. Make it reachable</h2>
-<p>Set one route in <code>.env</code> and recreate.</p>
+<p>Set one route in <code>.env</code> and run <code>docker compose up -d</code> again.</p>
 <div class="tablewrap"><table>
   <thead><tr><th>Route</th><th>In <code>.env</code></th></tr></thead>
   <tbody>
@@ -38,10 +42,9 @@ sh bin/remote-compose.sh up --detach">Copy</button></div><pre><span class="p">$<
     <tr><td>A public host name</td><td><code>WEB_HOST=hub.example.com</code>, with port 443 open</td></tr>
   </tbody>
 </table></div>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="sh bin/remote-compose.sh up --detach --force-recreate
-sh bin/remote-compose.sh exec hub ub-hub status">Copy</button></div><pre><span class="p">$</span> sh bin/remote-compose.sh up --detach --force-recreate
-<span class="p">$</span> sh bin/remote-compose.sh exec hub ub-hub status
-<span class="o">release 0.4.7 · claimed by ben · https://hub.example.com</span></pre></section>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="docker compose config --quiet &amp;&amp; docker compose up -d
+docker compose exec hub ub-hub status">Copy</button></div><pre><span class="p">$</span> docker compose config --quiet &amp;&amp; docker compose up -d
+<span class="p">$</span> docker compose exec hub ub-hub status</pre></section>
 <p>The hub serves TLS itself on the host name you gave it. Clients refuse an unencrypted hub unless it runs on the same machine, so there is no insecure mode to forget to turn off.</p>
 </section>
 
@@ -50,25 +53,36 @@ sh bin/remote-compose.sh exec hub ub-hub status">Copy</button></div><pre><span c
 ub auth login https://hub.example.com
 ub workspace promote https://hub.example.com">Copy</button></div><pre><span class="p">$</span> cd ~/Projects/my-product
 <span class="p">$</span> ub auth login https://hub.example.com
-<span class="o">Open https://github.com/login/device and enter the code ABCD-1234
-… signed in as ben</span>
+<span class="o">hub        https://hub.example.com
+open       https://github.com/login/device
+code       WDJB-MJHT
+waiting for approval…
+signed in  octocat on https://hub.example.com</span>
 <span class="p">$</span> ub workspace promote https://hub.example.com
-<span class="o">uploaded My product (3f0c2a1e-…), 14 documents, verified with a fresh client
-wrote ./.uberblick.json: hubUrl https://hub.example.com</span></pre></section>
-<p>Back on your own computer. Promote uploads the local file as it is, same id, same history, archived pages included, then fetches it back as a fresh client to verify, and only then rewrites the binding. Interrupted? Run it again; it resumes. Commit the changed <code>.uberblick.json</code> so the repository points everyone at the shared copy. Starting from nothing instead? The hub comes with a default workspace; its id is shown after the claim.</p>
+<span class="o">uploading  My product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f) to https://hub.example.com
+verified   14 documents, including archived ones
+promoted   My product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f, https://hub.example.com)
+wrote      ~/Projects/my-product/.uberblick.json
+share link: https://hub.example.com/3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f
+commit .uberblick.json so teammates only need ub auth login</span></pre></section>
+<p>Back on your own computer. Promote uploads the local copy as it is, same id, same history, archived pages included, verifies the upload, and only then rewrites the binding. Interrupted? Run it again; it resumes. Commit the changed <code>.uberblick.json</code> so the repository points everyone at the shared copy. Starting from nothing instead? The hub comes with a default workspace; its id is shown after the claim.</p>
 </section>
 
 <section class="q" id="members"><h2>6. Add people and connect their computers</h2>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace member add dana --role member">Copy</button></div><pre><span class="p">$</span> ub workspace member add dana --role member
-<span class="o">grant dana (account 8213…) member of My product on hub.example.com? [y/N] y</span></pre></section>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace member add dana">Copy</button></div><pre><span class="p">$</span> ub workspace member add dana
+<span class="o">Grant access on https://hub.example.com to workspace 3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f for "dana" (GitHub account 480938) as member? [y/N] y
+added "dana" (GitHub account 480938) as member</span></pre></section>
 <p>Members are GitHub logins; there are no Uberblick accounts. A member reads and writes everything in the workspace, from the browser and over MCP, and a workspace admin also manages members. Then each person, on their computer, in the cloned repository:</p>
 <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth login https://hub.example.com
-ub workspace use https://hub.example.com/3f0c2a1e-…
+ub workspace use https://hub.example.com/3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f
 ub open">Copy</button></div><pre><span class="p">$</span> ub auth login https://hub.example.com
-<span class="p">$</span> ub workspace use https://hub.example.com/3f0c2a1e-…
-<span class="o">fetched 14 documents, verified, bound in ./.uberblick.json</span>
+<span class="p">$</span> ub workspace use https://hub.example.com/3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f
+<span class="o">fetched    My product from https://hub.example.com: 14 documents, 1 archived
+using      My product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f, https://hub.example.com)
+wrote      ~/Projects/my-product/.uberblick.json
+open it with: ub open</span>
 <span class="p">$</span> ub open</pre></section>
-<p>Each computer now has its own SQLite file and works offline; the hub merges what comes back. Agents need nothing extra: an MCP server started in the directory uses the computer's login. A server that runs agents, such as an Actions runner, signs in once like any other computer and can be revoked on its own.</p>
+<p>With the committed <code>.uberblick.json</code> in the clone, the middle command is not even needed: <code>ub auth login</code> reads the hub from the file. Each computer now has its own SQLite file and works offline; the hub merges what comes back. Agents need nothing extra: an MCP server started in the directory uses the computer's login. A server that runs agents, such as an Actions runner, signs in once like any other computer and can be revoked on its own.</p>
 <p class="small">Keeping it running, backups and updates: <a href="/docs/hub">Run a hub</a>. Roles: <a href="/docs/cli/workspace#member">ub workspace member</a>. Devices and signing out: <a href="/docs/cli/auth">ub auth</a>.</p>
 </section>
 </div>

@@ -1,31 +1,28 @@
 <head>
 <title>Markdown extensions · Uberblick docs</title>
-<meta name="description" content="The small additions to Markdown in Uberblick: links by document id, GitHub references, inline icons, terminal transcripts, and cards with a label, a title, a footer and buttons.">
+<meta name="description" content="The small additions to Markdown in Uberblick: toggle headings, inline icons, terminal transcripts, cards with a label, a title, a footer and buttons, and GitHub references.">
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / Custom Markdown</p>
   <h1>Markdown extensions</h1>
-  <p class="lede">Four small additions and one container. Each is still text that any Markdown tool shows as something sensible, and an agent learns all of them from <code>get_help("markdown")</code>.</p>
+  <p class="lede">Four small additions and one container. Each is still text that any Markdown tool shows as something sensible: another viewer prints the toggle marker, the shortcode and the transcript as they are. An agent learns all of them from <code>get_help("markdown")</code>.</p>
 </div>
 <article class="col">
-  <section class="q" id="links"><h2>Links by id</h2>
-  <p><code>[label](document-uuid)</code> links to a document by its id. It survives renames and counts as a backlink on the target. Agents get the id from <code>search</code> or <code>get_sidebar</code> and never guess it from a title.</p>
+  <section class="q" id="toggle"><h2>Toggle headings</h2>
+  <p>A heading that starts with <code>&gt;</code> and a space, such as <code>## &gt; Help text</code>, folds everything below it until the next heading of the same or a higher level. Each toggle starts collapsed when the page opens; the open state stays in that view and is never saved. The heading stays ordinary text, so MCP, search and Markdown keep it and other viewers show the <code>&gt;</code>.</p>
   </section>
 
-  <section class="q" id="github"><h2>GitHub references</h2>
-  <p>A link to an issue or pull request on GitHub renders as a compact pill with its number, and a decision record that links an issue is found by <code>find_decisions</code> for that issue. The pill does not fetch the issue; it is a reference, not a tracker.</p>
-  </section>
-
-  <section class="q" id="icons"><h2>Inline icons</h2>
-  <p>A curated set of shortcodes, such as <code>:check:</code> or <code>:warning:</code>, renders as icons in prose and in card labels. An unknown shortcode stays text.</p>
+  <section class="q" id="icons"><h2>Inline icons and emoji</h2>
+  <p>A curated set of shortcodes, <code>:claude:</code>, <code>:codex:</code> and <code>:github:</code>, renders as the mark in prose, headings, table cells, card parts and button labels, in the size and colour of the surrounding text. The stored text stays the shortcode. An unknown name such as <code>:rocket:</code>, and a time such as <code>10:30:15</code>, stay literal. Emoji are stored as the character itself; in the editor a colon and two letters open a picker.</p>
+  <section class="block code"><div class="cap"><span>Markdown</span></div><pre>button: [:claude: Discuss with Claude](claude://code/new?prompt=Review)</pre></section>
   </section>
 
   <section class="q" id="terminal"><h2>Terminal transcripts</h2>
-  <p>A <code>terminal</code> fence keeps prompt, command and output apart, so a transcript reads as one and copies as the command only. It exports as the same fence.</p>
+  <p>A <code>terminal</code> fence replays a transcript: lines that start with <code>$</code> and a space are commands, the rest is output. It never runs anything. Playback loops with a pause control, and reduced motion shows the static transcript. Import, export and MCP keep the literal text.</p>
   <section class="block code"><div class="cap"><span>Markdown</span></div><pre>```terminal
 $ ub status
-workspace   Uberblick product, from ./.uberblick.json
+workspace   Acme product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f)
 ```</pre></section>
   </section>
 
@@ -50,10 +47,14 @@ button: [Open the issue](https://github.com/uberblick-ai/uberblick-2/issues/1588
 
 Three of this week&#x27;s wasted runs were third retries on the same failure. A limit of two would have stopped each one a run earlier.
 :::</pre></div></div>
-  <p>Header lines are <code>label:</code>, <code>title:</code>, <code>footer:</code> and <code>button:</code>, in any order; the first blank line ends the header and the rest is the body. A button is one Markdown link to an <code>https://</code> address or to <code>claude://code/new</code>, <code>claude-cli://open</code> or <code>codex://new</code>, followed by an optional style (<code>outline</code> or <code>filled</code>) and colour (<code>neutral</code>, <code>blue</code>, <code>green</code> or <code>violet</code>).</p>
+  <p>Header lines are <code>label:</code>, <code>title:</code>, <code>footer:</code> and <code>button:</code>, with <code>title</code> required; the first blank line ends the header and the rest is the body. A button is one Markdown link to an <code>https://</code> address or to <code>claude://code/new</code>, <code>claude-cli://open</code> or <code>codex://new</code>, followed by an optional style (<code>outline</code> or <code>filled</code>) and colour (<code>neutral</code>, <code>blue</code>, <code>green</code> or <code>violet</code>). Adjacent cards stack full width; a blank line separates them in Markdown. An invalid card is refused over MCP with <code>invalid_card</code> and nothing is written; on import it stays plain paragraphs.</p>
   </section>
 
   <section class="q" id="use"><h2>When to use one</h2>
   <p>For the one thing on a page a reader should act on: the recommendation at the end of a report, the warning at the top of a runbook, the next step after a review. One card per page is the norm; a page full of cards is a list wearing boxes. Agents that write reports put the card last and link the issue or the record it rests on in the footer.</p>
+  </section>
+
+  <section class="q" id="github"><h2>GitHub references</h2>
+  <p>A link to an issue or pull request on GitHub renders as a compact pill with its number, and a decision record that links an issue is found by <code>find_decisions</code> for that issue. The pill does not fetch the issue; it is a reference, not a tracker.</p>
   </section>
 </article>

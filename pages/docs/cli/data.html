@@ -1,44 +1,59 @@
 <head>
 <title>ub data · Uberblick docs</title>
-<meta name="description" content="Read and write a document's structured data through files: print a collection as JSON, apply a batch of update_data operations from a file or stdin.">
+<meta name="description" content="Read and write a document's structured data through files: print the summary or one collection as JSON, apply a batch of update_data operations from a file or stdin.">
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
   <h1><code>ub data</code></h1>
-  <p class="lede">Charts and data tables draw from records a document owns. <code>ub data</code> is the terminal side of that: a script exports a collection, a cron job or a CI step feeds new records in. Agents use the MCP tools instead.</p>
+  <p class="lede">Charts and data tables draw from records a document owns. <code>ub data</code> moves those records through files, so a script produces them and an agent only reads the summary. Agents themselves use the MCP tools <code>get_data</code> and <code>update_data</code>.</p>
 </div>
 <article class="col">
 
   <section class="q" id="usage"><h2>Usage</h2>
-<section class="block code"><div class="cap"><span>help</span></div><pre>usage: ub data [command]
+<section class="block code"><div class="cap"><span>help</span></div><pre>$ ub data
+usage: ub data [command]
 
 commands:
-  get &lt;doc&gt; [&lt;collection&gt;]       print the data summary, or one collection as JSON
-  update &lt;doc&gt; --file &lt;path|-&gt;   apply update_data operations from a file, or - for stdin
+  get &lt;doc&gt; [&lt;collection&gt;]       # Print the data summary, or one collection as JSON
+  update &lt;doc&gt; --file &lt;path|-&gt;   # Apply update_data operations from a file, or - for stdin
 
 options:
-  --out &lt;file&gt;                   get: write the collection to this file instead of stdout
-  --dry-run                      update: validate and report, write nothing</pre></section>
+  --out &lt;file&gt;                   # get: write the collection to this file instead of stdout
+  --dry-run                      # update: validate and report, write nothing
+  -h, --help                     # show this help</pre></section>
+  <p><code>&lt;doc&gt;</code> is a document id or link in the workspace this project is bound to. A bare <code>ub data</code> prints this help.</p>
   </section>
 
   <section class="q" id="get"><h2>get</h2>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub data get 7c1e… deliveries --out deliveries.json">Copy</button></div><pre><span class="p">$</span> ub data get 7c1e… deliveries --out deliveries.json
-<span class="o">wrote 42 records of deliveries to deliveries.json</span></pre></section>
-  <p>Without a collection, the summary: every collection with its schema and record count, and what is invalid. With one, its records as JSON.</p>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub data get 7c1e4b2a-…
+ub data get 7c1e4b2a-… runs --out runs.json">Copy</button></div><pre><span class="p">$</span> ub data get 7c1e4b2a-…
+<span class="o">runs       42 records  valid
+verdicts   40 records  valid
+31,204 bytes</span>
+<span class="p">$</span> ub data get 7c1e4b2a-… runs --out runs.json
+<span class="o">wrote runs: 42 records, 28,911 bytes → runs.json</span></pre></section>
+  <p>Without a collection, the summary: each collection's record count and validity, and the size of the data area. With one, its schema and every record as <code>{id, value}</code>, as one JSON object on stdout or in the file named by <code>--out</code>. Invalid values are exported as stored. A document without data prints nothing and exits 0.</p>
   </section>
 
   <section class="q" id="update"><h2>update</h2>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub data update 7c1e… --file ops.json --dry-run
-ub data update 7c1e… --file - &lt; ops.json">Copy</button></div><pre><span class="p">$</span> ub data update 7c1e… --file ops.json --dry-run
-<span class="p">$</span> ub data update 7c1e… --file - &lt; ops.json
-<span class="o">valid: 1 schema, 12 upserts, 0 deletes
-applied: 12 upserts to deliveries</span></pre></section>
-  <p>The file holds the same operations <code>update_data</code> takes over MCP: schema, replace, delete, upsert, validated as one batch. Nothing is written when any operation fails. <code>--dry-run</code> validates and reports. Exit 0 when applied, 1 when refused, 2 for a usage error. Offline, the write lands in the local copy and syncs later.</p>
+<section class="block code"><div class="cap"><span>ops.json</span></div><pre>[{ &quot;collection&quot;: &quot;runs&quot;, &quot;upsert&quot;: [{ &quot;id&quot;: &quot;2026-10-09&quot;, &quot;value&quot;: { &quot;hours&quot;: 6.5 } }] }]</pre></section><section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub data update 7c1e4b2a-… --file ops.json
+ub data update 7c1e4b2a-… --file ops.json --dry-run">Copy</button></div><pre><span class="p">$</span> ub data update 7c1e4b2a-… --file ops.json
+<span class="o">runs       43 records (1 upserted)
+saved; synced with hub</span>
+<span class="p">$</span> ub data update 7c1e4b2a-… --file ops.json --dry-run
+<span class="o">runs       would be 43 records (1 upserted)
+nothing written (dry run)</span></pre></section>
+  <p>The file holds the same operations array <code>update_data</code> takes over MCP: set a schema, replace, delete or upsert records, validated as one batch. Each touched collection reports its resulting count and what changed; the same records again print <em>no change</em>. Nothing is written when any operation is refused. Same limits as MCP: 1 MiB of changes per update, 64 KiB per record or schema, 4 MiB per document. Archived documents and decision records refuse data writes. Unlike an MCP write, it does not require the guidance pages to have been read first.</p>
+  </section>
+
+  <section class="q" id="exit"><h2>Exit codes</h2>
+
+  <p>0 for a successful read or update, including <em>no change</em> and a write saved locally that is not yet on the hub. 1 for a refused read or update or a failure to persist; 2 for a usage error. Refusals print the reason and <em>nothing written</em> on stderr; a <code>get</code> without <code>--out</code> writes only JSON to stdout.</p>
   </section>
 
   <section class="q" id="scenarios"><h2>Scenarios</h2>
-  <dl class="scen"><dt>Nightly numbers</dt><dd>A cron job queries the warehouse, writes upserts and runs <code>ub data update</code>. The chart on the report page is current in the morning.</dd><dt>Take the numbers somewhere else</dt><dd><code>ub data get … --out</code>, then whatever tool you like.</dd><dt>Check a generated file before it lands</dt><dd><code>--dry-run</code> in the pipeline, the real run after.</dd></dl>
+  <dl class="scen"><dt>A daily producer</dt><dd><code>./collect-runs.sh | ub data update 7c1e4b2a-… --file -</code>. The script pipes its operations in; the chart on the report page is current in the morning, and the agent sees two lines instead of the records.</dd><dt>A bad record</dt><dd><code>error: runs/2026-10-09: Record /hours: expected type number</code>, <em>nothing written</em>, exit 1. The whole batch is refused.</dd><dt>Offline</dt><dd><code>saved locally; not yet synced with hub</code>, exit 0. It syncs the next time anything on this computer reaches the hub. The command never starts a login.</dd><dt>Two writers</dt><dd>Last write wins per record. Writers touching different records both keep their changes; the same record is replaced whole, fields are not merged.</dd><dt>Check a generated file before it lands</dt><dd><code>--dry-run</code> in the pipeline, the real run after. It works while <code>ub open</code> or an agent has the workspace open.</dd></dl>
   </section>
   <p class="next">Next: <a href="/docs/cli/update">ub update</a>.</p>
 </article>
