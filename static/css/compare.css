@@ -19,9 +19,8 @@
 .matrix thead th.us { background: var(--panel) }
 .matrix td, .matrix thead th:not(.us) { min-width: 150px }
 @media (max-width: 700px) { .guide > div { grid-template-columns: 1fr } .credits { grid-template-columns: 1fr } }
-.fit { margin: 0 0 8px; padding-left: 0; list-style: none; display: grid; gap: 10px }
-.fit li { padding-left: 14px; border-left: 3px solid var(--accent); font-size: 16px; line-height: 1.55 }
-.fit li b { font-weight: 600 }
-.fit.no li { border-left-color: var(--line) }
+.fit { margin: 0 0 8px; padding-left: 1.2em; display: grid; gap: 8px }
+.fit li { line-height: 1.55 }
+.fit li::marker { color: var(--muted) }
 .mh { margin: 18px 0 4px; font-size: 15px; font-weight: 600; color: var(--muted) }
 .matrix.wide table { min-width: 1380px }

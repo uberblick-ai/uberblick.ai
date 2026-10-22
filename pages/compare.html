@@ -11,28 +11,23 @@
 
 <div class="col">
 <section class="q" id="fit"><h2>A good fit when</h2>
-<ul class="fit">
-  <li><b>Coding agents work in your codebase.</b> You want them to read the plan and the decisions before they build, and you would rather enforce that than hope for it. Agents reach the workspace over MCP; Claude Code and Codex are set up with one command.</li>
-  <li><b>The documents are about one product.</b> Product intent, design notes, decisions, reports with numbers, the flows and screens behind them. A few people to a few dozen, engineers and the product people who work with them.</li>
-  <li><b>You want it on your own machines.</b> Every computer holds the full workspace and works offline. Sharing means running one Docker container somewhere the team can reach, or nothing at all for a workspace of one.</li>
-  <li><b>You are at home in a terminal.</b> Install with Homebrew, bind a project with a small JSON file, write Markdown with a few extra block types. There is no onboarding flow and no account to create.</li>
-  <li><b>You already have an agent you trust.</b> Uberblick has no AI of its own: no model, no key to paste, no assistant in the corner. The agent you already use, with your keys, is the one that reads and writes here. The product is the shared memory, not another chatbot.</li>
-  <li><b>Delivery lives on GitHub.</b> Issues and pull requests stay there; Uberblick links to them and never tries to be a tracker. If you run an agent loop on GitHub labels, the pages feed it.</li>
-</ul>
+<p>A team of a few people to a few dozen builds one product with coding agents, and wants the agents to read the plan and the decisions before they build. Not hoped for: enforced, by the MCP server the agents talk to.</p>
+<p>The documents are about that product. Intent, design notes, decisions, reports with their numbers in them, the flows and screens behind a feature. Engineers write most of it with their agents; the product people read, comment and decide in the browser.</p>
+<p>The team is at home in a terminal, installs with Homebrew, writes Markdown and keeps delivery on GitHub. It already has an agent it trusts and would rather connect it than get another assistant. And it wants the documents on its own machines: every computer holds the full workspace and works offline, and sharing means one Docker container the team can reach.</p>
 </section>
 
 <section class="q" id="nofit"><h2>Not a good fit when</h2>
-<ul class="fit no">
-  <li><b>The content is company-wide.</b> Onboarding, HR, sales, meeting notes for everyone: Notion, Confluence or Google Docs do this better and will keep doing it better. Uberblick has no templates, no databases with views, no public pages.</li>
-  <li><b>You need someone to host it.</b> Nobody hosts Uberblick for you today. Local-only works without a server; sharing needs the hub you run. If "run a container" is a blocker, stop here.</li>
-  <li><b>Your team is on Windows, or wants a phone app.</b> The client installs on Apple Silicon macOS and Linux x86_64. A phone can read and comment on a shared workspace in the browser; there is no app and no Windows build.</li>
-  <li><b>You need enterprise permissions.</b> A workspace has members and admins, signed in with GitHub. No SSO, no per-page rights, no audit log. Reading and writing are the same right on purpose.</li>
-  <li><b>Your issues live in Jira, Linear or GitLab.</b> Uberblick links to GitHub and only GitHub. Other trackers may come; they are not here.</li>
-  <li><b>You want a task board.</b> There is none and there will not be one. Delivery tracking belongs to the tracker.</li>
-  <li><b>You want a personal notes app.</b> Obsidian, Logseq and Trilium are better at one person's notes, faster, with thousands of plugins. Uberblick is a team workspace with a sync protocol, which is overhead for one person's thinking.</li>
-  <li><b>You want "ask the wiki" out of the box.</b> Without an agent connected there is no AI in Uberblick at all: no question box, no summaries, no generated pages. Notion, Confluence and Outline ship that and a team that wants it with zero setup should take it.</li>
-  <li><b>Your agents do not speak MCP.</b> There is a CLI for data and a small HTTP API behind <code>ub open</code>, but the agent interface is MCP. An agent that can only call a REST API is on its own.</li>
-  <li><b>You cannot live with a 0.4.</b> Things change between releases. Last month a sync protocol change made everyone sign in again. If that is unacceptable, come back later; the changelog says what moved.</li>
+<ul class="fit">
+  <li>The content is company-wide: onboarding, HR, sales, meeting notes for everyone. Notion, Confluence or Google Docs do this better. Uberblick has no templates, no databases with views, no public pages.</li>
+  <li>You need someone to host it. Nobody hosts Uberblick for you; sharing needs the hub you run.</li>
+  <li>You want tasks. There are none and there will be none. Uberblick is not a task manager; delivery lives in the tracker.</li>
+  <li>Your issues live in Jira, Linear or GitLab. Uberblick links to GitHub and only GitHub today.</li>
+  <li>Your team is on Windows or wants a phone app. The client installs on Apple Silicon macOS and Linux x86_64; a phone can read and comment in the browser, and that is all.</li>
+  <li>You need enterprise permissions. A workspace has members and admins, signed in with GitHub. No SSO, no per-page rights, no audit log.</li>
+  <li>You want "ask the wiki" out of the box. Uberblick has no AI of its own; without an agent connected there is no question box and no summary. Notion, Confluence and Outline ship that.</li>
+  <li>Your agents do not speak MCP. There is a CLI and a small HTTP API, but the agent interface is MCP.</li>
+  <li>You want a personal notes app. Obsidian, Logseq and Trilium are better at one person's notes; Uberblick's sync and membership are overhead for one.</li>
+  <li>You cannot live with a 0.4. Things change between releases; last month a sync protocol change made everyone sign in again.</li>
 </ul>
 </section>
 
