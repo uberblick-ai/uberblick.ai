@@ -147,7 +147,8 @@ DOCS = [
 ]
 GUIDES = [
     (None, [('/guides', 'All guides')]),
-    ('Guides', [('/guides/product-intent', 'Product intent'), ('/guides/decisions', 'Decisions that stay decided'), ('/guides/reports', 'Reports with the numbers'), ('/guides/flows', 'Flows and screens as text')]),
+    ('Start', [('/guides/first-workspace', 'Your first workspace'), ('/guides/hub', 'Set up a hub')]),
+    ('Jobs', [('/guides/product-intent', 'Product intent'), ('/guides/decisions', 'Decisions that stay decided'), ('/guides/reports', 'Reports with the numbers'), ('/guides/flows', 'Flows and screens as text')]),
 ]
 KINDS = {'release': 'Release', 'design note': 'Design note', 'building note': 'Building note'}
 

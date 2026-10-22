@@ -1,0 +1,74 @@
+<head>
+<title>Set up a hub · Uberblick</title>
+<meta name="description" content="Share an Uberblick workspace with a team: run the hub with Docker, claim it with your GitHub account, make it reachable, upload the workspace you have, add members, and connect their computers.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<section class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/guides">Guides</a></p>
+  <h1>Set up a hub.</h1>
+  <p class="lede">A hub is the one piece of Uberblick that runs on a server. It keeps a copy of each shared workspace, admits members by their GitHub account, and passes changes between computers that each keep their own full copy. This guide takes a local workspace from <a href="/guides/first-workspace">Your first workspace</a> to one a team edits, in six steps. The <a href="/docs/hub">Run a hub</a> page has the reference.</p>
+</section>
+
+<div class="col">
+<section class="q" id="where"><h2>1. Pick a machine</h2>
+<p>Any Linux box with Docker Engine 28 or newer on x86_64, or a Mac with Docker Desktop for a hub that only your own computers use. A small virtual machine is plenty: the hub stores workspaces in SQLite and does no heavy work. Give it a name other computers can resolve. Tailscale is the easy answer for a team; a public host name with port 443 open works too.</p>
+</section>
+
+<section class="q" id="start"><h2>2. Start the hub</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="mkdir -p ~/uberblick-remote &amp;&amp; cd ~/uberblick-remote
+docker cp $(docker create --platform linux/amd64 ghcr.io/uberblick-ai/hub:0.4.7):/release/. .
+cp remote.env.example .env
+sh bin/remote-compose.sh up --detach">Copy</button></div><pre><span class="p">$</span> mkdir -p ~/uberblick-remote &amp;&amp; cd ~/uberblick-remote
+<span class="p">$</span> docker cp $(docker create --platform linux/amd64 ghcr.io/uberblick-ai/hub:0.4.7):/release/. .
+<span class="p">$</span> cp remote.env.example .env
+<span class="p">$</span> sh bin/remote-compose.sh up --detach</pre></section>
+<p>The release ships its own Compose files inside the hub image; the second line copies them out. The hub is now listening on <code>http://localhost:8080</code> of that machine and nowhere else. Workspaces and the claim live in named Docker volumes, so restarts and updates keep them.</p>
+</section>
+
+<section class="q" id="claim"><h2>3. Claim it</h2>
+<p>Open <code>http://localhost:8080</code> on that machine and choose <strong>Sign in with GitHub</strong>, or run <code>ub auth login http://localhost:8080</code> from it. The first GitHub account that signs in becomes the hub's administrator. Nothing else can claim it afterwards, so do this before you open the hub to the network. Further hub admins are appointed on the host with <code>ub-hub hub-admin add</code>.</p>
+</section>
+
+<section class="q" id="reach"><h2>4. Make it reachable</h2>
+<p>Set one route in <code>.env</code> and recreate.</p>
+<div class="tablewrap"><table>
+  <thead><tr><th>Route</th><th>In <code>.env</code></th></tr></thead>
+  <tbody>
+    <tr><td>Tailscale, recommended (Linux)</td><td><code>WEB_HOST=machine.tailnet.ts.net</code> and <code>TAILSCALE_IP</code> from <code>tailscale ip -4</code></td></tr>
+    <tr><td>A public host name</td><td><code>WEB_HOST=hub.example.com</code>, with port 443 open</td></tr>
+  </tbody>
+</table></div>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="sh bin/remote-compose.sh up --detach --force-recreate
+sh bin/remote-compose.sh exec hub ub-hub status">Copy</button></div><pre><span class="p">$</span> sh bin/remote-compose.sh up --detach --force-recreate
+<span class="p">$</span> sh bin/remote-compose.sh exec hub ub-hub status
+<span class="o">release 0.4.7 · claimed by ben · https://hub.example.com</span></pre></section>
+<p>The hub serves TLS itself on the host name you gave it. Clients refuse an unencrypted hub unless it runs on the same machine, so there is no insecure mode to forget to turn off.</p>
+</section>
+
+<section class="q" id="promote"><h2>5. Upload the workspace you have</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="cd ~/Projects/my-product
+ub auth login https://hub.example.com
+ub workspace promote https://hub.example.com">Copy</button></div><pre><span class="p">$</span> cd ~/Projects/my-product
+<span class="p">$</span> ub auth login https://hub.example.com
+<span class="o">Open https://github.com/login/device and enter the code ABCD-1234
+… signed in as ben</span>
+<span class="p">$</span> ub workspace promote https://hub.example.com
+<span class="o">uploaded My product (3f0c2a1e-…), 14 documents, verified with a fresh client
+wrote ./.uberblick.json: hubUrl https://hub.example.com</span></pre></section>
+<p>Back on your own computer. Promote uploads the local file as it is, same id, same history, archived pages included, then fetches it back as a fresh client to verify, and only then rewrites the binding. Interrupted? Run it again; it resumes. Commit the changed <code>.uberblick.json</code> so the repository points everyone at the shared copy. Starting from nothing instead? The hub comes with a default workspace; its id is shown after the claim.</p>
+</section>
+
+<section class="q" id="members"><h2>6. Add people and connect their computers</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace member add dana --role member">Copy</button></div><pre><span class="p">$</span> ub workspace member add dana --role member
+<span class="o">grant dana (account 8213…) member of My product on hub.example.com? [y/N] y</span></pre></section>
+<p>Members are GitHub logins; there are no Uberblick accounts. A member reads and writes everything in the workspace, from the browser and over MCP, and a workspace admin also manages members. Then each person, on their computer, in the cloned repository:</p>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth login https://hub.example.com
+ub workspace use https://hub.example.com/3f0c2a1e-…
+ub open">Copy</button></div><pre><span class="p">$</span> ub auth login https://hub.example.com
+<span class="p">$</span> ub workspace use https://hub.example.com/3f0c2a1e-…
+<span class="o">fetched 14 documents, verified, bound in ./.uberblick.json</span>
+<span class="p">$</span> ub open</pre></section>
+<p>Each computer now has its own SQLite file and works offline; the hub merges what comes back. Agents need nothing extra: an MCP server started in the directory uses the computer's login. A server that runs agents, such as an Actions runner, signs in once like any other computer and can be revoked on its own.</p>
+<p class="small">Keeping it running, backups and updates: <a href="/docs/hub">Run a hub</a>. Roles, devices and signing out: <a href="/docs/access">Access and membership</a>.</p>
+</section>
+</div>

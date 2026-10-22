@@ -1,0 +1,79 @@
+<head>
+<title>Your first workspace · Uberblick</title>
+<meta name="description" content="What happens on disk when you create an Uberblick workspace: the SQLite file under ~/.local/share/uberblick, what it stores, the .uberblick.json binding, how to add more workspaces, remove one, and grant others access.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<section class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/guides">Guides</a></p>
+  <h1>Your first workspace.</h1>
+  <p class="lede">Two commands give you a workspace. This guide is about what those commands actually do: the one file they create, what goes into it, how a directory is tied to it, and what to do when you want a second workspace or none. The <a href="/docs/workspaces">Workspaces</a> page explains the workspace as a unit; this page explains the machinery.</p>
+</section>
+
+<div class="col">
+<section class="q" id="create"><h2>Create it</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="cd ~/Projects/my-product
+ub workspace create &quot;My product&quot;
+ub open">Copy</button></div><pre><span class="p">$</span> cd ~/Projects/my-product
+<span class="p">$</span> ub workspace create "My product"
+<span class="o">created  My product · 3f0c2a1e-… (local)
+wrote    ./.uberblick.json
+open it with: ub open</span>
+<span class="p">$</span> ub open
+<span class="o">Editor at http://127.0.0.1:7777 Keep this terminal open.</span></pre></section>
+<p>Run it in the directory of the project the workspace belongs to. Nothing talks to a server: no hub, no login, no account. The editor opens with two starter pages, <strong>Welcome to Uberblick</strong> and <strong>How to Use It</strong>, pinned in the sidebar. Replace them when the workspace becomes yours.</p>
+</section>
+
+<section class="q" id="disk"><h2>What is on disk now</h2>
+<p>Two things were written.</p>
+<ol class="steps">
+  <li><b>One SQLite file, the workspace itself.</b> <code>~/.local/share/uberblick/3f0c2a1e-….sqlite</code>, named after the workspace id. Everything the workspace is lives in this one file: every document, every comment, the sidebar, tags, decision records, and the full edit history. Copy the file and you have copied the workspace. <code>XDG_DATA_HOME</code> moves the directory.</li>
+  <li><b>One small binding in the project.</b> <code>.uberblick.json</code> in the directory you ran the command in, holding the workspace id and the hub it syncs with. For a local workspace that is none.</li>
+</ol>
+<section class="block code"><div class="cap"><span>.uberblick.json</span></div><pre>{
+  "workspaceId": "3f0c2a1e-…",
+  "hubUrl": null
+}</pre></section>
+<p>Commit the binding. Every terminal command, every MCP server and every agent that starts inside the directory looks upward for the nearest <code>.uberblick.json</code> and lands in the same workspace. There is no current workspace on the machine, only the one a directory points at. Two shell variables, <code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code>, override the file for one process; see <a href="/docs/configuration">Configuration</a>.</p>
+<p>A third directory, <code>~/.config/uberblick</code>, appears the first time it is needed. It holds the machine's own signing secret and, once you sign in to a hub, the device credential. It is never part of a workspace.</p>
+</section>
+
+<section class="q" id="inside"><h2>What the file stores</h2>
+<p>The file is an ordinary SQLite database; <code>sqlite3</code> opens it. Documents are not stored as text but as the history of changes that produced them, which is what lets two computers edit the same page offline and merge without a conflict screen.</p>
+<div class="tablewrap"><table>
+  <thead><tr><th>Table</th><th>What it holds</th></tr></thead>
+  <tbody>
+    <tr><td><code>meta</code></td><td>The workspace name, the hub it syncs with, and the last full acknowledgement from that hub.</td></tr>
+    <tr><td><code>updates</code>, <code>snapshots</code></td><td>The documents: every edit as a CRDT update, plus periodic snapshots so a page opens without replaying years of history.</td></tr>
+    <tr><td><code>pending_rooms</code></td><td>Changes the hub has not acknowledged yet. This is the offline queue; it survives a restart and drains on reconnect.</td></tr>
+    <tr><td><code>doc_index</code>, <code>doc_tags</code>, <code>doc_links</code></td><td>Titles, descriptions and the full-text search index; tags; links between documents, for backlinks.</td></tr>
+    <tr><td><code>decision_github_refs</code></td><td>The GitHub issues and pull requests a decision record points at.</td></tr>
+  </tbody>
+</table></div>
+<p>Only the first three tables are the workspace. The index tables are rebuilt from them. Back up the file while nothing is writing to it, or use the hub, which keeps a copy of everything anyway.</p>
+</section>
+
+<section class="q" id="more"><h2>More than one</h2>
+<p>A workspace is a project's, not the machine's, so a second project gets a second workspace: run <code>ub workspace create</code> in its directory and a second SQLite file appears next to the first. Two projects can also share one workspace: copy the binding file, or run <code>ub workspace use 3f0c2a1e-…</code> with the id of a workspace this machine already has.</p>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace list
+ub status">Copy</button></div><pre><span class="p">$</span> ub workspace list
+<span class="o">3f0c2a1e-…  My product          local
+9b71d0c4-…  Uberblick product   https://hub.uberblick.ai</span>
+<span class="p">$</span> ub status
+<span class="o">workspace  My product (3f0c2a1e-…), from ./.uberblick.json
+storage    ~/.local/share/uberblick/3f0c2a1e-….sqlite
+sync       local only</span></pre></section>
+<p><code>ub workspace list</code> is one row per file in the data directory. <code>ub status</code> says which of them the current directory is bound to. <code>ub workspace fork</code> copies the bound workspace into a new file with a new id and binds the directory to the copy, which is how you try a restructuring nobody else sees.</p>
+</section>
+
+<section class="q" id="remove"><h2>Remove one</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace remove 3f0c">Copy</button></div><pre><span class="p">$</span> ub workspace remove 3f0c
+<span class="o">delete this computer's copy of My product (3f0c2a1e-…)? It is local only; there is no other copy. [y/N] y
+removed ~/.local/share/uberblick/3f0c2a1e-….sqlite</span></pre></section>
+<p>Removal deletes this computer's file and nothing else. A workspace that lives on a hub is fetched again with <code>ub workspace use</code> and the link; a local-only workspace is gone, which is why the command asks. Stop <code>ub open</code> first and restart any agent that had the workspace open, because their MCP servers refuse to write to a removed workspace. The binding file stays; delete it or point it elsewhere.</p>
+</section>
+
+<section class="q" id="share"><h2>How to grant others access</h2>
+<p>A local workspace has no members because it has no server. To share it, a hub holds the copy the others fetch, admits them as members, and passes changes between the computers. Set one up, then run <code>ub workspace promote https://hub.example.com</code> in the project: the file you have is uploaded as it is, with its id and history, and the binding switches to the shared copy. From then on your colleagues run <code>ub workspace use</code> with the link and get their own file under their own <code>~/.local/share/uberblick</code>.</p>
+<p class="small">Next: <a href="/guides/hub">Set up a hub</a>, and <a href="/docs/access">Access and membership</a> for roles and sign-in.</p>
+</section>
+</div>
