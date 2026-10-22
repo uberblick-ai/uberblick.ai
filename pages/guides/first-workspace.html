@@ -33,7 +33,7 @@ open it with: ub open</span>
   "workspaceId": "3f0c2a1e-…",
   "hubUrl": null
 }</pre></section>
-<p>Commit the binding. Every terminal command, every MCP server and every agent that starts inside the directory looks upward for the nearest <code>.uberblick.json</code> and lands in the same workspace. There is no current workspace on the machine, only the one a directory points at. Two shell variables, <code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code>, override the file for one process; see <a href="/docs/configuration">Configuration</a>.</p>
+<p>Commit the binding. Every terminal command, every MCP server and every agent that starts inside the directory looks upward for the nearest <code>.uberblick.json</code> and lands in the same workspace. There is no current workspace on the machine, only the one a directory points at. Two shell variables, <code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code>, override the file for one process; see <a href="/docs/cli/binding">Configuration</a>.</p>
 <p>A third directory, <code>~/.config/uberblick</code>, appears the first time it is needed. It holds the machine's own signing secret and, once you sign in to a hub, the device credential. It is never part of a workspace.</p>
 </section>
 
@@ -74,6 +74,6 @@ removed ~/.local/share/uberblick/3f0c2a1e-….sqlite</span></pre></section>
 
 <section class="q" id="share"><h2>How to grant others access</h2>
 <p>A local workspace has no members because it has no server. To share it, a hub holds the copy the others fetch, admits them as members, and passes changes between the computers. Set one up, then run <code>ub workspace promote https://hub.example.com</code> in the project: the file you have is uploaded as it is, with its id and history, and the binding switches to the shared copy. From then on your colleagues run <code>ub workspace use</code> with the link and get their own file under their own <code>~/.local/share/uberblick</code>.</p>
-<p class="small">Next: <a href="/guides/hub">Set up a hub</a>, and <a href="/docs/access">Access and membership</a> for roles and sign-in.</p>
+<p class="small">Next: <a href="/guides/hub">Set up a hub</a>, and <a href="/docs/cli/workspace#member">ub workspace member</a> for roles and <a href="/docs/cli/auth">ub auth</a> for sign-in.</p>
 </section>
 </div>

@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <div class="hero sub">
-  <p class="crumb"><a href="/">Uberblick</a> / Docs / Start</p>
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Get started</p>
   <h1>Workspaces</h1>
   <p class="lede">A workspace is one set of documents with its own sidebar, tags and members. Every computer that uses it keeps a full copy and works offline. A project directory is bound to one workspace by a small file, <code>.uberblick.json</code>, and everything in that directory, terminal commands and agents alike, follows the binding.</p>
 </div>
@@ -25,7 +25,7 @@ ub open">Copy</button></div><pre><span class="p">$</span> ub workspace create "M
   "workspaceId": "3f0c2a1e-…",
   "hubUrl": "https://hub.example.com"
 }</pre></section>
-  <p>Two environment variables, <code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code>, override the file for one shell or one agent process; see <a href="/docs/configuration">Configuration</a>. A running agent keeps the workspace it started with, so restart it after changing the binding.</p>
+  <p>Two environment variables, <code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code>, override the file for one shell or one agent process; see <a href="/docs/cli/binding">Configuration</a>. A running agent keeps the workspace it started with, so restart it after changing the binding.</p>
   </section>
 
   <section class="q" id="use"><h2>Join a shared one</h2>
@@ -33,7 +33,7 @@ ub open">Copy</button></div><pre><span class="p">$</span> ub workspace create "M
 ub workspace use https://hub.example.com/3f0c2a1e-…">Copy</button></div><pre><span class="p">$</span> ub auth login https://hub.example.com
 <span class="p">$</span> ub workspace use https://hub.example.com/3f0c2a1e-…
 <span class="o">fetched 48 documents, verified, bound in ./.uberblick.json</span></pre></section>
-  <p><code>ub workspace use</code> takes a hub link with the workspace id as its last segment, or an id of a workspace this machine already has. It fetches the whole workspace, verifies that the copy matches the hub and only then writes the binding. It never starts a sign-in and never merges two workspaces. Someone has to have granted you access first: <a href="/docs/access">Access and membership</a>.</p>
+  <p><code>ub workspace use</code> takes a hub link with the workspace id as its last segment, or an id of a workspace this machine already has. It fetches the whole workspace, verifies that the copy matches the hub and only then writes the binding. It never starts a sign-in and never merges two workspaces. Someone has to have granted you access first: <a href="/docs/cli/workspace#member">ub workspace member</a>.</p>
   </section>
 
   <section class="q" id="list"><h2>See what this machine has</h2>

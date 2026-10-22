@@ -1,1 +1,10 @@
 /use-cases/* /guides/:splat 301
+/docs/custom-markdown /docs/markdown 301
+/docs/ablauf /docs/markdown/diagrams 301
+/docs/wireframes /docs/markdown/wireframes 301
+/docs/charts /docs/markdown/charts 301
+/docs/cards /docs/markdown/extensions 301
+/docs/figma /docs/markdown/embeds 301
+/docs/configuration /docs/cli/binding 301
+/docs/editor /docs/documents 301
+/docs/access /docs/cli/workspace 301

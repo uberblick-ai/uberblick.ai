@@ -16,3 +16,9 @@
 
 /* The "Next:" line at the end of a sub-page in a topic. */
 .next { margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 14px; color: var(--muted) }
+
+/* Scenarios on a CLI page: the situation, then what to do. */
+.scen { margin: 0; display: grid; gap: 10px 20px; grid-template-columns: minmax(0, 1fr) }
+.scen dt { font-weight: 600 }
+.scen dd { margin: 0 0 6px; color: var(--muted) }
+.hero.sub h1 code { font-family: var(--mono); font-weight: 500; background: none; padding: 0 }

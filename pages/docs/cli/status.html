@@ -1,0 +1,36 @@
+<head>
+<title>ub status · Uberblick docs</title>
+<meta name="description" content="The short answer on whether this project's workspace is syncing: hub, sign-in, pending changes and problems.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
+  <h1><code>ub status</code></h1>
+  <p class="lede">One screen that says where this project's workspace is, where that selection came from, what is stored locally, and whether changes are reaching the hub. Each problem names its fix.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="usage"><h2>Usage</h2>
+<section class="block code"><div class="cap"><span>help</span></div><pre>usage: ub status [--json]
+
+options:
+  --json            the same report as JSON on stdout, for scripts</pre></section>
+  </section>
+
+  <section class="q" id="report"><h2>The report</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub status">Copy</button></div><pre><span class="p">$</span> ub status
+<span class="o">workspace   Acme product (3f9c0a1e-…)
+selected    ./.uberblick.json
+storage     ~/.local/share/uberblick/3f9c0a1e-….sqlite, 1.2 MB
+client      ub 0.4.8, protocol 7
+hub         hub.example.com, protocol 7, signed in as ben
+pending     0 changes
+last sync   2 minutes ago</span></pre></section>
+  <p>It connects briefly to the hub for a live answer. <em>Last sync</em> is the last full acknowledgement of this replica, not a promise about durable hub storage. A recent sign-in from another device is mentioned here, so a credential that walked off is noticed. When client and hub are on different protocol versions, the side that is behind reads <em>update required</em>.</p>
+  </section>
+
+  <section class="q" id="scenarios"><h2>Scenarios</h2>
+  <dl class="scen"><dt>Is my work on the hub?</dt><dd><em>pending 0</em> and a recent <em>last sync</em> say yes.</dd><dt>Which workspace is this directory using?</dt><dd>The <em>selected</em> line says whether the binding came from <code>.uberblick.json</code> or from <code>UB_WORKSPACE_ID</code> in the environment.</dd><dt>Something is wrong</dt><dd>The line in question names the fix; <a href="/docs/cli/doctor">ub doctor</a> runs the full checks.</dd></dl>
+  </section>
+  <p class="next">Next: <a href="/docs/cli/doctor">ub doctor</a>.</p>
+</article>

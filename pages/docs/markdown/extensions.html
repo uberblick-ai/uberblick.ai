@@ -1,15 +1,35 @@
 <head>
-<title>Cards · Uberblick docs</title>
-<meta name="description" content="Give a recommendation a shape: a label, a title, a body, a footer and buttons that open a link or start a discussion in Claude Code or Codex.">
+<title>Markdown extensions · Uberblick docs</title>
+<meta name="description" content="The small additions to Markdown in Uberblick: links by document id, GitHub references, inline icons, terminal transcripts, and cards with a label, a title, a footer and buttons.">
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <div class="hero sub">
-  <p class="crumb"><a href="/">Uberblick</a> / Docs / Blocks</p>
-  <h1>Cards</h1>
-  <p class="lede">A report that ends in "we recommend" loses the recommendation in the paragraph above it. A card gives it a shape, and a button can carry the reader straight into Claude Code or Codex with the discussion already set up.</p>
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Custom Markdown</p>
+  <h1>Markdown extensions</h1>
+  <p class="lede">Four small additions and one container. Each is still text that any Markdown tool shows as something sensible, and an agent learns all of them from <code>get_help("markdown")</code>.</p>
 </div>
 <article class="col">
-  <section class="q" id="card"><h2>Source beside drawing</h2>
+  <section class="q" id="links"><h2>Links by id</h2>
+  <p><code>[label](document-uuid)</code> links to a document by its id. It survives renames and counts as a backlink on the target. Agents get the id from <code>search</code> or <code>get_sidebar</code> and never guess it from a title.</p>
+  </section>
+
+  <section class="q" id="github"><h2>GitHub references</h2>
+  <p>A link to an issue or pull request on GitHub renders as a compact pill with its number, and a decision record that links an issue is found by <code>find_decisions</code> for that issue. The pill does not fetch the issue; it is a reference, not a tracker.</p>
+  </section>
+
+  <section class="q" id="icons"><h2>Inline icons</h2>
+  <p>A curated set of shortcodes, such as <code>:check:</code> or <code>:warning:</code>, renders as icons in prose and in card labels. An unknown shortcode stays text.</p>
+  </section>
+
+  <section class="q" id="terminal"><h2>Terminal transcripts</h2>
+  <p>A <code>terminal</code> fence keeps prompt, command and output apart, so a transcript reads as one and copies as the command only. It exports as the same fence.</p>
+  <section class="block code"><div class="cap"><span>Markdown</span></div><pre>```terminal
+$ ub status
+workspace   Uberblick product, from ./.uberblick.json
+```</pre></section>
+  </section>
+
+  <section class="q" id="card"><h2>Cards</h2>
   <p>A report that ends in "we recommend" loses the recommendation in the paragraph above it. A card gives it a shape: an optional label, a required title, an optional body and footer, and link buttons. Agents use it for the one thing a reader should act on, and a button can open the discussion straight in Claude Code or Codex.</p>
   <div class="tabs ex"><div class="tablist" role="tablist" aria-label="card example"><button role="tab" id="t-card-v" aria-selected="true" aria-controls="p-card-v" type="button">Displayed</button><button role="tab" id="t-card-m" aria-selected="false" aria-controls="p-card-m" type="button">Markdown</button><button class="copy" type="button" data-copy=":::card
 label: Recommendation

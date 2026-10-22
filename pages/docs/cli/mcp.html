@@ -1,0 +1,38 @@
+<head>
+<title>ub mcp · Uberblick docs</title>
+<meta name="description" content="Register the Uberblick MCP server with Claude Code or Codex, for this project or for every project of the user, or print the entry for another client.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
+  <h1><code>ub mcp</code></h1>
+  <p class="lede">The MCP server is how an agent reads and writes the workspace. <code>ub mcp install</code> registers it with the agent's client by running that client's own <code>mcp add</code>, so the vendor writes its own file. The entry is a plain <code>ub mcp serve</code>; the server follows the project binding where the agent starts.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="usage"><h2>Usage</h2>
+<section class="block code"><div class="cap"><span>help</span></div><pre>usage: ub mcp [command]
+
+commands:
+  install &lt;client&gt;   register Uberblick with an agent&#x27;s MCP client: claude or codex
+
+options for install:
+  --user             register for every project of this user, not just this project
+  --print            print the entry to paste, and run nothing</pre></section>
+  </section>
+
+  <section class="q" id="install"><h2>install</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub mcp install claude">Copy</button></div><pre><span class="p">$</span> ub mcp install claude
+<span class="o">registered uberblick with Claude Code for this project: ub mcp serve</span></pre></section>
+  <p>Clients today: <code>claude</code> and <code>codex</code>. A second run reports <em>already installed</em>; an entry named <code>uberblick</code> that <code>ub</code> did not write is left alone and reported. <code>--user</code> registers for every project of this user instead of this one. Any other client gets the generic stdio snippet with <code>--print</code>, to paste into that client's own configuration. Install needs no workspace and no login; credentials stay in the private user store and are never copied into an entry.</p>
+  </section>
+
+  <section class="q" id="serve"><h2>serve</h2>
+  <p><code>ub mcp serve</code> is the server itself, started by the client. You do not run it by hand. It serves the workspace of the nearest <code>.uberblick.json</code> above the agent's working directory, or the one named by <code>UB_WORKSPACE_ID</code> in the entry's environment, see <a href="/docs/cli/binding">Project binding</a>. Restart the client after an update; a running server keeps the version it started with.</p>
+  </section>
+
+  <section class="q" id="scenarios"><h2>Scenarios</h2>
+  <dl class="scen"><dt>Set up a new project</dt><dd><code>ub workspace use</code> or <code>create</code>, then <code>ub mcp install claude</code> in the same directory. Both are committed through <code>.uberblick.json</code> and the client's project config.</dd><dt>One agent, two workspaces</dt><dd>Register the server twice under different names, each entry with its own <code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code>. <code>--print</code> gives the entry to adapt.</dd><dt>Another client</dt><dd><code>ub mcp install cursor --print</code> prints the stdio entry to paste.</dd></dl>
+  </section>
+  <p class="next">Next: <a href="/docs/cli/open">ub open</a>.</p>
+</article>

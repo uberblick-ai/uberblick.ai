@@ -1,0 +1,22 @@
+<head>
+<title>ub update · Uberblick docs</title>
+<meta name="description" content="Update a Homebrew installation of ub.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
+  <h1><code>ub update</code></h1>
+  <p class="lede">One command keeps the client current. It updates the copy of <code>ub</code> that is on your path, wherever you run it, and leaves a source checkout alone.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="usage"><h2>Usage</h2>
+<section class="block code"><div class="cap"><span>help</span></div><pre>usage: ub update</pre></section>
+  </section>
+
+  <section class="q" id="run"><h2>Run it</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub update">Copy</button></div><pre><span class="p">$</span> ub update
+<span class="o">brew update … brew upgrade uberblick-ai/tap/uberblick … 0.4.8</span></pre></section>
+  <p>Runs Homebrew's own update and upgrade. A source checkout is not touched; update that with <code>git pull</code> and <code>mise run setup</code>. Client and hub share a protocol version: when a release changes it, <code>ub status</code> says <em>update required</em> on the side that is behind and the <a href="/changelog">changelog</a> says what to do. Restart running MCP servers and <code>ub open</code> afterwards; they keep the version they started with.</p>
+  </section>
+</article>

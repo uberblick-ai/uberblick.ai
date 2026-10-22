@@ -1,0 +1,33 @@
+<head>
+<title>ub open · Uberblick docs</title>
+<meta name="description" content="Serve the editor for this project's workspace on this computer and open the browser.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
+  <h1><code>ub open</code></h1>
+  <p class="lede">The browser editor is served by <code>ub</code> on your own computer, on the loopback address, for the workspace this project is bound to. It runs until Ctrl-C. There is no desktop app to install and no page on the hub to open.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="usage"><h2>Usage</h2>
+<section class="block code"><div class="cap"><span>help</span></div><pre>usage: ub open [options]
+
+options:
+  --no-browser      print the address instead of opening a browser
+  --port &lt;n&gt;        port for the web app
+  --verbose         also print hub, sync and startup details</pre></section>
+  </section>
+
+  <section class="q" id="run"><h2>Open the editor</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub open">Copy</button></div><pre><span class="p">$</span> ub open
+<span class="o">serving Acme product at http://127.0.0.1:4800/
+syncing with hub.example.com as ben</span></pre></section>
+  <p>Opens the editor in your browser for the bound workspace. A hub workspace syncs in the background while the editor is open; a local-only workspace runs with a local hub that <code>ub open</code> starts for it. <code>BROWSER</code> in the environment names the command used to open the address, and <code>BROWSER=none</code> does what <code>--no-browser</code> does.</p>
+  </section>
+
+  <section class="q" id="scenarios"><h2>Scenarios</h2>
+  <dl class="scen"><dt>Over SSH</dt><dd><code>ub open --no-browser</code> prints the address; forward the port and open it on your side. The editor binds loopback only, so it is never reachable from another machine.</dd><dt>Not signed in</dt><dd>A hub workspace still opens from the local copy and the footer says <em>not shared with hub</em>; <code>ub auth login</code> is the fix it names.</dd><dt>Two projects at once</dt><dd>Each <code>ub open</code> picks the next free port; <code>--port</code> pins one.</dd><dt>After an update</dt><dd>Stop and start <code>ub open</code>; it keeps the version it started with.</dd></dl>
+  </section>
+  <p class="next">Next: <a href="/docs/cli/status">ub status</a>.</p>
+</article>

@@ -1,0 +1,36 @@
+<head>
+<title>ub doctor · Uberblick docs</title>
+<meta name="description" content="Check this project's Uberblick setup and name the fix for each problem.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
+  <h1><code>ub doctor</code></h1>
+  <p class="lede">Eight checks on the project you run it in, each with the fix spelled out: the workspace binding, the local database, the stored login, the hub, the clock, and whether an MCP client is registered for this project. Checks that cannot run yet say why.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="usage"><h2>Usage</h2>
+<section class="block code"><div class="cap"><span>help</span></div><pre>usage: ub doctor [--json]
+
+options:
+  --json            the same checks as JSON on stdout, for scripts</pre></section>
+  </section>
+
+  <section class="q" id="run"><h2>Run it</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub doctor">Copy</button></div><pre><span class="p">$</span> ub doctor
+<span class="o">✓ workspace   Acme product, from ./.uberblick.json
+✓ database    ~/.local/share/uberblick/&lt;workspace-id&gt;.sqlite
+✓ login       ben at hub.example.com
+✓ hub         reachable, protocol 7
+✓ clock       within 2 s of the hub
+! mcp         MCP client is not set up for this project
+              fix: ub mcp install claude</span></pre></section>
+  <p>Exit 0 when every check passes, 1 otherwise. <code>--json</code> prints the same checks as one object, which is what a setup script or an agent reads.</p>
+  </section>
+
+  <section class="q" id="scenarios"><h2>Scenarios</h2>
+  <dl class="scen"><dt>A new computer</dt><dd>Run it after <code>ub workspace use</code>; it walks you through login and MCP registration one fix at a time.</dd><dt>The agent cannot write</dt><dd>A clock that is off against the hub or a refused login shows up here before you look anywhere else.</dd></dl>
+  </section>
+  <p class="next">Next: <a href="/docs/cli/data">ub data</a>.</p>
+</article>

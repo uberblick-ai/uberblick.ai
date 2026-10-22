@@ -1,0 +1,47 @@
+<head>
+<title>ub auth · Uberblick docs</title>
+<meta name="description" content="Sign in to a hub with GitHub, check the stored login and hub administration, and sign this computer or all your devices out.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
+  <h1><code>ub auth</code></h1>
+  <p class="lede">A local workspace needs no login. Sharing one does: <code>ub auth</code> signs this computer in to a hub with GitHub's device flow and stores a credential for this computer only. Nothing is copied into an MCP entry, and no command ever starts a sign-in on its own.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="usage"><h2>Usage</h2>
+<section class="block code"><div class="cap"><span>help</span></div><pre>usage: ub auth [command]
+
+commands:
+  login [hub]            sign in to a hub with GitHub
+  status [hub] [--json]  check the stored login and current hub administration
+  logout [hub]           sign this computer out; --all-devices signs out all of yours</pre></section>
+  </section>
+
+  <section class="q" id="login"><h2>login</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth login https://hub.example.com">Copy</button></div><pre><span class="p">$</span> ub auth login https://hub.example.com
+<span class="o">Open https://github.com/login/device and enter the code ABCD-1234
+… signed in as ben; this computer holds a device credential for hub.example.com</span></pre></section>
+  <p>Open the address, enter the code, done. The command completes on its own and never asks for keyboard input; in a local terminal the approval page opens by itself, over SSH only the address and code are printed. The hub learns your GitHub login and nothing else. The credential belongs to this computer, expires after 30 days and renews itself while in use. Without a hub argument the project's bound hub is used. Signing in grants no workspace access by itself; a workspace admin does that with <a href="/docs/cli/workspace#member">ub workspace member</a>. On a fresh hub the first login claims it and makes that account the hub admin.</p>
+  </section>
+
+  <section class="q" id="status"><h2>status</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth status">Copy</button></div><pre><span class="p">$</span> ub auth status
+<span class="o">hub.example.com accepts this computer&#x27;s login as ben
+hub admin: yes</span></pre></section>
+  <p>One read-only request: does the hub still accept the stored login, and is this account a hub admin. Exit 1 means the hub could not answer, not that you are not an admin. <code>--json</code> prints one object for scripts.</p>
+  </section>
+
+  <section class="q" id="logout"><h2>logout</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth logout
+ub auth logout --all-devices https://hub.example.com">Copy</button></div><pre><span class="p">$</span> ub auth logout
+<span class="p">$</span> ub auth logout --all-devices https://hub.example.com</pre></section>
+  <p>Revokes this computer on the hub and removes its login here. With <code>--all-devices</code> every device of your account on that hub is revoked, this one last; that is how a lost laptop is handled from any computer still signed in. Workspace memberships, the project binding and the local workspace copies stay.</p>
+  </section>
+
+  <section class="q" id="scenarios"><h2>Scenarios</h2>
+  <dl class="scen"><dt>A teammate joins a shared workspace</dt><dd>They install <code>ub</code>, run <code>ub auth login</code> with the hub, and an admin grants them access. Then <code>ub workspace use</code> with the link fetches the workspace.</dd><dt>An agent host or an Actions runner</dt><dd>It signs in once like any other computer and holds its own credential, which can be revoked on its own. An agent uses the login of the computer it runs on.</dd><dt>A hub says the login is not accepted</dt><dd><code>ub auth status</code> says why. A credential older than 30 days that the hub refuses is removed; sign in again.</dd><dt>A laptop is lost</dt><dd>From any computer that is still signed in: <code>ub auth logout --all-devices</code>, then sign the remaining computers in again.</dd></dl>
+  </section>
+  <p class="next">Next: <a href="/docs/cli/workspace">ub workspace</a>.</p>
+</article>

@@ -1,0 +1,44 @@
+<head>
+<title>ub data · Uberblick docs</title>
+<meta name="description" content="Read and write a document's structured data through files: print a collection as JSON, apply a batch of update_data operations from a file or stdin.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
+  <h1><code>ub data</code></h1>
+  <p class="lede">Charts and data tables draw from records a document owns. <code>ub data</code> is the terminal side of that: a script exports a collection, a cron job or a CI step feeds new records in. Agents use the MCP tools instead.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="usage"><h2>Usage</h2>
+<section class="block code"><div class="cap"><span>help</span></div><pre>usage: ub data [command]
+
+commands:
+  get &lt;doc&gt; [&lt;collection&gt;]       print the data summary, or one collection as JSON
+  update &lt;doc&gt; --file &lt;path|-&gt;   apply update_data operations from a file, or - for stdin
+
+options:
+  --out &lt;file&gt;                   get: write the collection to this file instead of stdout
+  --dry-run                      update: validate and report, write nothing</pre></section>
+  </section>
+
+  <section class="q" id="get"><h2>get</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub data get 7c1e… deliveries --out deliveries.json">Copy</button></div><pre><span class="p">$</span> ub data get 7c1e… deliveries --out deliveries.json
+<span class="o">wrote 42 records of deliveries to deliveries.json</span></pre></section>
+  <p>Without a collection, the summary: every collection with its schema and record count, and what is invalid. With one, its records as JSON.</p>
+  </section>
+
+  <section class="q" id="update"><h2>update</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub data update 7c1e… --file ops.json --dry-run
+ub data update 7c1e… --file - &lt; ops.json">Copy</button></div><pre><span class="p">$</span> ub data update 7c1e… --file ops.json --dry-run
+<span class="p">$</span> ub data update 7c1e… --file - &lt; ops.json
+<span class="o">valid: 1 schema, 12 upserts, 0 deletes
+applied: 12 upserts to deliveries</span></pre></section>
+  <p>The file holds the same operations <code>update_data</code> takes over MCP: schema, replace, delete, upsert, validated as one batch. Nothing is written when any operation fails. <code>--dry-run</code> validates and reports. Exit 0 when applied, 1 when refused, 2 for a usage error. Offline, the write lands in the local copy and syncs later.</p>
+  </section>
+
+  <section class="q" id="scenarios"><h2>Scenarios</h2>
+  <dl class="scen"><dt>Nightly numbers</dt><dd>A cron job queries the warehouse, writes upserts and runs <code>ub data update</code>. The chart on the report page is current in the morning.</dd><dt>Take the numbers somewhere else</dt><dd><code>ub data get … --out</code>, then whatever tool you like.</dd><dt>Check a generated file before it lands</dt><dd><code>--dry-run</code> in the pipeline, the real run after.</dd></dl>
+  </section>
+  <p class="next">Next: <a href="/docs/cli/update">ub update</a>.</p>
+</article>

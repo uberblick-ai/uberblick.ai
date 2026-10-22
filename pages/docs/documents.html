@@ -1,0 +1,40 @@
+<head>
+<title>Documents · Uberblick docs</title>
+<meta name="description" content="What a document is in Uberblick: a page of blocks with stable ids and revisions, links by id, comment threads anchored to the text, tags, a curated sidebar and a lifecycle. The same model for people and agents.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Core concepts</p>
+  <h1>Documents</h1>
+  <p class="lede">A workspace is a set of documents and nothing else: no folders, no databases beside the pages, no tasks. A document is a page of blocks. People and agents see the same page, the same block ids and the same revisions, so a sentence an agent wrote and a comment a person left on it refer to one thing.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="page"><h2>A page of blocks</h2>
+  <p>A document has a title, an optional one-line description and an optional TL;DR, then blocks: paragraphs, headings, lists, quotes, tables, code, and the <a href="/docs/markdown">blocks Uberblick adds</a>. Every block has a stable id and a revision. An agent edits one block against the revision it read, and a stale read comes back with the current text instead of overwriting it. A comment anchors to a block, so it survives edits around it. Replacing a whole page would throw both away, which is why no tool does that.</p>
+  </section>
+
+  <section class="q" id="links"><h2>Links by id</h2>
+  <p>A link to another document is a reference by id: <code>[label](document-uuid)</code>. It survives renames and counts as a backlink, so a page knows which pages point at it. A link to a GitHub issue or pull request is recognised as such and shown with its number. Decision records link the issues they govern the same way, which is how <code>find_decisions</code> answers "what was decided about #1588".</p>
+  </section>
+
+  <section class="q" id="threads"><h2>Comment threads</h2>
+  <p>A thread is attached to a range of text inside one block. People open threads in the browser; agents open and answer them with <code>annotate</code>, and see which threads are open on a page before they edit it. A block with an open thread cannot be deleted. Resolving a thread keeps it in the page's history. Most of the review between a person and an agent happens here, as short questions on the exact sentence rather than a chat about the page.</p>
+  </section>
+
+  <section class="q" id="sidebar"><h2>The sidebar is curated</h2>
+  <p>The sidebar is not a file tree. It holds named groups of pinned documents in the order someone put them, and the documents that matter most sit at the top. An agent starts from the same list, through <code>get_sidebar</code>. Everything that is not pinned is still live and reachable through search and the full list; it is only not on the shelf.</p>
+  </section>
+
+  <section class="q" id="tags"><h2>Tags, kinds and lifecycle</h2>
+  <p>Tags are a catalogue with stable ids, so renaming a tag renames it everywhere. One tag, <code>guidance</code> by default, marks the <a href="/docs/guidance">pages agents are pointed at first</a>. A document has a kind: a regular page, or a <a href="/docs/decisions">decision record</a> with its own fields and rules. A document is live, or archived; an archived document still answers reads by id, can be restored, and on a hub can be deleted for good. Search covers titles, descriptions, content and tag names, and is the same index for people and agents.</p>
+  </section>
+
+  <section class="q" id="data"><h2>Data in the page</h2>
+  <p>A document can own collections of records with a schema. A chart or a data table in the page draws from them, so the numbers are in the page and not in a screenshot. Agents update records with <code>update_data</code>, scripts with <code>ub data update</code>, and the chart follows. See <a href="/docs/markdown/charts">Charts</a>.</p>
+  </section>
+
+  <section class="q" id="export"><h2>In and out</h2>
+  <p><code>export_markdown</code> gives any document back as one Markdown file, with the Uberblick blocks as fenced source that other tools at least show. The workspace itself is one SQLite file per computer, described on <a href="/guides/first-workspace">Your first workspace</a>.</p>
+  </section>
+</article>

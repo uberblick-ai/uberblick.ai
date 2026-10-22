@@ -1,11 +1,11 @@
 <head>
-<title>Custom Markdown · Uberblick docs</title>
-<meta name="description" content="The few additions Uberblick makes to Markdown so that ideas can be drawn instead of described: ablauf flows, wireframes, charts and data tables from records, cards and Figma references. Each one is text, so agents write it and people read the source.">
+<title>Markdown baseline · Uberblick docs</title>
+<meta name="description" content="What stays standard Markdown in Uberblick, the two shapes every addition takes, and how agents read and write it over MCP.">
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <div class="hero sub">
-  <p class="crumb"><a href="/">Uberblick</a> / Docs / Blocks</p>
-  <h1>Custom Markdown</h1>
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Custom Markdown</p>
+  <h1>Markdown baseline</h1>
   <p class="lede">Markdown is a good standard, and GitHub extended it in ways that stuck. It still has one blind spot: agents produce long walls of text that nobody scans. Uberblick looks for the few additions that let an idea be drawn instead of described, a flow, a screen, a chart, and publishes each one as its own package so you can use it without Uberblick. All of them stay text. An agent writes a block over MCP, a person edits it in the browser, and <code>export_markdown</code> gives the document back as a file that any Markdown tool can still open. You do not have to teach your model any of this: the Uberblick MCP server carries the syntax of every block as a help topic, so an agent asks <code>get_help("markdown")</code> and writes it right.</p>
 </div>
 <article class="col">
@@ -13,23 +13,14 @@
   <p>Paragraphs, headings, lists, quotes, fenced code with a language, GFM tables and inline marks read and write as everywhere else. A link whose target is a document id, <code>[label](document-uuid)</code>, links to that document and counts as a backlink. The additions below take one of two shapes: a fence with an info string for source a program reads, or a <code>:::name</code> container for prose with a header. Anything that does not know a shape sees a code block, which is the point.</p>
   </section>
 
-  <section class="q" id="blocks"><h2>The blocks</h2>
-  <p>Each one has its own page with the source beside the drawing.</p>
+  <section class="q" id="additions"><h2>The additions</h2>
+  <p>Each has its own page with the source beside the drawing.</p>
   <ul class="dir">
-    <li><a href="/docs/ablauf"><span class="n">ablauf</span><span class="d">Flow diagrams as text where the author places the nodes and the renderer only draws.<span>Replaces Mermaid.</span></span></a></li>
-    <li><a href="/docs/wireframes"><span class="n">wireframe</span><span class="d">A screen sketch in a few lines of text, drawn by the editor.<span>Format 0.x; it may still change.</span></span></a></li>
-    <li><a href="/docs/charts"><span class="n">chart</span><span class="d">Line and bar charts and data tables drawn from records stored in the document.<span>When an agent updates the records, the chart updates with them.</span></span></a></li>
-    <li><a href="/docs/cards"><span class="n">card</span><span class="d">A prose card with a label, a title, a footer and buttons.<span>For a recommendation, a warning or a next step an agent proposes.</span></span></a></li>
-    <li><a href="/docs/figma"><span class="n">figma</span><span class="d">A Figma file, frame, prototype or board, with a caption.<span>Nothing contacts Figma until the reader opens it.</span></span></a></li>
-  </ul>
-  </section>
-
-  <section class="q" id="small"><h2>The small additions</h2>
-  <ul>
-    <li><strong>Links by id.</strong> <code>[label](document-uuid)</code> links to a document, survives renames and counts as a backlink.</li>
-    <li><strong>GitHub pills.</strong> A link to an issue or pull request renders as a compact pill with its number and state.</li>
-    <li><strong>Inline icons.</strong> A curated set of shortcodes, such as <code>:check:</code>, renders as icons in prose and card labels; unknown shortcodes stay text.</li>
-    <li><strong>Terminal transcripts.</strong> A <code>terminal</code> fence keeps prompt, command and output apart and exports as the same fence.</li>
+    <li><a href="/docs/markdown/extensions"><span class="n">extensions</span><span class="d">The small ones: links by id, GitHub references, inline icons, terminal transcripts and cards.</span></a></li>
+    <li><a href="/docs/markdown/diagrams"><span class="n">diagrams</span><span class="d">Flow diagrams as text where the author places the nodes and the renderer only draws.<span>Replaces Mermaid.</span></span></a></li>
+    <li><a href="/docs/markdown/wireframes"><span class="n">wireframes</span><span class="d">A screen sketch in a few lines of text, drawn by the editor.<span>Format 0.x; it may still change.</span></span></a></li>
+    <li><a href="/docs/markdown/charts"><span class="n">charts</span><span class="d">Line and bar charts and data tables drawn from records stored in the document.<span>When an agent updates the records, the chart updates with them.</span></span></a></li>
+    <li><a href="/docs/markdown/embeds"><span class="n">embeds</span><span class="d">A Figma file, frame, prototype or board, with a caption.<span>Nothing contacts Figma until the reader opens it.</span></span></a></li>
   </ul>
   </section>
 
