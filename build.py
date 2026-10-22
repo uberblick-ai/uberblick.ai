@@ -7,7 +7,7 @@ Standard library only:
 Every site/pages/<path>.html is one page. It starts with a <head> block (title,
 description, the page's own stylesheet) and continues with the page's main
 content. The build wraps it in the document skeleton and the shell every page
-shares (top bar, sidebar, footer), links the shared stylesheet and writes it to
+shares (top bar, a sidebar for its section, footer), links the shared stylesheet and writes it to
 site/out/<path>/index.html, so the page is served at /<path> with no extension
 (Cloudflare Pages redirects /<path>.html there). pages/index.html is /, and
 pages/404.html is the not-found page Pages serves as out/404.html. Everything
@@ -71,30 +71,16 @@ SKELETON = """<!doctype html>
   <a class="mark" href="/">uberblick</a>
   {version}<nav aria-label="Site">
     <a href="/docs/install">Docs</a>
-    <a href="/use-cases">Use cases</a>
+    <a href="/guides">Guides</a>
     <a href="/blog">Blog</a>
     <a href="/compare">Compare</a>
     <a href="https://github.com/uberblick-ai/uberblick-2">GitHub</a>
   </nav>
 </header>
-<div class="layout">
-  <details class="side" open>
-    <summary>{side_title}</summary>
-    <div class="side-in">
-{side}    </div>
-  </details>
-  <main class="main">
+<div class="layout{solo}">
+{aside}  <main class="main">
 {body}
-    <section class="blk about" id="about">
-      <h2>Who builds this.</h2>
-      <p>Uberblick, ub-agents and the small libraries beside them, such as wireframe and ablauf, are made by a team in Berlin that likes to find out how far AI engineering can go. What holds up in our own work becomes a framework and a few products that run on GitHub alone, so a team no longer needs Notion, Linear or Jira beside it. Take them as a starting point for your own variant. <a href="/docs/motivation">Why each of them exists</a>.</p>
-      <div class="cols">
-        <div><h3>Docs</h3><ul><li><a href="/docs/install">Install and update</a></li><li><a href="/docs/workspaces">Workspaces</a></li><li><a href="/docs/editor">The editor</a></li><li><a href="/docs/hub">Run a hub</a></li><li><a href="/docs/cli">CLI reference</a></li><li><a href="/docs/faq">FAQ</a></li></ul></div>
-        <div><h3>Agents</h3><ul><li><a href="/docs/agents">Agents over MCP</a></li><li><a href="/docs/guidance">Read before you write</a></li><li><a href="/docs/decisions">Decisions</a></li><li><a href="/docs/mcp">MCP reference</a></li><li><a href="https://agents.uberblick.ai">ub-agents</a></li><li><a href="https://skills.uberblick.ai">Skills</a></li></ul></div>
-        <div><h3>Project</h3><ul><li><a href="/blog">Blog</a></li><li><a href="/changelog">Changelog</a></li><li><a href="/use-cases">Use cases</a></li><li><a href="/compare">Compare</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2">GitHub</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2/blob/main/SECURITY.md">Security</a></li></ul></div>
-      </div>
-    </section>
-  </main>
+{about}  </main>
 </div>
 <footer class="foot">
   <span>MIT license</span>
@@ -132,16 +118,36 @@ for (const box of document.querySelectorAll('.tabs')) {{
 </html>
 """
 
-# The sidebar: the docs, grouped, then the pages that are not docs.
-SIDE = [
-    (None, [('/', 'Overview')]),
+ABOUT = """    <section class="blk about" id="about">
+      <h2>Who builds this.</h2>
+      <p>Uberblick, ub-agents and the small libraries beside them, such as wireframe and ablauf, are made by a team in Berlin that likes to find out how far AI engineering can go. What holds up in our own work becomes a framework and a few products that run on GitHub alone, so a team no longer needs Notion, Linear or Jira beside it. Take them as a starting point for your own variant. <a href="/docs/motivation">Why each of them exists</a>.</p>
+      <div class="cols">
+        <div><h3>Docs</h3><ul><li><a href="/docs/install">Install and update</a></li><li><a href="/docs/workspaces">Workspaces</a></li><li><a href="/docs/editor">The editor</a></li><li><a href="/docs/hub">Run a hub</a></li><li><a href="/docs/cli">CLI reference</a></li><li><a href="/docs/faq">FAQ</a></li></ul></div>
+        <div><h3>Agents</h3><ul><li><a href="/docs/agents">Agents over MCP</a></li><li><a href="/docs/guidance">Read before you write</a></li><li><a href="/docs/decisions">Decisions</a></li><li><a href="/docs/mcp">MCP reference</a></li><li><a href="https://agents.uberblick.ai">ub-agents</a></li><li><a href="https://skills.uberblick.ai">Skills</a></li></ul></div>
+        <div><h3>Project</h3><ul><li><a href="/blog">Blog</a></li><li><a href="/changelog">Changelog</a></li><li><a href="/guides">Guides</a></li><li><a href="/compare">Compare</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2">GitHub</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2/blob/main/SECURITY.md">Security</a></li></ul></div>
+      </div>
+    </section>
+"""
+
+ASIDE = """  <details class="side" open>
+    <summary>{side_title}</summary>
+    <div class="side-in">
+{side}    </div>
+  </details>
+"""
+
+# Each section has its own sidebar and sees nothing else: docs pages the docs tree, guides the
+# guides, blog pages the posts. The landing page, Compare and Not found have none.
+DOCS = [
     ('Start', [('/docs/motivation', 'Motivation'), ('/docs/install', 'Install and update'), ('/docs/workspaces', 'Workspaces'), ('/docs/editor', 'The editor'), ('/docs/faq', 'FAQ')]),
     ('Agents', [('/docs/agents', 'Agents over MCP'), ('/docs/guidance', 'Read before you write'), ('/docs/decisions', 'Decisions'), ('/docs/instructions', 'Agent instructions')]),
     ('Blocks', [('/docs/custom-markdown', 'Custom Markdown'), ('/docs/ablauf', 'Ablauf diagrams'), ('/docs/wireframes', 'Wireframes'), ('/docs/charts', 'Charts and data tables'), ('/docs/cards', 'Cards'), ('/docs/figma', 'Figma')]),
     ('Sharing', [('/docs/hub', 'Run a hub'), ('/docs/access', 'Access and membership')]),
     ('Reference', [('/docs/cli', 'CLI reference'), ('/docs/configuration', 'Configuration'), ('/docs/mcp', 'MCP reference'), ('/changelog', 'Changelog')]),
-    ('Use cases', [('/use-cases/product-intent', 'Product intent'), ('/use-cases/decisions', 'Decisions that stay decided'), ('/use-cases/reports', 'Reports with the numbers'), ('/use-cases/flows', 'Flows and screens as text')]),
-    (None, [('/blog', 'Blog'), ('/compare', 'Which tool fits your team?')]),
+]
+GUIDES = [
+    (None, [('/guides', 'All guides')]),
+    ('Guides', [('/guides/product-intent', 'Product intent'), ('/guides/decisions', 'Decisions that stay decided'), ('/guides/reports', 'Reports with the numbers'), ('/guides/flows', 'Flows and screens as text')]),
 ]
 KINDS = {'release': 'Release', 'design note': 'Design note', 'building note': 'Building note'}
 
@@ -303,24 +309,32 @@ def feed(posts):
 """
 
 
-def sidebar(path, posts=()):
+def section(path, posts=()):
+    """The sidebar title and groups for a page, or None for a page without a sidebar."""
+    if path.startswith('/docs/') or path == '/changelog':
+        return 'Docs', DOCS
+    if path == '/guides' or path.startswith('/guides/'):
+        return 'Guides', GUIDES
+    if path == '/blog' or path.startswith('/blog/'):
+        return 'Posts', [(None, [('/blog', 'All posts')]), ('Posts', [(p['path'], p['title']) for p in posts if not p['draft']]), (None, [('/blog/feed.xml', 'Atom feed')])]
+    return None
+
+
+def sidebar(path, groups):
     def link(href, label):
         on = ' class="on"' if href == path else ''
         return f'<a{on} href="{href}">{label}</a>'
-    out, groups = [], []
-    side = SIDE
-    if path == '/blog' or path.startswith('/blog/'):
-        side = [(None, [('/', 'Overview'), ('/blog', 'All posts')]),
-                ('Posts', [(p['path'], p['title']) for p in posts if not p['draft']]),
-                (None, [('/blog/feed.xml', 'Atom feed'), ('/docs/install', 'Docs')])]
-    for title, links in side:
+    out, groups_html = [], []
+    for title, links in groups:
         if title is None:
-            if groups:
-                out.append('      <ul>' + ''.join(groups) + '</ul>\n')
-                groups = []
+            if groups_html:
+                out.append('      <ul>' + ''.join(groups_html) + '</ul>\n')
+                groups_html = []
             out.append('      <ul class="plain">' + ''.join(f'<li>{link(h, l)}</li>' for h, l in links) + '</ul>\n')
         else:
-            groups.append(f'<li><span class="grp">{title}</span><ul>' + ''.join(f'<li>{link(h, l)}</li>' for h, l in links) + '</ul></li>')
+            groups_html.append(f'<li><span class="grp">{title}</span><ul>' + ''.join(f'<li>{link(h, l)}</li>' for h, l in links) + '</ul></li>')
+    if groups_html:
+        out.append('      <ul>' + ''.join(groups_html) + '</ul>\n')
     return ''.join(out)
 
 
@@ -370,10 +384,13 @@ def main():
             head += '<link rel="alternate" type="application/atom+xml" title="Uberblick blog" href="/blog/feed.xml">\n'
         canonical = '' if path == '/404' else f'<link rel="canonical" href="{SITE}{path}">\n'
         target.parent.mkdir(parents=True, exist_ok=True)
-        side = sidebar(path, posts)
-        target.write_text(SKELETON.format(head=head, canonical=canonical, noindex=noindex, version=tag, side_title='Posts' if blog else 'Docs', side=side, body=body))
+        found = section(path, posts)
+        side = sidebar(path, found[1]) if found else ''
+        aside = ASIDE.format(side_title=found[0], side=side) if found else ''
+        about = ABOUT if path == '/' else ''
+        target.write_text(SKELETON.format(head=head, canonical=canonical, noindex=noindex, version=tag, solo='' if found else ' solo', aside=aside, about=about, body=body))
         built.add(path)
-        hrefs |= {h.split('#')[0] for h in re.findall(r'href="(/[^"]*)"', body + side)}
+        hrefs |= {h.split('#')[0] for h in re.findall(r'href="(/[^"]*)"', body + side + about)}
     (OUT / 'blog').mkdir(parents=True, exist_ok=True)
     (OUT / 'blog' / 'feed.xml').write_text(feed(posts))
     built.add('/blog/feed.xml')
