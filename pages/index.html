@@ -65,7 +65,7 @@
 
 <section class="blk" id="mcp">
 <div class="blk-h"><h2>An opinionated MCP: agents read before they write.</h2><a href="/docs/agents">Agents over MCP</a></div>
-<p class="blk-intro">Tag the pages that matter as guidance. The server refuses every write from an agent that has not read them, and tells it which ones. No prompt engineering, no hoping.</p>
+<p class="blk-intro">Only the right context enters an agent's session. The few pages tagged as guidance are required reading: the server refuses every write from an agent that has not read them, and tells it which ones. Everything else the agent pulls as the change needs it, from the sidebar, from search and from the decisions linked to its issue, never the whole workspace. No prompt engineering, no hoping.</p>
 <div class="flow" role="img" aria-label="An agent calls edit_block; the server refuses with guidance_required and lists the unread pages; the agent reads them with get_doc; the write is accepted for ten minutes of edits.">
   <div class="step"><span class="k">1 · agent</span><b>Calls <code>edit_block</code></b><span>on a page in the workspace</span></div>
   <span class="arr" aria-hidden="true"></span>
