@@ -145,8 +145,8 @@ mark.sel { background: oklch(0.85 0.12 75 / 55%); color: inherit; border-radius:
 .holds { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px }
 .holds a { display: grid; gap: 6px; height: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--fg); text-decoration: none; align-content: start }
 .holds a:hover { border-color: var(--muted) }
-.holds .pic { display: block; aspect-ratio: 16 / 9; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); background: var(--code); margin-bottom: 4px }
-.holds .pic img { width: 100%; height: 100%; object-fit: cover; object-position: top left; filter: saturate(0.35) contrast(0.95); opacity: 0.85; transition: filter .2s, opacity .2s }
+.holds .pic { display: block; aspect-ratio: 2 / 1; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); background: var(--code); margin-bottom: 4px; padding: 6px }
+.holds .pic img { width: 100%; height: 100%; object-fit: contain; filter: saturate(0.35) contrast(0.95); opacity: 0.85; transition: filter .2s, opacity .2s }
 .holds a:hover .pic img { filter: none; opacity: 1 }
 .holds .pic .d { display: none }
 .holds .n { font: 500 14.5px var(--mono); color: var(--fg) }
