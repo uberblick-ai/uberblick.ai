@@ -58,7 +58,8 @@ img { max-width: 100%; display: block }
 .side .plain a:hover, .side .plain a.on { color: var(--fg) }
 .main { min-width: 0 }
 /* The landing page: one column, no sidebar. */
-.layout.solo { grid-template-columns: minmax(0, 1fr); max-width: 860px }
+.layout.solo { grid-template-columns: minmax(0, 1fr); max-width: 760px }
+.layout.solo p, .layout.solo .lede, .layout.solo .blk > h2, .layout.solo .hero h1, .layout.solo .about p, .layout.solo .cta .tabs { max-width: none }
 
 /* Install tabs, copy buttons, screenshot figures. */
 .tabs { border: 1px solid var(--line); border-radius: 6px; background: var(--code); overflow: hidden; max-width: 640px }
