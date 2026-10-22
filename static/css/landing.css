@@ -132,3 +132,11 @@ mark.sel { background: oklch(0.85 0.12 75 / 55%); color: inherit; border-radius:
   .flow .arr.back { width: 22px; height: 22px; }
   .flow .arr.back::after { right: 2px; top: -4px; bottom: auto; transform: rotate(-20deg); }
 }
+
+/* Demo video placeholder under the hero, until the recording exists. */
+.video { margin-top: 44px }
+.vframe { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 10px; background: linear-gradient(135deg, var(--tint), var(--panel) 70%); display: grid; align-content: center; justify-items: center; gap: 14px }
+.vplay { width: 64px; height: 64px; border-radius: 50%; background: var(--accent); position: relative; box-shadow: 0 8px 24px oklch(0.5 0.2 290 / 25%) }
+.vplay::after { content: ""; position: absolute; left: 25px; top: 19px; border-left: 20px solid var(--on-accent); border-top: 13px solid transparent; border-bottom: 13px solid transparent }
+.vlabel { font: 500 13px var(--mono); color: var(--muted); letter-spacing: 0.02em }
+.vnote { font-size: 13.5px; color: var(--muted); margin: 12px 0 0; max-width: 72ch }
