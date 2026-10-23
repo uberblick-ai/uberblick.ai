@@ -1,0 +1,83 @@
+<head>
+<title>Your first ten minutes · Uberblick</title>
+<meta name="description" content="One page, one agent, one decision: create a workspace in your project, write a rule, connect Claude Code or Codex, watch the agent read the page before it answers, change the page, ask again, then record a decision and find it again by issue.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<section class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/guides">Guides</a></p>
+  <h1>Your first ten minutes.</h1>
+  <p class="lede">Local only, no hub, no account. You write one page that says what the product should do, connect the agent you already use, and watch it read that page before it answers. Then you change the page and ask again. The last step records a decision and finds it again by issue number. Every step names the result you should see; if you do not see it, stop there.</p>
+</section>
+
+<div class="col">
+<section class="q" id="create"><h2>1. Create the workspace in your project</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="cd ~/Projects/my-product
+ub workspace create &quot;My product&quot;
+ub open">Copy</button></div><pre><span class="p">$</span> cd ~/Projects/my-product
+<span class="p">$</span> ub workspace create "My product"
+<span class="o">created    My product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f, local)
+wrote      ~/Projects/my-product/.uberblick.json
+open it with: ub open</span>
+<span class="p">$</span> ub open
+<span class="o">web        http://127.0.0.1:13379/
+workspace  My product (local)
+
+Ctrl-C to stop.</span></pre></section>
+<p>Run it in the checkout of the product the pages are about, not in a notes folder: the binding in <code>.uberblick.json</code> is what later lets an agent started in this directory find the same workspace. The editor opens with two starter pages pinned in the sidebar. Leave <code>ub open</code> running.</p>
+<p class="small">You should see: the editor in your browser with <strong>Welcome to Uberblick</strong> and <strong>How to Use It</strong> in the sidebar.</p>
+</section>
+
+<section class="q" id="write"><h2>2. Write one rule</h2>
+<p>Create a page and give it a title that says what it is about, say <strong>Checkout: rules</strong>. Three sentences are enough, as long as they are rules and not tasks:</p>
+<section class="block code"><div class="cap"><span>Checkout: rules</span></div><pre>Guest checkout asks for an email address and nothing else.
+We never ask for a phone number; delivery problems go to the email.
+A guest can turn the order into an account afterwards from the confirmation page.</pre></section>
+<p>Pin the page in the sidebar. Pinned pages are where an agent that has never seen the workspace starts, so what you pin is what it reads first. This is the whole idea: product intent, written for a reader who arrives cold, not a plan for this week.</p>
+<p class="small">You should see: the page in the sidebar next to the two starter pages.</p>
+</section>
+
+<section class="q" id="connect"><h2>3. Connect the agent</h2>
+<section class="block terminal"><div class="cap"><span>Terminal · a second one, same directory</span><button type="button" data-copy="cd ~/Projects/my-product
+ub mcp install claude">Copy</button></div><pre><span class="p">$</span> cd ~/Projects/my-product
+<span class="p">$</span> ub mcp install claude
+<span class="o">uberblick registered with claude
+
+client     claude (project)
+file       ~/Projects/my-product/.mcp.json
+command    ub mcp serve
+ran        claude mcp add --scope project uberblick -- ub mcp serve
+workspace  follows ~/Projects/my-product/.uberblick.json
+
+Restart running agents to pick this up.</span></pre></section>
+<p>For Codex, <code>ub mcp install codex</code>. The command runs the client's own installer and registers one server named <code>uberblick</code> that starts <code>ub mcp serve</code> in this directory; it writes no config file of its own. Then put the workspace section from <a href="/docs/agents#instructions">Agents over MCP</a> into your <code>AGENTS.md</code> or <code>CLAUDE.md</code>. Its first line is the one that matters today: start from the pinned pages when you do not know the project.</p>
+<p class="small">You should see: the client lists an MCP server called uberblick after a restart.</p>
+</section>
+
+<section class="q" id="ask"><h2>4. Ask, change the page, ask again</h2>
+<section class="block code"><div class="cap"><span>Prompt</span></div><pre>Does our guest checkout ask for a phone number? Answer from the
+workspace and name the page you read.</pre></section>
+<p>Watch the tool calls: <code>get_sidebar</code>, then <code>get_doc</code> on <strong>Checkout: rules</strong>. The answer is no, with the page's title and id. Nothing was pasted into the prompt; the agent went and read.</p>
+<p>Now change the second sentence in the browser to <em>A phone number is optional, for delivery notifications only.</em> Ask the same question again in the same session.</p>
+<p class="small">You should see: the answer changes with the page, and the agent cites the same page. No restart, no re-indexing, no copy of the text anywhere else. That is the difference to a Markdown folder: the page is read at the moment of the question.</p>
+</section>
+
+<section class="q" id="decide"><h2>5. Record a decision and find it by issue</h2>
+<p>Open an issue in your repository for the phone number question, say <code>my-org/my-product#1</code>, then:</p>
+<section class="block code"><div class="cap"><span>Prompt</span></div><pre>We are not sure whether guest checkout should ask for a phone number.
+Record this as a decision in the workspace, link my-org/my-product#1,
+and propose: optional, delivery notifications only. Do not decide it.</pre></section>
+<p>The agent creates a decision record, kind decision, with the question as the title, its proposed answer and the reasoning, and the issue linked in the prose. The record is open: agents propose, people decide. In the browser the topic page shows the open record with an answer editor; approve it, and it is in force under your name and date.</p>
+<section class="block code"><div class="cap"><span>Prompt · a fresh session</span></div><pre>Call find_decisions for my-org/my-product#1 and tell me what is decided.</pre></section>
+<p class="small">You should see: the record comes back with your name, the date and the answer in force. A new session that knows nothing about the conversation finds it by the issue number alone. That is what stops an agent from reopening a settled question next month.</p>
+</section>
+
+<section class="q" id="next"><h2>What you have, and what comes next</h2>
+<p>One workspace file on disk, one binding in the project, one page an agent reads before it answers, and one decision it finds by issue. From here:</p>
+<ul>
+  <li><a href="/guides/first-workspace">Your first workspace</a> explains what the two commands put on disk and how to add a second workspace or remove one.</li>
+  <li><a href="/guides/product-intent">Product intent that agents read before they build</a> is this exercise at the size of a real product: a design review becomes pages and decisions, and issues point at them.</li>
+  <li><a href="/guides/hub">Set up a hub</a> when a second person or a second computer should see the pages.</li>
+  <li><a href="https://agents.uberblick.ai">ub-agents</a> runs steps 4 and 5 for you from issue labels on GitHub, with a person on the loop. Optional; nothing above needs it.</li>
+</ul>
+</section>
+</div>

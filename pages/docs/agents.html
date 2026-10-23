@@ -73,6 +73,19 @@
   </ul>
   </section>
 
+  <section class="q" id="who"><h2>Who does what</h2>
+  <p>Nothing in Uberblick starts an agent. A comment in the browser waits for a person, or for the next agent run that reads the page. A run starts where it always did: in your terminal, or in a loop you set up, such as ub-agents picking up a labelled issue.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Who</th><th>Does</th></tr></thead>
+    <tbody>
+      <tr><td>Uberblick</td><td>Stores the pages, decisions, comments and records, and serves them over MCP and in the browser.</td></tr>
+      <tr><td>Your coding agent</td><td>Reads and edits over MCP while it runs, following the instructions above.</td></tr>
+      <tr><td>Your team</td><td>Writes the pages, comments on edits, settles decisions, reviews the pull request.</td></tr>
+      <tr><td>ub-agents, optional</td><td>Starts runs from issue labels on GitHub and gathers the delivery numbers; without it you start every run yourself.</td></tr>
+    </tbody>
+  </table></div>
+  </section>
+
   <section class="q" id="roles"><h2>With ub-agents</h2>
   <p>In the <a href="https://agents.uberblick.ai">ub-agents</a> loop the same rules apply to each role with one addition each. The preparer scans the workspace and puts the links an implementer will need into the issue. The implementer builds against the pages and writes the corpus update. The reviewer checks the result against the pages, not against the issue text. The retrospective may propose a change to the pages or to these rules; a person decides. If you follow the harness engineering and loop engineering discussions: this is that, with a person deciding each change. How that looks in practice is on <a href="/guides/product-intent">Product intent that agents read before they build</a>.</p>
   </section>

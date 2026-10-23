@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0 # sitemap.xml dates each page by its last commit
       - run: python3 build.py
       # Organisation secrets: CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN with
-      # Account > Workers Scripts: Edit (DEPLOYING.md).
+      # Workers product, role Editor (DEPLOYING.md).
       - run: npx -y wrangler@4.152.0 deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
