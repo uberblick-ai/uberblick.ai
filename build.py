@@ -86,7 +86,7 @@ SKELETON = """<!doctype html>
 <footer class="foot">
   <span>MIT license</span>
   <a href="https://github.com/uberblick-ai/uberblick-2">Source</a>
-  <a href="{CHANGELOG_URL}">Changelog</a>
+  <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/CHANGELOG.md">Changelog</a>
   <a href="/blog/feed.xml">Feed</a>
   <a href="https://github.com/uberblick-ai/homebrew-tap">Homebrew tap</a>
   <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/SECURITY.md">Security</a>
@@ -126,7 +126,7 @@ ABOUT = """    <section class="blk about" id="about">
       <div class="cols">
         <div><h3>Docs</h3><ul><li><a href="/docs/install">Install</a></li><li><a href="/docs/workspaces">Workspaces</a></li><li><a href="/docs/documents">Documents</a></li><li><a href="/docs/hub">Run a hub</a></li><li><a href="/docs/cli">CLI reference</a></li><li><a href="/docs/faq">FAQ</a></li></ul></div>
         <div><h3>Agents</h3><ul><li><a href="/docs/agents">Agents over MCP</a></li><li><a href="/docs/guidance">Guidance pages</a></li><li><a href="/docs/decisions">Decision records</a></li><li><a href="https://agents.uberblick.ai">ub-agents</a></li><li><a href="https://skills.uberblick.ai">Skills</a></li></ul></div>
-        <div><h3>Project</h3><ul><li><a href="/blog">Blog</a></li><li><a href="{CHANGELOG_URL}">Changelog</a></li><li><a href="/guides">Guides</a></li><li><a href="/compare">Compare</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2">GitHub</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2/blob/main/SECURITY.md">Security</a></li></ul></div>
+        <div><h3>Project</h3><ul><li><a href="/blog">Blog</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2/blob/main/CHANGELOG.md">Changelog</a></li><li><a href="/guides">Guides</a></li><li><a href="/compare">Compare</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2">GitHub</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2/blob/main/SECURITY.md">Security</a></li></ul></div>
       </div>
     </section>
 """
