@@ -64,7 +64,6 @@ img { max-width: 100%; display: block }
 .main { min-width: 0 }
 /* The landing page: one column, no sidebar. */
 .layout.solo { grid-template-columns: minmax(0, 1fr); max-width: 760px }
-.layout.solo p, .layout.solo .lede, .layout.solo .blk > h2, .layout.solo .hero h1, .layout.solo .about p, .layout.solo .cta .tabs { max-width: none }
 
 /* Install tabs, copy buttons, screenshot figures. */
 .tabs { border: 1px solid var(--line); border-radius: 6px; background: var(--code); overflow: hidden; max-width: 640px }
@@ -206,3 +205,5 @@ td code { white-space: nowrap }
 .tabs.ex .panel img.d { display: none }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tabs.ex .panel img.l { display: none } :root:not([data-theme="light"]) .tabs.ex .panel img.d { display: block } }
 :root[data-theme="dark"] .tabs.ex .panel img.l { display: none } :root[data-theme="dark"] .tabs.ex .panel img.d { display: block }
+/* The landing page widens what the docs column caps. */
+.layout.solo p, .layout.solo .lede, .layout.solo .blk > h2, .layout.solo .hero h1, .layout.solo .about p, .layout.solo .cta .tabs { max-width: none }

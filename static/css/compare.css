@@ -12,7 +12,7 @@
 .matrix { margin: 8px 0 16px; overflow-x: auto }
 .matrix table { min-width: 1080px; font-size: 13.5px; line-height: 1.4 }
 .matrix thead th { font-weight: 500; color: var(--fg); padding-bottom: 10px }
-.matrix tbody th { font-weight: 500; color: var(--muted); padding: 11px 12px 11px 0; border-bottom: 1px solid var(--line); vertical-align: top; white-space: nowrap; min-width: 130px; white-space: normal }
+.matrix tbody th { font-weight: 500; color: var(--muted); padding: 11px 12px 11px 0; border-bottom: 1px solid var(--line); vertical-align: top; min-width: 130px; white-space: normal }
 .matrix td { padding: 11px 12px 11px 0 }
 .matrix .us { background: var(--panel); padding-left: 12px; border-left: 3px solid var(--accent); min-width: 220px }
 .matrix td, .matrix thead th:not(.us) { min-width: 150px }
