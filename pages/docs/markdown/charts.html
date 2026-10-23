@@ -6,10 +6,10 @@
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / Custom Markdown</p>
   <h1>Charts</h1>
-  <p class="lede">A document owns named collections of JSON records beside its prose. A chart or a data table is a few lines that say which collection and which fields. When an agent writes new records, every block that reads them refreshes, and nobody pastes a stale image again.</p>
+  <p class="lede">A document owns named collections of JSON records beside its prose. A chart or a data table is a few lines that say which collection and which fields. An agent writes the records over MCP; every block that reads them refreshes, and nobody pastes a stale image again.</p>
 </div>
 <article class="col">
-  <section class="q" id="chart"><h2>Source beside drawing</h2>
+  <section class="q" id="chart"><h2>A line chart</h2>
   <p>A chart pasted as an image is stale the day after. Here a document owns named collections of JSON records beside its prose, and a <code>chart</code> fence holds only the mapping: which collection, which fields. The values live in the records, so when an agent writes new ones, every chart and table that reads them refreshes, and the source stays a few lines of JSON that are easy to review.</p>
   <div class="tabs ex"><div class="tablist" role="tablist" aria-label="chart example"><button role="tab" id="t-chart-v" aria-selected="true" aria-controls="p-chart-v" type="button">Displayed</button><button role="tab" id="t-chart-m" aria-selected="false" aria-controls="p-chart-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```chart
 {
@@ -38,7 +38,72 @@
   ]
 }
 ```</pre></div></div>
-  <p>In the editor, insert <strong>Line chart</strong> or <strong>Data table</strong> and edit the JSON source; over MCP an agent writes the same fence with the ordinary block tools. The mapping chooses a view, never the values: records sort by x, nothing is coerced, aggregated or derived, and a record that fails the collection's schema is left out and counted.</p>
+  </section>
+
+  <section class="q" id="mixed"><h2>Bars and a line together</h2>
+  <p>A series can be drawn as bars. Bars go behind the lines on their own axis, so a count and a duration share one chart.</p>
+  <div class="tabs ex"><div class="tablist" role="tablist" aria-label="chart example"><button role="tab" id="t-chart2-v" aria-selected="true" aria-controls="p-chart2-v" type="button">Displayed</button><button role="tab" id="t-chart2-m" aria-selected="false" aria-controls="p-chart2-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```chart
+{
+  &quot;version&quot;: 1,
+  &quot;type&quot;: &quot;line&quot;,
+  &quot;title&quot;: &quot;Deploys per week&quot;,
+  &quot;collection&quot;: &quot;deploys&quot;,
+  &quot;x&quot;: {&quot;field&quot;: &quot;week&quot;, &quot;type&quot;: &quot;date&quot;},
+  &quot;y&quot;: [
+    {&quot;field&quot;: &quot;count&quot;, &quot;label&quot;: &quot;Deploys&quot;, &quot;type&quot;: &quot;bar&quot;},
+    {&quot;field&quot;: &quot;lead_time_h&quot;, &quot;label&quot;: &quot;Lead time&quot;, &quot;unit&quot;: &quot;h&quot;}
+  ]
+}
+```">Copy</button></div>
+  <div class="panel" role="tabpanel" id="p-chart2-v" aria-labelledby="t-chart2-v"><img class="l" src="/img/blocks/chart2-light.png" alt="Deploys per week as the editor draws it: blue bars for the deploy count on the right axis and a red line for lead time in hours on the left axis, seven weeks from September 7 to October 19" loading="lazy"><img class="d" src="/img/blocks/chart2-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-chart2-m" aria-labelledby="t-chart2-m" hidden><pre>```chart
+{
+  "version": 1,
+  "type": "line",
+  "title": "Deploys per week",
+  "collection": "deploys",
+  "x": {"field": "week", "type": "date"},
+  "y": [
+    {"field": "count", "label": "Deploys", "type": "bar"},
+    {"field": "lead_time_h", "label": "Lead time", "unit": "h"}
+  ]
+}
+```</pre></div></div>
+  </section>
+
+  <section class="q" id="table"><h2>The same data as a table</h2>
+  <p>A table mapping names the columns, their format and a sort. Readers can re-sort by clicking a header; that is never saved.</p>
+  <div class="tabs ex"><div class="tablist" role="tablist" aria-label="chart example"><button role="tab" id="t-table-v" aria-selected="true" aria-controls="p-table-v" type="button">Displayed</button><button role="tab" id="t-table-m" aria-selected="false" aria-controls="p-table-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```chart
+{
+  &quot;version&quot;: 1,
+  &quot;type&quot;: &quot;table&quot;,
+  &quot;collection&quot;: &quot;deploys&quot;,
+  &quot;columns&quot;: [
+    {&quot;field&quot;: &quot;week&quot;, &quot;label&quot;: &quot;Week&quot;, &quot;format&quot;: &quot;date&quot;},
+    {&quot;field&quot;: &quot;count&quot;, &quot;label&quot;: &quot;Deploys&quot;, &quot;format&quot;: &quot;number&quot;, &quot;decimals&quot;: 0},
+    {&quot;field&quot;: &quot;lead_time_h&quot;, &quot;label&quot;: &quot;Lead time&quot;, &quot;format&quot;: &quot;number&quot;, &quot;unit&quot;: &quot;h&quot;, &quot;decimals&quot;: 1},
+    {&quot;field&quot;: &quot;note&quot;, &quot;label&quot;: &quot;Note&quot;}
+  ],
+  &quot;sort&quot;: {&quot;field&quot;: &quot;week&quot;, &quot;direction&quot;: &quot;desc&quot;},
+  &quot;limit&quot;: 6
+}
+```">Copy</button></div>
+  <div class="panel" role="tabpanel" id="p-table-v" aria-labelledby="t-table-v"><img class="l" src="/img/blocks/table-light.png" alt="The same deploys as a data table: columns Week sorted descending, Deploys, Lead time in hours and Note, six of seven records shown with a footnote saying the table is generated from document data" loading="lazy"><img class="d" src="/img/blocks/table-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-table-m" aria-labelledby="t-table-m" hidden><pre>```chart
+{
+  "version": 1,
+  "type": "table",
+  "collection": "deploys",
+  "columns": [
+    {"field": "week", "label": "Week", "format": "date"},
+    {"field": "count", "label": "Deploys", "format": "number", "decimals": 0},
+    {"field": "lead_time_h", "label": "Lead time", "format": "number", "unit": "h", "decimals": 1},
+    {"field": "note", "label": "Note"}
+  ],
+  "sort": {"field": "week", "direction": "desc"},
+  "limit": 6
+}
+```</pre></div></div>
   </section>
 
   <section class="q" id="data"><h2>Where the numbers live</h2>
@@ -46,6 +111,6 @@
   </section>
 
   <section class="q" id="types"><h2>What it can show</h2>
-  <p>The data draws as line charts, bar charts or data tables, with one chart per series as an option and a sortable table for the raw rows. We support a small set of visualizations on purpose; request what you need in a <a href="https://github.com/uberblick-ai/uberblick-2/issues">GitHub issue</a> and we will add it. A chart draws up to 5,000 records. Charts render in the editor and export as their source fence; Markdown keeps the mapping but not the data, so an export alone cannot recreate a view.</p>
+  <p>Line charts, bar charts and data tables, with one small chart per series as an option. We support a small set of visualizations on purpose; request what you need in a <a href="https://github.com/uberblick-ai/uberblick-2/issues">GitHub issue</a> and we will add it. A chart draws up to 5,000 records. Charts render in the editor and export as their source fence; Markdown keeps the mapping but not the data, so an export alone cannot recreate a view.</p>
   </section>
 </article>
