@@ -57,4 +57,8 @@
   <section class="q" id="ssh"><h2>Can I use it on a server or over SSH?</h2>
   <p>Yes. On the server, <code>ub open --no-browser</code> prints the address; on your own computer, <code>ssh -L 13379:127.0.0.1:13379 server</code> and open it there. The web interface only ever listens on the loopback address, so the tunnel is the way in.</p>
   </section>
+
+  <section class="q" id="mermaid"><h2>Why not Mermaid?</h2>
+  <p>We used it first. The text half is right: an agent can write it, diff it and review it. The layout half is all algorithm, so one added node reshuffles the whole chart, a reviewer cannot tell a change in meaning from a change in position, and an agent cannot fix an ugly picture because it has nothing to hold on to. <a href="/docs/markdown/diagrams">ablauf</a> keeps the text and gives the layout to the author: the source says where every node sits and the renderer only draws, reporting crossings with a line number. Since 0.4.5 a <code>mermaid</code> fence is an ordinary code block. The <a href="/blog/2026/why-we-dropped-mermaid">blog post</a> has the longer story.</p>
+  </section>
 </article>

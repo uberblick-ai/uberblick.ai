@@ -6,11 +6,11 @@
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / Custom Markdown</p>
   <h1>Diagrams</h1>
-  <p class="lede">A flow diagram as a few lines of text an agent can write and a person can diff, where the author places the nodes and the renderer never moves anything. This is what replaced Mermaid in Uberblick; the format lives in its own repository and the block follows it.</p>
+  <p class="lede">A flow diagram as a few lines of text. An agent writes it over MCP, a person reads the drawing in the browser and can diff the source. The author places the nodes; the renderer only draws, and reports every crossing with a line number, so an agent gets to a clean diagram from the text alone.</p>
 </div>
 <article class="col">
-  <section class="q" id="ablauf"><h2>Source beside drawing</h2>
-  <p>Flow diagrams are the first thing a team wants in a design doc, and Mermaid gets half of it right: a few lines of text an agent can write, diff and review. The other half, layout, is all algorithm, so one added node reshuffles the whole chart and nobody has a handle to grab. <a href="https://github.com/uberblick-ai/ablauf">Ablauf</a> keeps the text and gives the layout to the author: the source names the columns, puts each node in a row, and says which side an edge leaves and enters. The renderer measures the text, draws in one house style for light and dark, and reports every crossing or overlap with a line number. It never moves anything, so an agent gets to a clean diagram from the text and the diagnostics alone, without looking at the picture. The format is early and lives in its own repository; the block in Uberblick follows it. Since 0.4.5 Mermaid is gone, so a <code>mermaid</code> fence is an ordinary code block with that language and is never drawn.</p>
+  <section class="q" id="ablauf"><h2>A small one</h2>
+  <p>The source names the columns, puts each node in a row and says which side an edge leaves and enters. The renderer measures the text and draws in one style for light and dark. It never moves anything, so a change in the text is the only thing that changes the picture.</p>
   <div class="tabs ex"><div class="tablist" role="tablist" aria-label="ablauf example"><button role="tab" id="t-ablauf-v" aria-selected="true" aria-controls="p-ablauf-v" type="button">Displayed</button><button role="tab" id="t-ablauf-m" aria-selected="false" aria-controls="p-ablauf-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```ablauf
 flow v0
 columns rework main
@@ -48,17 +48,80 @@ rediff --&gt; edit_block tone=rework from=left to=left label=end : calls again
 ```</pre></div></div>
   </section>
 
-  <section class="q" id="why"><h2>Why the author places the nodes</h2>
-  <p>Automatic layout reshuffles the whole chart when one node is added, so a reviewer cannot tell a change in meaning from a change in position, and an agent cannot fix an ugly picture because it has nothing to hold on to. In ablauf the source names the columns, every node sits in a column and a row, and every edge says which side it leaves and enters. Layout changes only when the text changes. The renderer measures text, draws in one house style for light and dark, and reports every crossing or overlap with a line number, so an agent can get to a clean diagram from the diagnostics alone.</p>
-  </section>
+  <section class="q" id="more"><h2>A bigger one</h2>
+  <p>Sections, a manual step as a panel, tones for failure paths and a legend. The format is <a href="https://github.com/uberblick-ai/ablauf">ablauf</a>, published as <code>@uberblick/ablauf</code>; it lives in its own repository and the block follows it. Frameless by default and centred on the page; a caption goes above the fence as ordinary prose.</p>
+  <div class="tabs ex"><div class="tablist" role="tablist" aria-label="ablauf example"><button role="tab" id="t-ablauf2-v" aria-selected="true" aria-controls="p-ablauf2-v" type="button">Displayed</button><button role="tab" id="t-ablauf2-m" aria-selected="false" aria-controls="p-ablauf2-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```ablauf
+flow v0
+columns fix main manual
 
-  <section class="q" id="write"><h2>Writing one</h2>
-  <ul>
-    <li><code>flow v0</code> opens the block and <code>columns a b c</code> names the lanes, left to right.</li>
-    <li>A node line is <code>kind name [col=… row=… tone=…] "label"</code>. Kinds are <code>box</code>, <code>pill</code>, <code>end</code> and a few more; omitted <code>col</code> and <code>row</code> continue the previous node.</li>
-    <li>An edge is <code>from --&gt; to [from=side to=side label=side tone=…] : text</code>.</li>
-    <li>Tones name the role of a node or edge, such as <code>agent</code> or <code>rework</code>; the renderer maps them to colours.</li>
-  </ul>
-  <p>The full grammar is in the <a href="https://github.com/uberblick-ai/ablauf">ablauf repository</a>. Frameless by default and centred on the page; a caption line goes above the fence as ordinary prose.</p>
+pill push col=main tone=muted &quot;push to main&quot;
+box build &quot;compile and package&quot;
+box test &quot;unit and integration tests&quot;
+box staging &quot;deploy to staging&quot;
+box smoke &quot;smoke tests&quot;
+box production &quot;deploy to production&quot;
+end live &quot;Live&quot;
+
+pill failed col=fix row=test tone=rework &quot;checks failed&quot;
+box rollback col=fix row=production tone=rework &quot;restore the last release&quot;
+panel approve col=manual row=smoke tone=stop
+  strong &quot;Release manager&quot;
+  muted &quot;approves the release&quot;
+
+push --&gt; build : on push
+build --&gt; test
+test --&gt; staging : green
+staging --&gt; smoke
+smoke --&gt; approve tone=stop : passed
+approve --&gt; production tone=stop from=bottom to=right label=end : approved
+production --&gt; live : healthy
+build --&gt; failed tone=rework to=top.2 : fails
+test --&gt; failed tone=rework : red
+failed --&gt; push tone=rework from=top.1 to=left label=end : fix and push
+production --&gt; rollback tone=rework : unhealthy
+
+legend
+  pill &quot;event or state&quot;
+  box &quot;automated job&quot;
+  panel &quot;manual step&quot;
+  edge tone=rework &quot;failure path&quot;
+```">Copy</button></div>
+  <div class="panel" role="tabpanel" id="p-ablauf2-v" aria-labelledby="t-ablauf2-v"><img class="l" src="/img/blocks/ablauf2-light.png" alt="A deploy pipeline as the editor draws it: push to main, build, test, deploy to staging, smoke tests, a release manager approves, deploy to production, live; failed checks loop back to the push, an unhealthy production deploy rolls back" loading="lazy"><img class="d" src="/img/blocks/ablauf2-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-ablauf2-m" aria-labelledby="t-ablauf2-m" hidden><pre>```ablauf
+flow v0
+columns fix main manual
+
+pill push col=main tone=muted "push to main"
+box build "compile and package"
+box test "unit and integration tests"
+box staging "deploy to staging"
+box smoke "smoke tests"
+box production "deploy to production"
+end live "Live"
+
+pill failed col=fix row=test tone=rework "checks failed"
+box rollback col=fix row=production tone=rework "restore the last release"
+panel approve col=manual row=smoke tone=stop
+  strong "Release manager"
+  muted "approves the release"
+
+push --&gt; build : on push
+build --&gt; test
+test --&gt; staging : green
+staging --&gt; smoke
+smoke --&gt; approve tone=stop : passed
+approve --&gt; production tone=stop from=bottom to=right label=end : approved
+production --&gt; live : healthy
+build --&gt; failed tone=rework to=top.2 : fails
+test --&gt; failed tone=rework : red
+failed --&gt; push tone=rework from=top.1 to=left label=end : fix and push
+production --&gt; rollback tone=rework : unhealthy
+
+legend
+  pill "event or state"
+  box "automated job"
+  panel "manual step"
+  edge tone=rework "failure path"
+```</pre></div></div>
   </section>
 </article>

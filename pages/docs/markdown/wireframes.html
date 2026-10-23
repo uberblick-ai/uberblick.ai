@@ -6,11 +6,11 @@
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / Custom Markdown</p>
   <h1>Wireframes</h1>
-  <p class="lede">A screen sketch as text: one element per line with a kind, a variant and a label, indented for nesting. An agent writes it, the editor draws it, and the source still reads as an outline. The format is 0.x and may change between minor versions.</p>
+  <p class="lede">A screen sketch as text: one element per line with a kind, a variant and a label, indented for nesting. An agent writes it over MCP, the editor draws it, and the source still reads as an outline. The format is 0.x and may change between minor versions.</p>
 </div>
 <article class="col">
-  <section class="q" id="wireframe"><h2>Source beside drawing</h2>
-  <p>A screenshot of a mock-up is a dead end: nobody can edit it, and an agent cannot write one. A <code>wireframe</code> fence is a sketch as text, one element per line with a kind, a variant and a label, indented for nesting. There is nothing to balance, so an agent gets it right, and the source still reads as an outline. The editor draws it. The format is <a href="https://github.com/uberblick-ai/wireframe-md">wireframe-md</a>, published as <code>@uberblick/wireframe</code>; it is 0.x and may change between minor versions.</p>
+  <section class="q" id="wireframe"><h2>A small one</h2>
+  <p>A screenshot of a mock-up is a dead end: nobody can edit it, and an agent cannot write one. A <code>wireframe</code> fence is the sketch as text. There is nothing to balance, so an agent gets it right.</p>
   <div class="tabs ex"><div class="tablist" role="tablist" aria-label="wireframe example"><button role="tab" id="t-wireframe-v" aria-selected="true" aria-controls="p-wireframe-v" type="button">Displayed</button><button role="tab" id="t-wireframe-m" aria-selected="false" aria-controls="p-wireframe-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```wireframe
 dialog Archive “Release plan 0.5”?
   text Readers keep the page under a muted banner. Restore brings it back.
@@ -28,12 +28,86 @@ dialog Archive “Release plan 0.5”?
 ```</pre></div></div>
   </section>
 
-  <section class="q" id="write"><h2>Writing one</h2>
-  <ul>
-    <li>The first line is the container: <code>dialog</code>, <code>page</code>, <code>panel</code> or <code>card</code>, then its title.</li>
-    <li>Each further line is <code>kind[.variant] label</code>, indented two spaces per level of nesting: <code>text</code>, <code>input</code>, <code>button</code>, <code>row</code>, <code>list</code>, <code>table</code> and so on.</li>
-    <li>Variants give the detail a reader needs and nothing more: <code>button.focus</code>, <code>button.danger</code>, <code>row.end</code>.</li>
-  </ul>
-  <p>The grammar is in the <a href="https://github.com/uberblick-ai/wireframe-md">wireframe-md repository</a>, published as <code>@uberblick/wireframe</code>. A wireframe is for the shape of a screen in a design page, not for pixels; when the real screen exists, replace the block with a screenshot or a <a href="/docs/markdown/embeds">Figma block</a>.</p>
+  <section class="q" id="more"><h2>A bigger one</h2>
+  <p>A page with a title, a filter row, a table with header, chips and a sorted column, and a footer row. The format is <a href="https://github.com/uberblick-ai/wireframe-md">wireframe-md</a>, published as <code>@uberblick/wireframe</code>. A wireframe is for the shape of a screen in a design page, not for pixels; when the real screen exists, replace the block with a screenshot or a <a href="/docs/markdown/embeds">Figma block</a>.</p>
+  <div class="tabs ex"><div class="tablist" role="tablist" aria-label="wireframe example"><button role="tab" id="t-wireframe2-v" aria-selected="true" aria-controls="p-wireframe2-v" type="button">Displayed</button><button role="tab" id="t-wireframe2-m" aria-selected="false" aria-controls="p-wireframe2-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```wireframe
+page
+  text.title Agent runs
+  text.muted Every run of the loop on this hub, newest first.
+  row.between
+    input Search issues
+    select Last 7 days
+    button.primary Start a run
+  table
+    row.head
+      cell Issue
+      cell Role
+      cell Labels
+      cell.end.descending Started
+    row
+      cell #2211 Hosted hub setup script
+      cell preparer
+      cell
+        chip needs-preparation
+        chip priority:medium
+      cell.end 4 min ago
+    row
+      cell #2209 ub uninstall
+      cell implementer
+      cell
+        chip needs-review
+        chip.more +1
+      cell.end 26 min ago
+    row
+      cell #2135 Shared replica leak
+      cell reviewer
+      cell
+        chip needs-human
+      cell.end 2 h ago
+  divider
+  row.end
+    button.link Export CSV
+    button Older runs
+```">Copy</button></div>
+  <div class="panel" role="tabpanel" id="p-wireframe2-v" aria-labelledby="t-wireframe2-v"><img class="l" src="/img/blocks/wireframe2-light.png" alt="A page wireframe as the editor draws it: the title Agent runs, a search field, a date select and a Start a run button, a table of three runs with role, label chips and a started column, and Export CSV and Older runs buttons below a divider" loading="lazy"><img class="d" src="/img/blocks/wireframe2-dark.png" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-wireframe2-m" aria-labelledby="t-wireframe2-m" hidden><pre>```wireframe
+page
+  text.title Agent runs
+  text.muted Every run of the loop on this hub, newest first.
+  row.between
+    input Search issues
+    select Last 7 days
+    button.primary Start a run
+  table
+    row.head
+      cell Issue
+      cell Role
+      cell Labels
+      cell.end.descending Started
+    row
+      cell #2211 Hosted hub setup script
+      cell preparer
+      cell
+        chip needs-preparation
+        chip priority:medium
+      cell.end 4 min ago
+    row
+      cell #2209 ub uninstall
+      cell implementer
+      cell
+        chip needs-review
+        chip.more +1
+      cell.end 26 min ago
+    row
+      cell #2135 Shared replica leak
+      cell reviewer
+      cell
+        chip needs-human
+      cell.end 2 h ago
+  divider
+  row.end
+    button.link Export CSV
+    button Older runs
+```</pre></div></div>
   </section>
 </article>
