@@ -25,7 +25,11 @@ npx -y @biomejs/biome@2.5.9 lint --error-on-warnings .   # what CI runs on the C
   kind), `fonts/` (the web app's Geist and Fraunces files with their licences,
   used only by the landing page's demo frame, which shows the editor as it is),
   the favicon and touch icon (the same files as the web app's in
-  `packages/web/public`) and `_headers`.
+  `packages/web/public`), `_headers`, and `js/`: `diagrams.js` draws the
+  diagram examples in the browser from the source in their Source tab, with
+  `ablauf.js` (the renderer from uberblick-ai/ablauf, bundled by
+  `mise run ablauf` from a checkout beside this one; Biome skips it) and
+  Mermaid from jsDelivr on the one page that compares the two.
 - The home page's Recent changes list is built from uberblick-2's
   `CHANGELOG.md`: the five newest release sections, each with its date and
   summary paragraph. Edit the changelog there, not the page. A `CHANGELOG.md`

@@ -22,3 +22,13 @@
 .scen dt { font-weight: 600 }
 .scen dd { margin: 0 0 6px; color: var(--muted) }
 .hero.sub h1 code { font-family: var(--mono); font-weight: 500; background: none; padding: 0 }
+
+/* Two drawings of the same diagram, each with its own tabs: side by side where the column allows it. */
+.sbs { display: grid; gap: 14px; margin: 4px 0 8px; align-items: start }
+.sbs .tabs.ex { margin: 0; min-width: 0 }
+.sbs .tablist .copy { display: none }
+@media (min-width: 1200px) {
+  .col .sbs { grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(100vw - 316px, 844px) }
+  .col .sbs.one { grid-template-columns: minmax(0, 1fr) }
+  .sbs .tablist .copy { display: block }
+}
