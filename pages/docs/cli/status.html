@@ -48,10 +48,5 @@ problems    none</span></pre></section>
   <p>0 whenever it could report, even with problems or pending changes; gate scripts on <a href="/docs/cli/doctor">ub doctor</a> instead. 1 when this project has no workspace. 2 for a usage error. <code>--json</code> prints one object with the same fields, <code>pending.count</code> always a number and <code>lastSync</code> in UTC.</p>
   </section>
 
-  <section class="q" id="scenarios"><h2>Scenarios</h2>
-  <dl class="scen"><dt>Before closing your laptop</dt><dd>Pending changes are safe on this computer, but nobody else sees them until they reach the hub. A report that ends in <code>pending  2 changes not yet on the hub</code> and <code>problems  hub unreachable</code> says to wait for the network.</dd><dt>Not signed in</dt><dd>For example after <code>ub auth logout --all-devices</code> from another computer. The account line still names the login stored here, the connection line reads <code>refused</code>, and the problem names <code>ub auth login</code>. Work continues here and syncs once you sign in again.</dd><dt>The hub needs a newer client</dt><dd><code>connection  refused: the hub needs a newer Uberblick</code> and <code>problems  update required → ub update</code>. Work stays on this computer until you update.</dd><dt>Which workspace is this directory using?</dt><dd>The <em>chosen by</em> line says whether the selection came from a <code>.uberblick.json</code>, and which, or from <code>UB_WORKSPACE_ID</code> in the environment.</dd><dt>Wait in a script until everything is on the hub</dt><dd><section class="block code"><div class="cap"><span>sh</span></div><pre>until ub status --json | jq -e &#x27;.pending.count == 0&#x27; &gt; /dev/null; do
-  sleep 5
-done</pre></section></dd></dl>
-  </section>
   <p class="next">Next: <a href="/docs/cli/doctor">ub doctor</a>.</p>
 </article>

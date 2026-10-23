@@ -44,8 +44,5 @@ workspace  follows the nearest .uberblick.json of each project</span></pre></sec
   <p>For <code>install</code>: 0 when the entry is registered, already ours, or printed with <code>--print</code>. 1 when nothing got registered: the client is missing or its command failed, and the entry is printed to paste by hand; or an entry someone else wrote is in the way. 2 for a usage error, including a missing client.</p>
   </section>
 
-  <section class="q" id="scenarios"><h2>Scenarios</h2>
-  <dl class="scen"><dt>Set up a new project</dt><dd><code>ub workspace use</code> or <code>create</code>, then <code>ub mcp install claude</code> in the same directory. Both files are committed: <code>.uberblick.json</code> and the client's project config.</dd><dt>Client not installed</dt><dd><code>error: claude not found on PATH</code>, the entry to paste is printed, exit 1. Install Claude Code and run it again.</dd><dt>An entry someone else wrote</dt><dd>The command names the file and the entry it found, leaves it alone and exits 1. Remove it with <code>claude mcp remove --scope project uberblick</code>, then install again.</dd><dt>A client ub does not know</dt><dd><code>ub mcp install cursor --print</code> prints <code>{ "mcpServers": { "uberblick": { "command": "ub", "args": ["mcp", "serve"] } } }</code> to paste into that client's configuration.</dd><dt>The agent has no Uberblick tools</dt><dd><a href="/docs/cli/doctor">ub doctor</a> reads the known clients' project and user configs and says which one is missing. Fix what it reports, then restart the agent.</dd></dl>
-  </section>
   <p class="next">Next: <a href="/docs/cli/open">ub open</a>.</p>
 </article>

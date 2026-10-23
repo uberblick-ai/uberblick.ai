@@ -52,8 +52,5 @@ nothing written (dry run)</span></pre></section>
   <p>0 for a successful read or update, including <em>no change</em> and a write saved locally that is not yet on the hub. 1 for a refused read or update or a failure to persist; 2 for a usage error. Refusals print the reason and <em>nothing written</em> on stderr; a <code>get</code> without <code>--out</code> writes only JSON to stdout.</p>
   </section>
 
-  <section class="q" id="scenarios"><h2>Scenarios</h2>
-  <dl class="scen"><dt>A daily producer</dt><dd><code>./collect-runs.sh | ub data update 7c1e4b2a-… --file -</code>. The script pipes its operations in; the chart on the report page is current in the morning, and the agent sees two lines instead of the records.</dd><dt>A bad record</dt><dd><code>error: runs/2026-10-09: Record /hours: expected type number</code>, <em>nothing written</em>, exit 1. The whole batch is refused.</dd><dt>Offline</dt><dd><code>saved locally; not yet synced with hub</code>, exit 0. It syncs the next time anything on this computer reaches the hub. It asks you to run <code>ub auth login</code> when one is needed.</dd><dt>Two writers</dt><dd>Last write wins per record. Writers touching different records both keep their changes; the same record is replaced whole, fields are not merged.</dd><dt>Check a generated file before it lands</dt><dd><code>--dry-run</code> in the pipeline, the real run after. It works while <code>ub open</code> or an agent has the workspace open.</dd></dl>
-  </section>
   <p class="next">Next: <a href="/docs/cli/update">ub update</a>.</p>
 </article>
