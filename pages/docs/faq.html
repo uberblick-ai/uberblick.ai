@@ -41,4 +41,20 @@
   <section class="q" id="github"><h2>Does it track tasks?</h2>
   <p>No, and it will not. Delivery happens on GitHub: issues, pull requests, labels and Actions. Uberblick holds the pages those issues point at, and the <a href="https://agents.uberblick.ai">ub-agents</a> loop runs on GitHub alone. We are exclusive to GitHub for now; GitLab or Linear may follow if people ask for them.</p>
   </section>
+
+  <section class="q" id="offline"><h2>What happens when I am offline?</h2>
+  <p>You keep working. Edits stay on this computer and reach the hub the next time anything on it connects; <a href="/docs/cli/status">ub status</a> shows them as pending until then, and nobody else sees them before that. The same holds when a login has expired or the hub needs a newer client: the web app still opens, the changes wait.</p>
+  </section>
+
+  <section class="q" id="conflicts"><h2>What if two people edit the same page?</h2>
+  <p>Prose and blocks merge: every copy applies both edits in the same order, so nothing is lost and nobody is asked to resolve anything. Data records written with <a href="/docs/cli/data">ub data update</a> are the exception: the last write wins per record, replaced whole, so two scripts should write different records.</p>
+  </section>
+
+  <section class="q" id="which-workspace"><h2>Which workspace does an agent write to?</h2>
+  <p>The one bound to the directory it was started in, through the nearest <code>.uberblick.json</code>, or <code>UB_WORKSPACE_ID</code> in its environment. <a href="/docs/cli/status">ub status</a> in that directory names it. Switching workspaces in the browser changes nothing for agents; see <a href="/docs/cli/binding">Project binding</a>.</p>
+  </section>
+
+  <section class="q" id="ssh"><h2>Can I use it on a server or over SSH?</h2>
+  <p>Yes. On the server, <code>ub open --no-browser</code> prints the address; on your own computer, <code>ssh -L 13379:127.0.0.1:13379 server</code> and open it there. The web interface only ever listens on the loopback address, so the tunnel is the way in.</p>
+  </section>
 </article>
