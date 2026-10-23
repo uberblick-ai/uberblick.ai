@@ -1,6 +1,7 @@
 // The site on Cloudflare: one Worker that serves out/ as static assets and
 // hands the legacy Rails app's paths to the origin behind the uberblick.ai DNS
-// record (worker/index.js). Deployed by .github/workflows/deploy.yml.
+// record (worker/index.js). Deployed by .github/workflows/deploy.yml; put in
+// front of the domain by the routes in uberblick-infra.
 {
   "name": "uberblick-ai",
   "main": "worker/index.js",
@@ -17,8 +18,8 @@
     // fall through to a 404 page and www redirects before any asset is served.
     "run_worker_first": true
   },
-  "routes": [
-    { "pattern": "uberblick.ai/*", "zone_name": "uberblick.ai" },
-    { "pattern": "www.uberblick.ai/*", "zone_name": "uberblick.ai" }
-  ]
+  // The routes uberblick.ai/* and www.uberblick.ai/* are Terraform's, in
+  // uberblick-infra (cloudflare/website.tf), so the cut-over and the rollback
+  // are an apply there. A deploy here only updates the script.
+  "routes": []
 }

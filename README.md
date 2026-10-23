@@ -42,14 +42,15 @@ to linking this one.
 
 `.github/workflows/deploy.yml` builds the site and deploys it as the Cloudflare
 Worker in `wrangler.jsonc` on every push to `main`, and by hand from the Actions
-tab. The Worker serves `out/` as static assets on the routes `uberblick.ai/*`
-and `www.uberblick.ai/*` (www redirects to the apex). `worker/index.js` passes
+tab. The Worker serves `out/` as static assets; the routes `uberblick.ai/*`
+and `www.uberblick.ai/*` that put it in front of the domain are Terraform's,
+in uberblick-infra (www redirects to the apex). `worker/index.js` passes
 the legacy Rails app's paths, such as `/app`, `/mcp` and the OAuth endpoints,
 to the origin behind the uberblick.ai DNS record, so that app keeps working
 until it is shut down; the list of paths lives in that file, and the landing
 page's "Legacy login" button in `build.py` goes with it. DNS and the WAF rules
-stay as they are. Removing the Worker's routes puts the legacy app back in
-front of everything.
+stay as they are. Removing the routes in uberblick-infra puts the legacy app
+back in front of everything.
 
 The workflow deploys with two repository secrets, `CLOUDFLARE_ACCOUNT_ID` and
 `CLOUDFLARE_API_TOKEN`. [DEPLOYING.md](DEPLOYING.md) says how to create,

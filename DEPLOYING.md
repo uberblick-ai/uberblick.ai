@@ -3,9 +3,11 @@
 The site is a Cloudflare Worker with static assets, described in
 `wrangler.jsonc`. Every push to `main` runs `.github/workflows/deploy.yml`,
 which builds `out/` and runs `wrangler deploy`. The first deploy creates the
-Worker `uberblick-ai` and its routes `uberblick.ai/*` and `www.uberblick.ai/*`
-in the uberblick.ai zone. Nothing is configured in the Cloudflare dashboard;
-the dashboard only shows what wrangler deployed.
+Worker `uberblick-ai`; every later one updates its script and assets. The
+routes that put it in front of `uberblick.ai/*` and `www.uberblick.ai/*` are
+Terraform's, in [uberblick-infra](https://github.com/uberblick-ai/uberblick-infra)
+(`cloudflare/website.tf`), so going live and rolling back are an apply there.
+Nothing is configured in the Cloudflare dashboard.
 
 ## The two secrets
 
@@ -21,18 +23,16 @@ dashboard, and in the URL of every dashboard page as the first path segment.
 
 1. Cloudflare dashboard → profile menu → **My Profile** → **API Tokens** →
    **Create Token** → **Create Custom Token**.
-2. Name it `uberblick.ai deploy` and give it exactly these permissions:
-   - Account › **Workers Scripts** › Edit
-   - Zone › **Workers Routes** › Edit, with Zone Resources set to the single
-     zone `uberblick.ai`
+2. Name it `uberblick.ai deploy` and give it exactly one permission:
+   Account › **Workers Scripts** › Edit.
 3. Leave client IP filtering and the TTL empty, unless you want the rotation
    below to be forced on a date.
 4. **Continue to summary** → **Create Token**, and copy the value once. It is
    not shown again.
 
-The token can deploy Workers and change Worker routes in this one zone. It
-cannot read or change DNS, the WAF rules, Pages projects or the hub's records,
-so the legacy app and hub.uberblick.ai are outside its reach.
+The token can deploy Workers in the account and nothing else: no routes, no
+DNS, no WAF rules, no Pages projects, so the legacy app, hub.uberblick.ai and
+which domain the Worker answers on are outside its reach.
 
 ### Storing it
 
@@ -79,7 +79,7 @@ the dashboard; `wrangler.jsonc` turns observability on.
 - A bad page: revert the commit on `main`; the push deploys the previous site.
 - A broken Worker: **Workers & Pages → uberblick-ai → Deployments → Rollback**
   to the previous version, then fix forward.
-- Everything back to the legacy app: delete the Worker's two routes
-  (**Workers & Pages → uberblick-ai → Settings → Domains & Routes**) or run
-  `wrangler delete`. The DNS record still points at the legacy origin, so the
-  old site returns at once.
+- Everything back to the legacy app: remove the two routes in uberblick-infra
+  (`cloudflare/website.tf`, then `mise run cf-apply` there). The DNS record
+  still points at the legacy origin, so the old site returns at once; the
+  Worker stays deployed but unreachable.
