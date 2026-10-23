@@ -15,7 +15,7 @@
     "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page",
     // Every request reaches worker/index.js first, so the legacy paths never
-    // fall through to a 404 page and www redirects before any asset is served.
+    // fall through to a 404 page and other hosts redirect before any asset is served.
     "run_worker_first": true
   },
   // The routes uberblick.ai/* and www.uberblick.ai/* are Terraform's, in

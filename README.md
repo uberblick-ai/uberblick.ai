@@ -44,7 +44,7 @@ to linking this one.
 Worker in `wrangler.jsonc` on every push to `main`, and by hand from the Actions
 tab. The Worker serves `out/` as static assets; the routes `uberblick.ai/*`
 and `www.uberblick.ai/*` that put it in front of the domain are Terraform's,
-in uberblick-infra (www redirects to the apex). `worker/index.js` passes
+in uberblick-infra (www and next redirect to the apex). `worker/index.js` passes
 the legacy Rails app's paths, such as `/app`, `/mcp` and the OAuth endpoints,
 to the origin behind the uberblick.ai DNS record, so that app keeps working
 until it is shut down; the list of paths lives in that file, and the landing

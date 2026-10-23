@@ -6,9 +6,13 @@
 // its host, cookies, websocket (/cable) and the WAF rules for /mcp and OAuth.
 // Everything else is the website in out/, served by the assets binding; the
 // legacy marketing pages /pricing and /request-access redirect there
-// (static/_redirects).
+// (static/_redirects). Every other host the Worker answers for, www and the
+// old preview host next, redirects to the apex; wrangler dev on localhost does
+// not, so the site can be tried locally.
 // Remove a prefix here once the Rails app no longer serves it; remove the
 // whole list, and the "Legacy login" button in build.py, when it shuts down.
+
+const APEX = 'uberblick.ai';
 
 const LEGACY = [
   '/app', '/mcp', '/oauth', '/auth', '/__', '/sign-in', '/sign-out',
@@ -25,8 +29,8 @@ const legacy = (path) =>
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    if (url.hostname.startsWith('www.')) {
-      url.hostname = url.hostname.slice(4);
+    if (url.hostname.endsWith(`.${APEX}`)) {
+      url.hostname = APEX;
       return Response.redirect(url.toString(), 301);
     }
     if (legacy(url.pathname)) {
