@@ -1,56 +1,81 @@
 <head>
-<title>Built on its own pages, stage 1: read before you write · Uberblick blog</title>
-<meta name="description" content="How Uberblick is built by an agent loop that starts every issue from the product's own pages, what the server enforces, what a person still decides, and where it went wrong this month.">
-<meta name="date" content="2026-10-22">
+<title>Built on its own pages: how we're building Uberblick with Uberblick · Uberblick blog</title>
+<meta name="description" content="The first note of a series on how Uberblick is built by its own agent loop: where that came from, what three weeks of it produced, the autonomy share day by day, two retros as the agent wrote them, and what we learned.">
+<meta name="date" content="2026-10-23">
 <meta name="author" content="Ben">
 <meta name="kind" content="building note">
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / <a href="/blog">Blog</a> / Building note</p>
-  <h1>Built on its own pages, stage 1: read before you write</h1>
-  <p class="byline"><time datetime="2026-10-22">2026-10-22</time> · Ben · <span class="tag">Building note</span></p>
-  <p class="lede">Uberblick is built by the loop it is made for: issues on GitHub, agents in four roles, and a workspace of pages that say what the product should do. This is the first of three notes on how that goes. The question for this one: can an agent be made to read the product's intent before it changes the product?</p>
+  <h1>Built on its own pages: how we're building Uberblick with Uberblick</h1>
+  <p class="byline"><time datetime="2026-10-23">2026-10-23</time> · Ben · <span class="tag">Building note</span></p>
+  <p class="lede">We are starting a series on how we build Uberblick with Uberblick. Not because the product is finished, but because the way it is built is the point: issues on GitHub, agents in four roles, a workspace of pages that say what the product should do, and one person on the loop. This first note says where that came from, what three weeks of it produced, and what we learned.</p>
 </div>
 <article class="col">
 
-  <section class="q" id="board"><h2>The board</h2>
-  <p>The numbers below come from the delivery report in our workspace: the days from 9 to 20 October that have a record, eleven of them. The live page moves every day.</p>
+  <section class="q" id="start"><h2>Where this started</h2>
+  <p>Uberblick was not the goal. The goal was proper loop engineering for our main product, <a href="https://joincampfire.fm">CampfireFM</a>, a native iOS and Android app with a Python backend. We wanted a loop that takes an issue and delivers a merged pull request without a person in the middle.</p>
+  <p>The hard part turned out not to be the agents. It was us. For a fully autonomous loop we had to get much better at describing what we want, and at coordinating between designers, product managers, engineers and agents. The pages we wrote for each other were not good enough for an agent to work from, and the decisions we had taken lived in chats and in heads.</p>
+  <p>So besides Uberblick, the knowledge base for humans and agents alike, we started <a href="https://agents.uberblick.ai">ub-agents</a> as the autonomous loop that reads it.</p>
+  </section>
+
+  <section class="q" id="three-weeks"><h2>Three weeks, one engineer</h2>
+  <p>The loop started around the beginning of October. Three weeks later, with mainly one engineer working on all of this, we are pretty close to autonomy. Almost everything you see here was built by that loop: the editor, the CLI, the MCP server, the hub, this website.</p>
+  <p>The loop is <code>ub-agents</code> on GitHub Actions: four roles in a few lines of YAML, steered by labels. A preparer writes scope and criteria into the issue, an implementer codes and opens the pull request, a reviewer reviews the exact head, an integrator merges. We run Claude Code and Codex side by side. Every run has the agent's local copy of the Uberblick workspace available through the MCP server, so the pages are within reach whether or not someone pasted them into the issue.</p>
+  <p>The numbers below come from the delivery report in our workspace, 1 to 21 October, every day of it with a record.</p>
   <div class="tablewrap"><table>
-    <thead><tr><th>9 to 20 October, eleven days</th><th>Count</th></tr></thead>
+    <thead><tr><th>1 to 21 October</th><th>Count</th></tr></thead>
     <tbody>
-      <tr><td>Issues the loop closed with a merged pull request</td><td>211</td></tr>
-      <tr><td>Of those, merged without a person stepping in</td><td>112</td></tr>
-      <tr><td>Times the loop stopped and waited for a person</td><td>85</td></tr>
-      <tr><td>Agent runs, of which wasted</td><td>1,291 / 88</td></tr>
+      <tr><td>Issues the loop closed with a merged pull request</td><td>389</td></tr>
+      <tr><td>Of those, merged without a person stepping in</td><td>193</td></tr>
+      <tr><td>Times the loop stopped and waited for a person</td><td>185</td></tr>
+      <tr><td>Agent runs started</td><td>2,599</td></tr>
+      <tr><td>Of those, wasted</td><td>220</td></tr>
     </tbody>
   </table></div>
-  <p class="small">Nothing on this page is a number we did not measure. The report does not yet count the pull requests whose corpus update changed a page; that column comes with the next note.</p>
+  <p class="small">Nothing in this note is a number we did not measure.</p>
   </section>
 
-  <section class="q" id="setup"><h2>How we ran it</h2>
+  <section class="q" id="autonomy"><h2>Autonomy, day by day</h2>
+  <figure class="shot">
+    <div class="bar"><span>Chart · Autonomous deliveries, share per day</span><span>1 to 21 October 2026</span></div>
+    <svg class="chart" viewBox="0 0 760 330" role="img" aria-label="Autonomous deliveries, share per day, 1 to 21 October 2026: from 0% on 1 October to 75% on 21 October">
+      <g class="grid"><line x1="60" x2="736" y1="264.0" y2="264.0"/><line x1="60" x2="736" y1="205.0" y2="205.0"/><line x1="60" x2="736" y1="146.0" y2="146.0"/><line x1="60" x2="736" y1="87.0" y2="87.0"/><line x1="60" x2="736" y1="28.0" y2="28.0"/></g>
+      <g class="lbl"><text x="50" y="268.0" text-anchor="end">0%</text><text x="50" y="209.0" text-anchor="end">20%</text><text x="50" y="150.0" text-anchor="end">40%</text><text x="50" y="91.0" text-anchor="end">60%</text><text x="50" y="32.0" text-anchor="end">80%</text><text x="60.0" y="286" text-anchor="middle">Oct 1</text><text x="127.6" y="286" text-anchor="middle">Oct 3</text><text x="195.2" y="286" text-anchor="middle">Oct 5</text><text x="262.8" y="286" text-anchor="middle">Oct 7</text><text x="330.4" y="286" text-anchor="middle">Oct 9</text><text x="398.0" y="286" text-anchor="middle">Oct 11</text><text x="465.6" y="286" text-anchor="middle">Oct 13</text><text x="533.2" y="286" text-anchor="middle">Oct 15</text><text x="600.8" y="286" text-anchor="middle">Oct 17</text><text x="668.4" y="286" text-anchor="middle">Oct 19</text><text x="736.0" y="286" text-anchor="middle">Oct 21</text></g>
+      <path class="ln" d="M60.0 264.0 L93.8 179.7 L127.6 205.0 L161.4 158.1 L195.2 221.9 L229.0 105.2 L262.8 146.0 L296.6 116.5 L330.4 127.0 L364.2 58.8 L398.0 173.2 L431.8 129.9 L465.6 153.4 L499.4 87.0 L533.2 116.5 L567.0 82.5 L600.8 100.1 L634.6 84.4 L668.4 53.3 L702.2 47.7 L736.0 42.8"/>
+      <g class="pt"><circle cx="60.0" cy="264.0" r="3"><title>1 October: 0%, 0 of 1 deliveries merged without a person</title></circle><circle cx="93.8" cy="179.7" r="3"><title>2 October: 29%, 2 of 7 deliveries merged without a person</title></circle><circle cx="127.6" cy="205.0" r="3"><title>3 October: 20%, 5 of 25 deliveries merged without a person</title></circle><circle cx="161.4" cy="158.1" r="3"><title>4 October: 36%, 14 of 39 deliveries merged without a person</title></circle><circle cx="195.2" cy="221.9" r="3"><title>5 October: 14%, 2 of 14 deliveries merged without a person</title></circle><circle cx="229.0" cy="105.2" r="3"><title>6 October: 54%, 7 of 13 deliveries merged without a person</title></circle><circle cx="262.8" cy="146.0" r="3"><title>7 October: 40%, 2 of 5 deliveries merged without a person</title></circle><circle cx="296.6" cy="116.5" r="3"><title>8 October: 50%, 12 of 24 deliveries merged without a person</title></circle><circle cx="330.4" cy="127.0" r="3"><title>9 October: 46%, 13 of 28 deliveries merged without a person</title></circle><circle cx="364.2" cy="58.8" r="3"><title>10 October: 70%, 16 of 23 deliveries merged without a person</title></circle><circle cx="398.0" cy="173.2" r="3"><title>11 October: 31%, 8 of 26 deliveries merged without a person</title></circle><circle cx="431.8" cy="129.9" r="3"><title>12 October: 45%, 10 of 22 deliveries merged without a person</title></circle><circle cx="465.6" cy="153.4" r="3"><title>13 October: 38%, 6 of 16 deliveries merged without a person</title></circle><circle cx="499.4" cy="87.0" r="3"><title>14 October: 60%, 9 of 15 deliveries merged without a person</title></circle><circle cx="533.2" cy="116.5" r="3"><title>15 October: 50%, 4 of 8 deliveries merged without a person</title></circle><circle cx="567.0" cy="82.5" r="3"><title>16 October: 62%, 16 of 26 deliveries merged without a person</title></circle><circle cx="600.8" cy="100.1" r="3"><title>17 October: 56%, 5 of 9 deliveries merged without a person</title></circle><circle cx="634.6" cy="84.4" r="3"><title>18 October: 61%, 14 of 23 deliveries merged without a person</title></circle><circle cx="668.4" cy="53.3" r="3"><title>19 October: 71%, 10 of 14 deliveries merged without a person</title></circle><circle cx="702.2" cy="47.7" r="3"><title>20 October: 73%, 11 of 15 deliveries merged without a person</title></circle><circle cx="736.0" cy="42.8" r="3"><title>21 October: 75%, 27 of 36 deliveries merged without a person</title></circle></g>
+      <g class="leg"><line x1="60" x2="74" y1="306" y2="306" class="ln"/><text x="82" y="310" class="lbl">Merged without a person, share of the deliveries of that day</text></g>
+    </svg>
+    <figcaption>Delivery report in the Uberblick workspace, collection days, 1 to 21 October 2026, read 23 October.</figcaption>
+  </figure>
+  <p>Autonomous follows the delivery report's definition: the integrator merged the delivery with no wasted run, no stop and no notice that a person had to act. A reviewer sending the work back still counts; a wasted run does not, which is why the stops in the table are fewer than the deliveries that were not autonomous. A day with five deliveries swings the line. By week it reads 29% (1 to 4 October), 45%, 54% and 74% (19 to 21 October).</p>
+  </section>
+
+  <section class="q" id="retros"><h2>Retros, and autonomy rising slowly</h2>
+  <p>It was clear that the first runs would have errors, and they did. A branch's code migrated the shared workspace copy, reviews ran on heads that had moved on, runs sat for a quarter of an hour on a runner that was still installing its libraries. That is why we added retrospectives to the loop. When a run lost something real, the agent posts one short paragraph: the cost, the cause, and the smallest change that would have prevented it. Two from the implementer, as the agent wrote them.</p>
+  <p>On the <a href="https://github.com/uberblick-ai/uberblick-2/issues/1831">Hocuspocus upgrade</a> the preparation had guessed what the upstream release changed instead of reading it, because headless runs could not reach the package registry. <a href="https://github.com/uberblick-ai/uberblick-2/discussions/1015#discussioncomment-19001332">The retro</a>:</p>
+  <blockquote><p>The Hocuspocus upgrade needs another preparation pass because the scope covered awareness removal but missed the close-then-throw authentication-refusal change in the same upstream lifecycle update. The implementation is retained, but handoff stopped at that contract gap. Checking late refusal delivery through the composed admission suite during dependency characterization would have exposed the scope choice before implementation.</p></blockquote>
+  <p>The next day <a href="https://github.com/uberblick-ai/uberblick-2/pull/2036">a change to the loop's permissions</a> let preparers read the registry and the release notes before writing the contract.</p>
+  <p>On <a href="https://github.com/uberblick-ai/uberblick-2/issues/1062">#1062</a> a colour fix that was correct in the tokens would have nearly hidden the terminal controls, so the agent threw its own prototype away. <a href="https://github.com/uberblick-ai/uberblick-2/discussions/1015#discussioncomment-18724627">The retro</a>:</p>
+  <blockquote><p>The rendered verification for #1062 found a contract gap after a panel utility prototype had begun: enabled code-copy text uses shared muted ink at 60% opacity, while terminal controls use that same ink over a fixed dark sibling screen. The token-only fix for the first nearly hides the second, so the run returned the issue and discarded its prototype. For future shared-ink changes, preparation should include the rendered consumers' opacity and overlapping grounds when bounding scope; ancestor-only token ratios missed the necessary fixed-ground consumer correction here.</p></blockquote>
+  <p>Nobody reads three hundred retros by hand. A <a href="https://skills.uberblick.ai/skills/ub-agents-deliver-report">skill evaluates the day's deliveries</a> and retros every morning and files issues to improve the loop; a person decides each one. More on that in a later note.</p>
+  <p>Then we saw a slight increase in autonomy. Not because the models changed in those weeks, but because we got better at describing the issues, and because the documents and the decision records the agents read got better with every retro.</p>
+  </section>
+
+  <section class="q" id="learned"><h2>What we learned</h2>
   <ul>
-    <li><strong>The pages.</strong> Fifty pages in one workspace: a product principles page, the CLI's intent per command, the MCP server's contracts, the "Web UI:" design pages, and the decision topics. Six of them carry the guidance tag.</li>
-    <li><strong>The loop.</strong> <a href="https://agents.uberblick.ai">ub-agents</a> on GitHub Actions, four roles in a few lines of YAML, steered by labels: needs-preparation, ready, needs-review, ready-to-merge. Any agent runtime; we run Claude Code and Codex side by side.</li>
-    <li><strong>The rule.</strong> The MCP server names the guidance pages when an agent connects and asks it to read the ones that apply before its first write. The agents' instructions add four lines: start from the sidebar, cite by id, call <code>find_decisions</code> for your issue, update the page in the pull request.</li>
-    <li><strong>The person.</strong> I read the issue the preparer wrote, approve or reject the decisions agents propose, and read the corpus update in each pull request. I do not read most of the code.</li>
-  </ul>
-  </section>
-
-  <section class="q" id="held"><h2>What held</h2>
-  <p>Every agent handled the refusal without instruction; the error names the pages, and reading them is one call each. No pull request in the period changed a behaviour a decision record had settled. The corpus update in the pull request turned out to be the strongest part of the loop: it is where a reviewer, human or agent, notices that the page and the code disagree, and in most of those cases the page was right.</p>
-  </section>
-
-  <section class="q" id="broke"><h2>Where it went wrong</h2>
-  <ul>
-    <li><strong>The shared database.</strong> Every checkout on a machine uses the same workspace copy. An agent running branch code with a newer migration migrated my real workspace, and main then logged a compaction failure on every start. No data was lost; it was loud and it took a day to find. The fix is an issue, not a page.</li>
-    <li><strong>Reading is not understanding.</strong> One implementer read the typography page, as required, and then built a monospace table header anyway. The reviewer caught it against the page. The server can guarantee the page was in the context; it cannot guarantee it was used. That is what the reviewer role is for, and it earned its keep.</li>
-    <li><strong>Pages ahead of the code.</strong> A page may describe intended behaviour that has not shipped. Twice an agent treated an intended behaviour as a bug in the code and "fixed" it in the wrong direction. The rule now reads: pages describe intent; never make the page say less than it did because the code does less.</li>
+    <li><strong>Learn from each run.</strong> Keep every run headless. When a run lost something real, let the agent write down the cost, the cause and what would have prevented it. Those short reports are what we learn from; nobody sits and watches a run.</li>
+    <li><strong>Always fix the guidance and the structure, never the issue.</strong> When a run goes wrong, the fix is the Uberblick page, a gate or an adjusted instruction. Fixing the issue at hand teaches the loop nothing.</li>
+    <li><strong>Learn how to cut issues, and work on good issue templates.</strong> A recurring cause of wasted runs was an issue that was too big, or that left out what the agent had to read first.</li>
+    <li><strong>Clear gates and agent definitions help a lot.</strong> Look at <a href="https://github.com/uberblick-ai/uberblick-2/commits/main/.agents/roles/implementer.md">how often ours changed</a>: the implementer's definition alone has 52 commits since the end of August, 26 of them in October. Our job was to observe and adjust, a bit like a kindergarten teacher watching a toddler learn to walk: add a guardrail where it struggles, then step back.</li>
+    <li><strong>Trust the loop.</strong> Do not jump in when it gets frustrating. Revert, restart the issue or the pull request, and see whether your structural change improves the outcome.</li>
+    <li><strong>Build skills and share them with the team.</strong> We have our own skills page at CampfireFM, like <a href="https://skills.uberblick.ai">skills.uberblick.ai</a>.</li>
   </ul>
   </section>
 
   <section class="q" id="next"><h2>Next</h2>
-  <p>Stage 2 is about decisions: whether a record written by an agent and approved by a person keeps a question closed across the runs that follow, and what the history looks like after a month. Stage 3 is the one we are least sure of: the loop proposing changes to its own rules from retrospectives, with a person deciding each one. Nothing changes automatically from a retro; that is the rule we will test hardest.</p>
-  <p>If you want to try the first stage on your own repository: <a href="/docs/install">install</a>, tag three pages as guidance, and put the lines from <a href="/docs/agents#instructions">Agents over MCP</a> into your agent's instructions. Then read the corpus update in the first pull request.</p>
+  <p>The next notes go one level down: how the server makes an agent read the pages before it writes, and where that held and where it did not; whether a decision record written by an agent and approved by a person keeps a question closed across the runs that follow; and the retro loop itself, the part we are least sure of.</p>
+  <p>If you want to try this on your own repository: <a href="/guides/install">install Uberblick</a>, follow <a href="/guides/first-ten-minutes">your first ten minutes</a>, then add <a href="https://agents.uberblick.ai">ub-agents</a>.</p>
   </section>
 </article>

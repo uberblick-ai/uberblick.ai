@@ -1,0 +1,51 @@
+<head>
+<title>Install Uberblick · Uberblick</title>
+<meta name="description" content="Install the ub client with Homebrew, create a workspace in your project and open the editor in your browser. Three commands, no account, five minutes.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<section class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/guides">Guides</a></p>
+  <h1>Install Uberblick.</h1>
+  <p class="lede">Three commands and about five minutes: one Homebrew formula, one workspace in your project, one browser tab. Nothing to sign up for, nothing leaves your computer. When you are done here, <a href="/guides/first-ten-minutes">Your first ten minutes</a> picks up right where this page stops.</p>
+</section>
+
+<div class="col">
+<section class="q" id="brew"><h2>1. Install the client</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="brew install uberblick-ai/tap/uberblick
+ub --version">Copy</button></div><pre><span class="p">$</span> brew install uberblick-ai/tap/uberblick
+<span class="p">$</span> ub --version
+<span class="o">0.4.9</span></pre></section>
+<p>That is the whole install: <code>ub</code> is a command-line client that also carries the local server and the editor. Homebrew on Linux works the same way; there is no Windows build yet, the <a href="/docs/faq">FAQ</a> says why. Whenever a new version is out, <a href="/docs/cli/update">ub update</a> fetches it, and if Uberblick is not for you, <a href="/docs/cli/uninstall">ub uninstall</a> takes everything off your machine again.</p>
+<p class="small">You should see: a version number. If the shell cannot find <code>ub</code>, open a new terminal so it picks up Homebrew's path.</p>
+</section>
+
+<section class="q" id="workspace"><h2>2. Create a workspace in your project</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="cd ~/Projects/my-product
+ub workspace create &quot;My product&quot;">Copy</button></div><pre><span class="p">$</span> cd ~/Projects/my-product
+<span class="p">$</span> ub workspace create "My product"
+<span class="o">created    My product (b3eea2f9-a8dc-40f2-a3d9-b27742620b1f, local)
+wrote      ~/Projects/my-product/.uberblick.json
+open it with: ub open</span></pre></section>
+<p>Do this inside the checkout of the product the pages will be about, not in a notes folder. The small <code>.uberblick.json</code> the command writes is the link between this directory and the workspace: every <code>ub</code> command and every agent you start here finds the same pages through it. Check it in when you want teammates to land in the same workspace. You can have as many workspaces as you have projects.</p>
+<p class="small">You should see: the created line with the workspace name, and a new <code>.uberblick.json</code> in the directory.</p>
+</section>
+
+<section class="q" id="open"><h2>3. Open the editor</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub open">Copy</button></div><pre><span class="p">$</span> ub open
+<span class="o">web        http://127.0.0.1:13379/
+workspace  My product (local)
+
+Ctrl-C to stop.</span></pre></section>
+<p><code>ub open</code> serves the editor on this computer only, for as long as you leave it running. Your browser opens on the workspace, which starts with two short pages pinned in the sidebar that explain the editor itself. Have a look around, then leave the terminal running and continue with the next guide.</p>
+<p class="small">You should see: the editor in your browser with <strong>Welcome to Uberblick</strong> and <strong>How to Use It</strong> in the sidebar.</p>
+</section>
+
+<section class="q" id="next"><h2>Where to go from here</h2>
+<ul>
+  <li><a href="/guides/first-ten-minutes">Your first ten minutes</a>: write one rule, connect the agent you already use, and watch it read the page before it answers.</li>
+  <li><a href="/guides/first-workspace">Your first workspace</a>: what the two commands put on disk, and how to add a second workspace or remove one.</li>
+  <li><a href="/guides/hub">Set up a hub</a> when a second person or a second computer should see the pages.</li>
+  <li>The <a href="/docs/install">Install reference</a> has the same steps in short form, with every option.</li>
+</ul>
+</section>
+</div>

@@ -187,7 +187,7 @@ DOCS = [
 ]
 GUIDES = [
     (None, None, [('/guides', 'All guides')]),
-    ('Start', None, [('/guides/first-ten-minutes', 'Your first ten minutes'), ('/guides/first-workspace', 'Your first workspace'), ('/guides/hub', 'Set up a hub')]),
+    ('Start', None, [('/guides/install', 'Install Uberblick'), ('/guides/first-ten-minutes', 'Your first ten minutes'), ('/guides/first-workspace', 'Your first workspace'), ('/guides/hub', 'Set up a hub')]),
     ('Jobs', None, [('/guides/product-intent', 'Product intent'), ('/guides/decisions', 'Decisions that stay decided'), ('/guides/reports', 'Reports with the numbers'), ('/guides/flows', 'Flows and screens as text')]),
 ]
 KINDS = {'release': 'Release', 'design note': 'Design note', 'building note': 'Building note'}
