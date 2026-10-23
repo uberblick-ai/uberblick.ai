@@ -1,7 +1,6 @@
 [tools]
 node = "22"
 python = "3.13"
-fnox = "1"
 
 # The build is standard-library Python; wrangler (Node) serves and deploys it.
 [tasks.build]
@@ -23,8 +22,8 @@ run = [
 description = "What CI runs: build, then lint"
 run = ["mise run build", "mise run lint"]
 
-# The deploy from a laptop, with the two secrets from fnox (DEPLOYING.md).
+# A deploy from a laptop, after `npx wrangler login` once (DEPLOYING.md).
 # Pushes to main deploy on their own through .github/workflows/deploy.yml.
 [tasks.deploy]
-description = "Build and deploy the Worker with the Cloudflare secrets from fnox"
-run = "python3 build.py && fnox exec -- npx -y wrangler@4.152.0 deploy"
+description = "Build and deploy the Worker with your own Cloudflare login"
+run = "python3 build.py && npx -y wrangler@4.152.0 deploy"

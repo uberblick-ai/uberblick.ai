@@ -11,8 +11,8 @@ the dashboard only shows what wrangler deployed.
 
 | Name | What it is | Where it lives |
 | --- | --- | --- |
-| `CLOUDFLARE_ACCOUNT_ID` | The account that owns the uberblick.ai zone. Not secret, but kept beside the token so the workflow has one place to look. | GitHub repository secret; fnox for laptops |
-| `CLOUDFLARE_API_TOKEN` | A token wrangler uses to upload the Worker and set its routes. | GitHub repository secret; fnox for laptops |
+| `CLOUDFLARE_ACCOUNT_ID` | The account that owns the uberblick.ai zone. Not secret, but kept beside the token so the workflow has one place to look. | GitHub repository secret |
+| `CLOUDFLARE_API_TOKEN` | A token wrangler uses to upload the Worker and set its routes. | GitHub repository secret |
 
 The account id is on the right of the zone's Overview page in the Cloudflare
 dashboard, and in the URL of every dashboard page as the first path segment.
@@ -40,21 +40,16 @@ GitHub: repository **Settings → Secrets and variables → Actions → New
 repository secret**, once for `CLOUDFLARE_API_TOKEN` and once for
 `CLOUDFLARE_ACCOUNT_ID`.
 
-A laptop that should deploy by hand keeps both in fnox (`fnox.toml` names them,
-`~/.config/fnox/age.txt` decrypts them):
-
-```sh
-fnox set CLOUDFLARE_API_TOKEN
-fnox set CLOUDFLARE_ACCOUNT_ID
-mise run deploy
-```
+Nowhere else. A deploy from a laptop needs no copy of the token: `npx wrangler
+login` once opens the browser and stores wrangler's own login under
+`~/.config/.wrangler`, then `mise run deploy` builds and deploys.
 
 ## Rotating the token
 
 1. Create a new token as above. The old one keeps working meanwhile.
 2. Replace the value of the GitHub secret `CLOUDFLARE_API_TOKEN`
-   (**Settings → Secrets and variables → Actions**, pencil icon). Update fnox
-   on each laptop that deploys: `fnox set CLOUDFLARE_API_TOKEN`.
+   (**Settings → Secrets and variables → Actions**, pencil icon). Laptops
+   need nothing; they use their own wrangler login.
 3. Prove the new token works: **Actions → deploy → Run workflow** on `main`,
    and wait for the green run.
 4. Revoke the old token: **My Profile → API Tokens**, the row's menu, **Delete**.

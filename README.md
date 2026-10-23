@@ -53,7 +53,7 @@ front of everything.
 
 The workflow deploys with two repository secrets, `CLOUDFLARE_ACCOUNT_ID` and
 `CLOUDFLARE_API_TOKEN`. [DEPLOYING.md](DEPLOYING.md) says how to create,
-rotate and check them, and how to deploy from a laptop with `mise run deploy`.
+rotate and check them, and how to deploy from a laptop.
 
 A release in uberblick-2 does not trigger a deploy here, so the home page's
 Recent changes list catches up with the next push to this repository or a
@@ -64,7 +64,7 @@ settings for a second host.
 
 ## Working locally
 
-[mise](https://mise.jdx.dev) installs Node, Python and fnox from `mise.toml`:
+[mise](https://mise.jdx.dev) installs Node and Python from `mise.toml`:
 
 ```sh
 mise trust mise.toml
