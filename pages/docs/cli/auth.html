@@ -32,7 +32,7 @@ available workspaces:
   3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f | Acme product
   4f0b9c2e-7a1d-4e6b-9c35-8d2e1f6a0b47 | Design reviews</span></pre></section>
   <p>The hub learns your GitHub login and nothing else. Login does not change the project binding and does not download every workspace: the next step is usually <a href="/docs/cli/workspace#use">ub workspace use</a> to fetch a specific workspace as a local copy, unless the repository already carries a <code>.uberblick.json</code>, in which case nothing more is needed.</p>
-  <p>The credential belongs to this computer. It lasts 30 days and renews itself after 15 while anything syncs, without another GitHub approval. Signing in grants no workspace access by itself; a workspace admin does that with <a href="/docs/cli/workspace#member">ub workspace member</a>. On a fresh, unclaimed hub the first login claims it: that account becomes hub admin and admin of the default workspace, and login warns before the approval so you do it before anyone else can.</p>
+  <p>The credential belongs to this computer. It lasts 30 days and renews itself after 15 while anything syncs, without another GitHub approval. On a fresh, unclaimed hub the first login claims it: that account becomes hub admin and admin of the default workspace, and login warns before the approval so you do it before anyone else can.</p>
   </section>
 
   <section class="q" id="status"><h2>status</h2>
