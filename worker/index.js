@@ -4,7 +4,9 @@
 // DNS record. Requests for its paths go there unchanged with fetch(request);
 // on a Workers route that is the origin the DNS record names, so the app keeps
 // its host, cookies, websocket (/cable) and the WAF rules for /mcp and OAuth.
-// Everything else is the website in out/, served by the assets binding.
+// Everything else is the website in out/, served by the assets binding; the
+// legacy marketing pages /pricing and /request-access redirect there
+// (static/_redirects).
 // Remove a prefix here once the Rails app no longer serves it; remove the
 // whole list, and the "Legacy login" button in build.py, when it shuts down.
 
@@ -14,7 +16,6 @@ const LEGACY = [
   '/pages', '/settings', '/triage', '/search', '/cards', '/workspaces',
   '/workspace-access', '/account', '/comment_threads', '/product-requirements',
   '/dashboard', '/admin', '/assets', '/rails', '/cable', '/up',
-  '/pricing', '/request-access',
 ];
 
 const legacy = (path) =>
