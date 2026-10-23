@@ -37,7 +37,7 @@ Ctrl-C to stop.</span></pre></section>
   </section>
 
   <section class="q" id="share"><h2>4. Share the workspace</h2>
-  <p>A local workspace has no members because it has no server. To share it, a hub holds the copy the others fetch, admits them as members, and passes changes between the computers; every computer keeps its own copy and works offline. Set one up with <a href="/docs/hub">Run a hub</a>, then upload the workspace with <code>ub workspace promote</code> and commit the updated <code>.uberblick.json</code>, so teammates only need <code>ub auth login</code>.</p>
+  <p>Your workspace is local by default. You can promote it to a hub and allow others to join it. A hub is a Docker image that serves as the central server for all local copies. Authentication relies on GitHub auth. See <a href="/docs/hub">Run a hub</a> on how to set it up and share it.</p>
   </section>
   <p class="next">Next: <a href="/docs/workspaces">Workspaces</a>.</p>
 </article>
