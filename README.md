@@ -52,7 +52,7 @@ page's "Legacy login" button in `build.py` goes with it. DNS and the WAF rules
 stay as they are. Removing the routes in uberblick-infra puts the legacy app
 back in front of everything.
 
-The workflow deploys with two repository secrets, `CLOUDFLARE_ACCOUNT_ID` and
+The workflow deploys with two organisation secrets, `CLOUDFLARE_ACCOUNT_ID` and
 `CLOUDFLARE_API_TOKEN`. [DEPLOYING.md](DEPLOYING.md) says how to create,
 rotate and check them, and how to deploy from a laptop.
 

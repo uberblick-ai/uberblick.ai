@@ -13,8 +13,8 @@ Nothing is configured in the Cloudflare dashboard.
 
 | Name | What it is | Where it lives |
 | --- | --- | --- |
-| `CLOUDFLARE_ACCOUNT_ID` | The account that owns the uberblick.ai zone. Not secret, but kept beside the token so the workflow has one place to look. | GitHub repository secret |
-| `CLOUDFLARE_API_TOKEN` | A token wrangler uses to upload the Worker and set its routes. | GitHub repository secret |
+| `CLOUDFLARE_ACCOUNT_ID` | The account that owns the uberblick.ai zone. Not secret, but kept beside the token so the workflow has one place to look. | GitHub organisation secret |
+| `CLOUDFLARE_API_TOKEN` | A token wrangler uses to upload the Worker. | GitHub organisation secret |
 
 The account id is on the right of the zone's Overview page in the Cloudflare
 dashboard, and in the URL of every dashboard page as the first path segment.
@@ -36,9 +36,14 @@ which domain the Worker answers on are outside its reach.
 
 ### Storing it
 
-GitHub: repository **Settings → Secrets and variables → Actions → New
-repository secret**, once for `CLOUDFLARE_API_TOKEN` and once for
-`CLOUDFLARE_ACCOUNT_ID`.
+GitHub: organisation **Settings → Secrets and variables → Actions → New
+organization secret**, once for `CLOUDFLARE_API_TOKEN` and once for
+`CLOUDFLARE_ACCOUNT_ID`, with repository access **Selected repositories**
+and only this repository picked. The token can edit every Worker in the
+Cloudflare account, so a secret open to all repositories would let any
+workflow in the organisation deploy any Worker. A repository secret of the
+same name would win over the organisation one; keep none, so there is one
+place to rotate.
 
 Nowhere else. A deploy from a laptop needs no copy of the token: `npx wrangler
 login` once opens the browser and stores wrangler's own login under
@@ -47,8 +52,8 @@ login` once opens the browser and stores wrangler's own login under
 ## Rotating the token
 
 1. Create a new token as above. The old one keeps working meanwhile.
-2. Replace the value of the GitHub secret `CLOUDFLARE_API_TOKEN`
-   (**Settings → Secrets and variables → Actions**, pencil icon). Laptops
+2. Replace the value of the organisation secret `CLOUDFLARE_API_TOKEN`
+   (organisation **Settings → Secrets and variables → Actions**, pencil icon). Laptops
    need nothing; they use their own wrangler login.
 3. Prove the new token works: **Actions → deploy → Run workflow** on `main`,
    and wait for the green run.
