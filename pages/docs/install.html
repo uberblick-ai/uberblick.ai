@@ -1,20 +1,43 @@
 <head>
-<title>Install and update · Uberblick docs</title>
-<meta name="description" content="Install the ub client with Homebrew on macOS or Linux, check the setup with ub doctor, and update it with ub update.">
+<title>Install · Uberblick docs</title>
+<meta name="description" content="Install the ub client with Homebrew, create your first workspace in a repository, open the web interface, and share the workspace through a hub.">
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / Get started</p>
-  <h1>Install and update</h1>
-  <p class="lede">One Homebrew formula gives you the <code>ub</code> client: the editor, the MCP server and the terminal commands. It runs on Apple Silicon macOS and on Linux x86_64. Nothing needs an account until you share a workspace.</p>
+  <h1>Install</h1>
+  <p class="lede">One Homebrew formula gives you the <code>ub</code> client and local server. It is a CLI and a packaged JS app that serves the documents locally. It runs on Apple Silicon macOS and on Linux x86_64. Nothing needs an account until you share a workspace.</p>
 </div>
 <article class="col">
-  <section class="q">
+  <section class="q" id="install"><h2>1. Install uberblick</h2>
   <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="brew install uberblick-ai/tap/uberblick
 ub --version">Copy</button></div><pre><span class="p">$</span> brew install uberblick-ai/tap/uberblick
 <span class="p">$</span> ub --version
-<span class="o">0.4.8</span></pre></section>
-  <p>Homebrew on Linux works the same way. There is no Windows build; see the <a href="/docs/faq">FAQ</a>. The first workspace is two commands away: <a href="/docs/workspaces">Workspaces</a>, or <a href="/guides/first-workspace">Your first workspace</a> for what the commands do on disk.</p>
+<span class="o">0.4.9</span></pre></section>
+  <p>Homebrew on Linux works the same way. There is no Windows build; see the <a href="/docs/faq">FAQ</a>. Later, <a href="/docs/cli/update">ub update</a> upgrades it and <code>brew uninstall uberblick</code> removes it.</p>
   </section>
-  <p class="next">Next: <a href="/docs/install/check">Check the setup</a>.</p>
+
+  <section class="q" id="workspace"><h2>2. Create your first workspace</h2>
+  <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="cd ~/Projects/my-product
+ub workspace create &quot;My product&quot;">Copy</button></div><pre><span class="p">$</span> cd ~/Projects/my-product
+<span class="p">$</span> ub workspace create "My product"
+<span class="o">created    My product (b3eea2f9-a8dc-40f2-a3d9-b27742620b1f, local)
+wrote      ~/Projects/my-product/.uberblick.json
+open it with: ub open</span></pre></section>
+  <p>Create the workspace while you are in the repository you want to document. The command creates a <code>.uberblick.json</code> file there and stores the workspace id in it. You can run as many workspaces as you like; this <a href="/docs/cli/binding">binding</a> gets every command and agent started in the repository to the right one. What the command puts on disk is in <a href="/guides/first-workspace">Your first workspace</a>.</p>
+  </section>
+
+  <section class="q" id="open"><h2>3. Open the web interface</h2>
+  <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub open">Copy</button></div><pre><span class="p">$</span> ub open
+<span class="o">web        http://127.0.0.1:13379/
+workspace  My product (local)
+
+Ctrl-C to stop.</span></pre></section>
+  <p><code>ub open</code> serves the editor for the workspace this repository is bound to, on this computer only, until you stop it. The workspace starts with a few documents to edit. Agents get the same workspace over MCP; see <a href="/docs/agents">Agents over MCP</a>.</p>
+  </section>
+
+  <section class="q" id="share"><h2>4. Share the workspace</h2>
+  <p>A local workspace has no members because it has no server. To share it, a hub holds the copy the others fetch, admits them as members, and passes changes between the computers; every computer keeps its own copy and works offline. Set one up with <a href="/docs/hub">Run a hub</a>, then upload the workspace with <code>ub workspace promote</code> and commit the updated <code>.uberblick.json</code>, so teammates only need <code>ub auth login</code>.</p>
+  </section>
+  <p class="next">Next: <a href="/docs/workspaces">Workspaces</a>.</p>
 </article>
