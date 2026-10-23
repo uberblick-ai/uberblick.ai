@@ -41,3 +41,12 @@
 .dvport { flex: 1; min-height: 0; overflow: auto; padding: 16px }
 .dvport svg { display: block; margin: 0 auto; max-width: none; height: auto }
 .dvport svg[viewBox] { width: auto }
+
+/* Blog: quoted retros and the inline line chart drawn like the editor's chart block. */
+.col blockquote { margin: 14px 0; padding: 2px 0 2px 16px; border-left: 3px solid var(--line); color: var(--muted); font-size: 15.5px }
+.col blockquote p { margin: 0 }
+.shot .chart { display: block; width: 100%; height: auto; background: color-mix(in oklab, var(--bar-chart) 6%, var(--panel)); font: 12px var(--sans) }
+.shot .chart .grid line { stroke: var(--line) }
+.shot .chart .lbl, .shot .chart .lbl text { fill: var(--muted) }
+.shot .chart .ln { fill: none; stroke: var(--bar-chart); stroke-width: 2; stroke-linejoin: round }
+.shot .chart .pt circle { fill: var(--bar-chart) }
