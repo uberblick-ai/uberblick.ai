@@ -27,6 +27,98 @@
   <p>Ablauf is a small text format: name the columns, put each node in a column and a row, say which side an edge leaves and enters. The renderer measures text, draws in one house style, and reports every crossing and overlap with a line number. It never moves anything. That last property is the whole point: an agent told "the arrows cross at line 14" can fix line 14. The format lives in <a href="https://github.com/uberblick-ai/ablauf">its own repository</a> and works without Uberblick; 0.4.8 draws it in the editor.</p>
   </section>
 
+  <section class="q" id="side-by-side"><h2>Side by side</h2>
+  <p>The same diagram in both formats: the ub-agents loop as its explainer page draws it, from the first label to the merge, with the rework edges and the place where a person decides. Both drawings are made in your browser from the source in the second tab, the left by Mermaid, the right by the renderer the Uberblick editor uses. What you see is what each format does with the same graph today, not a picture we picked.</p>
+  <div class="sbs">
+    <div class="tabs ex" data-diagram="mermaid"><div class="tablist" role="tablist" aria-label="Mermaid"><button role="tab" id="t-mm-v" aria-selected="true" aria-controls="p-mm-v" type="button">Mermaid</button><button role="tab" id="t-mm-s" aria-selected="false" aria-controls="p-mm-s" type="button">Source</button><button type="button" class="copy sbs-size">Larger</button></div>
+      <div class="panel pic" role="tabpanel" id="p-mm-v" aria-labelledby="t-mm-v"><p class="small">Drawn here by Mermaid from the source in the next tab.</p></div>
+      <div class="panel" role="tabpanel" id="p-mm-s" aria-labelledby="t-mm-s" hidden><pre>```mermaid
+flowchart TD
+  start(A maintainer adds the first label) --> needs_preparation([needs-preparation])
+  needs_preparation -- trigger --> issue_preparer[issue-preparer&lt;br&gt;writes scope and criteria]
+  issue_preparer -- prepared --> ready([ready])
+  ready --> implementer[implementer&lt;br&gt;codes, checks, opens the PR]
+  implementer -- handed-off --> needs_review([needs-review])
+  needs_review --> reviewer[reviewer&lt;br&gt;reviews the exact head SHA]
+  reviewer -- approved --> ready_to_merge([ready-to-merge])
+  ready_to_merge --> integrator[integrator&lt;br&gt;updates base, checks, merges]
+  integrator -- merged --> merged(Merged · issue closed)
+
+  reviewer -- changes-requested --> needs_changes([needs-changes])
+  ready_to_merge -. on-conflict · launcher .-> needs_changes
+  integrator -- changes-requested --> needs_changes
+  needs_changes -- revise the same PR --> implementer
+
+  subgraph human[A person decides]
+    needs_human([needs-human])
+  end
+  issue_preparer -- needs-human --> human
+  implementer -- blocked --> human
+  reviewer -- blocked --> human
+  integrator -- maintainer-merge, blocked --> human
+```</pre></div>
+    </div>
+    <div class="tabs ex" data-diagram="ablauf"><div class="tablist" role="tablist" aria-label="ablauf"><button role="tab" id="t-ab-v" aria-selected="true" aria-controls="p-ab-v" type="button">ablauf</button><button role="tab" id="t-ab-s" aria-selected="false" aria-controls="p-ab-s" type="button">Source</button><button type="button" class="copy sbs-size">Larger</button></div>
+      <div class="panel pic" role="tabpanel" id="p-ab-v" aria-labelledby="t-ab-v"><p class="small">Drawn here by ablauf from the source in the next tab.</p></div>
+      <div class="panel" role="tabpanel" id="p-ab-s" aria-labelledby="t-ab-s" hidden><pre>```ablauf
+flow v0
+columns rework main stop
+
+section "Issue"
+text start col=main "A maintainer adds the first label"
+pill needs-preparation tone=muted
+box issue-preparer "writes scope and criteria"
+pill ready tone=done
+
+section "Pull request"
+box implementer "codes, checks, opens the PR"
+pill needs-review tone=agent
+box reviewer "reviews the exact head SHA"
+pill ready-to-merge tone=done
+box integrator "updates base, checks, merges"
+end merged "Merged · issue closed"
+
+pill needs-changes col=rework row=reviewer tone=rework
+
+panel human col=stop row=needs-review span=3 tone=stop
+  pill needs-human
+  muted "or an Action needed comment"
+  rule
+  strong "A person decides"
+  text "adds the trigger of any role"
+  muted "blocked, same role: retry"
+
+start --&gt; needs-preparation
+needs-preparation --&gt; issue-preparer : trigger
+issue-preparer --&gt; ready : prepared
+ready --&gt; implementer
+implementer --&gt; needs-review : handed-off
+needs-review --&gt; reviewer
+reviewer --&gt; ready-to-merge : approved
+ready-to-merge --&gt; integrator
+integrator --&gt; merged : merged
+
+reviewer --&gt; needs-changes tone=rework : changes-requested
+ready-to-merge -.-&gt; needs-changes tone=rework to=bottom.2 : on-conflict · launcher
+integrator --&gt; needs-changes tone=rework to=bottom.1 : changes-requested
+needs-changes --&gt; implementer tone=rework from=top to=left label=end : revise the same PR
+
+issue-preparer --&gt; human tone=stop to=top.2 : needs-human
+implementer --&gt; human tone=stop to=top.1 : blocked
+reviewer --&gt; human tone=stop : blocked
+integrator --&gt; human tone=stop : maintainer-merge, blocked
+
+legend
+  pill tone=done "GitHub label" sample=ready
+  box "agent role"
+  panel tone=stop "a person decides"
+  dashed tone=rework "set by the launcher"
+```</pre></div>
+    </div>
+  </div>
+  <p>Mermaid's drawing belongs to its layout algorithm: add a node and the picture reflows, and it can change with a Mermaid release. The ablauf drawing belongs to the author: three columns, named in the second line, and every node placed in one of them. "Move the retry box to the left" is one word in the source, and nothing else moves.</p>
+  </section>
+
   <section class="q" id="cost"><h2>What it cost</h2>
   <ul>
     <li>A renderer of our own, about a week of loop work, and a format that is still 0.x.</li>
@@ -36,3 +128,4 @@
   <p>If your team draws with Mermaid and is happy, nothing here says stop. It says that for pages written mostly by agents, the author has to hold the layout.</p>
   </section>
 </article>
+<script type="module" src="/js/diagrams.js"></script>

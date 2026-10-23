@@ -27,3 +27,9 @@ run = ["mise run build", "mise run lint"]
 [tasks.deploy]
 description = "Build and deploy the Worker with your own Cloudflare login"
 run = "python3 build.py && npx -y wrangler@4.152.0 deploy"
+
+# The ablauf renderer the diagram examples draw with, bundled from a checkout of
+# uberblick-ai/ablauf beside this one (static/js/ablauf.js says which commit).
+[tasks.ablauf]
+description = "Bundle ../ablauf's renderer into static/js/ablauf.js"
+run = "npx -y esbuild@0.27.2 ../ablauf/spike/flow/index.ts --bundle --format=esm --minify --target=es2022 --outfile=static/js/ablauf.js"

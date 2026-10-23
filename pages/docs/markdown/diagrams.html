@@ -11,7 +11,7 @@
 <article class="col">
   <section class="q" id="ablauf"><h2>A small one</h2>
   <p>The source names the columns, puts each node in a row and says which side an edge leaves and enters. The renderer measures the text and draws in one style for light and dark. It never moves anything, so a change in the text is the only thing that changes the picture.</p>
-  <div class="tabs ex"><div class="tablist" role="tablist" aria-label="ablauf example"><button role="tab" id="t-ablauf-v" aria-selected="true" aria-controls="p-ablauf-v" type="button">Displayed</button><button role="tab" id="t-ablauf-m" aria-selected="false" aria-controls="p-ablauf-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```ablauf
+  <div class="tabs ex" data-diagram="ablauf"><div class="tablist" role="tablist" aria-label="ablauf example"><button role="tab" id="t-ablauf-v" aria-selected="true" aria-controls="p-ablauf-v" type="button">Displayed</button><button role="tab" id="t-ablauf-m" aria-selected="false" aria-controls="p-ablauf-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```ablauf
 flow v0
 columns rework main
 
@@ -28,7 +28,7 @@ server --&gt; stale_block tone=rework : someone edited meanwhile
 stale_block --&gt; rediff tone=rework
 rediff --&gt; edit_block tone=rework from=left to=left label=end : calls again
 ```">Copy</button></div>
-  <div class="panel" role="tabpanel" id="p-ablauf-v" aria-labelledby="t-ablauf-v"><img class="l" src="/img/blocks/ablauf-light.png" alt="The Ablauf block as the editor shows it: an agent calls edit_block, the server checks the old text and the revision, the edit is applied when they match, otherwise stale_block, the agent re-diffs against the current text and calls again" loading="lazy"><img class="d" src="/img/blocks/ablauf-dark.png" alt="" loading="lazy"></div>
+  <div class="panel pic" role="tabpanel" id="p-ablauf-v" aria-labelledby="t-ablauf-v"><p class="small">Drawn here from the source in the next tab.</p></div>
   <div class="panel" role="tabpanel" id="p-ablauf-m" aria-labelledby="t-ablauf-m" hidden><pre>```ablauf
 flow v0
 columns rework main
@@ -50,7 +50,7 @@ rediff --&gt; edit_block tone=rework from=left to=left label=end : calls again
 
   <section class="q" id="more"><h2>A bigger one</h2>
   <p>Sections, a manual step as a panel, tones for failure paths and a legend. The format is <a href="https://github.com/uberblick-ai/ablauf">ablauf</a>, published as <code>@uberblick/ablauf</code>; it lives in its own repository and the block follows it. Frameless by default and centred on the page; a caption goes above the fence as ordinary prose.</p>
-  <div class="tabs ex"><div class="tablist" role="tablist" aria-label="ablauf example"><button role="tab" id="t-ablauf2-v" aria-selected="true" aria-controls="p-ablauf2-v" type="button">Displayed</button><button role="tab" id="t-ablauf2-m" aria-selected="false" aria-controls="p-ablauf2-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```ablauf
+  <div class="tabs ex" data-diagram="ablauf"><div class="tablist" role="tablist" aria-label="ablauf example"><button role="tab" id="t-ablauf2-v" aria-selected="true" aria-controls="p-ablauf2-v" type="button">Displayed</button><button role="tab" id="t-ablauf2-m" aria-selected="false" aria-controls="p-ablauf2-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```ablauf
 flow v0
 columns fix main manual
 
@@ -86,7 +86,7 @@ legend
   panel &quot;manual step&quot;
   edge tone=rework &quot;failure path&quot;
 ```">Copy</button></div>
-  <div class="panel" role="tabpanel" id="p-ablauf2-v" aria-labelledby="t-ablauf2-v"><img class="l" src="/img/blocks/ablauf2-light.png" alt="A deploy pipeline as the editor draws it: push to main, build, test, deploy to staging, smoke tests, a release manager approves, deploy to production, live; failed checks loop back to the push, an unhealthy production deploy rolls back" loading="lazy"><img class="d" src="/img/blocks/ablauf2-dark.png" alt="" loading="lazy"></div>
+  <div class="panel pic" role="tabpanel" id="p-ablauf2-v" aria-labelledby="t-ablauf2-v"><p class="small">Drawn here from the source in the next tab.</p></div>
   <div class="panel" role="tabpanel" id="p-ablauf2-m" aria-labelledby="t-ablauf2-m" hidden><pre>```ablauf
 flow v0
 columns fix main manual
@@ -125,3 +125,4 @@ legend
 ```</pre></div></div>
   </section>
 </article>
+<script type="module" src="/js/diagrams.js"></script>
