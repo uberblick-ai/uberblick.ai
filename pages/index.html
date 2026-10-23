@@ -95,6 +95,29 @@
 <section class="blk" id="ub-agents">
 <div class="blk-h"><h2>Works best with ub-agents.</h2><a href="https://agents.uberblick.ai">agents.uberblick.ai</a></div>
 <p class="blk-intro">Uberblick holds what the product should do; it does not track tasks. Delivery lives on GitHub, and <a href="https://agents.uberblick.ai">ub-agents</a> is the loop that runs it there: roles in a few lines of YAML, driven by labels, on Actions, with any agent and no server. Every issue starts from the pages and every pull request brings them up to date. Retrospectives propose changes to the pages and to the loop's own rules; a person decides each one. It is how Uberblick itself is built, and <a href="/blog/2026/built-on-its-own-pages">we write down how that goes</a>.</p>
+<div class="tui" role="img" aria-label="The ub-agents terminal, agent tab, working issue 2142: it reads the issue, the harness protocols and the three pages named in the issue over MCP, thinks, edits the code and the tests, runs them, updates the page paragraph over MCP, commits and opens pull request 2143 labelled needs-review.">
+  <div class="tbar"><span class="tab on">1 Agent</span><span class="tab">2 Issue</span><span class="tab">3 Runs</span><span class="sep"></span><span class="tab u">Formatted</span><span class="tab">Raw (u)</span><button type="button" id="tuiReplay">Replay</button></div>
+  <div class="thead"><div class="t1"><span class="ino">⌥2142</span> Apply the retry limit</div><div class="t2">implementer · claude claude-opus-5-5 xhigh · attempt 1</div></div>
+  <ol class="tlog" id="tlog">
+    <li data-k="tool"><time>09:14:02</time><span class="l"><i>▸</i> <b>Bash</b> gh issue view 2142 --json title,body,labels</span><span class="r">ok</span></li>
+    <li data-k="think"><time>09:14:03</time><span class="l">The issue names three pages to read first and the paragraph to change. I'll read the harness, then the pages over MCP, before touching code.</span></li>
+    <li data-k="tool"><time>09:14:03</time><span class="l"><i>▸</i> <b>Read</b> AGENTS.md</span><span class="r">118 lines</span></li>
+    <li data-k="tool"><time>09:14:03</time><span class="l"><i>▸</i> <b>Read</b> .agents/protocols/implementation.md</span><span class="r">212 lines</span></li>
+    <li data-k="mcp"><time>09:14:05</time><span class="l"><i>▸</i> <b>uberblick</b> get_doc Delivery report, 16 October</span><span class="r">1.2 KB</span></li>
+    <li data-k="mcp"><time>09:14:05</time><span class="l"><i>▸</i> <b>uberblick</b> find_decisions #2142</span><span class="r">Retry limit on sync · in force</span></li>
+    <li data-k="mcp"><time>09:14:06</time><span class="l"><i>▸</i> <b>uberblick</b> get_doc Sync: retry and backoff</span><span class="r">0.9 KB · paragraph 4</span></li>
+    <li data-k="think"><time>09:14:09</time><span class="l">The decision says two retries. The page still says "until the timeout", and the report shows three third retries this week. The code reads MAX_RETRIES from the sync config with no default, so the loop runs until the deadline. Two files to change, one paragraph to update.</span></li>
+    <li data-k="tool"><time>09:14:09</time><span class="l"><i>▸</i> <b>Grep</b> MAX_RETRIES packages/sync/src</span><span class="r">2 files</span></li>
+    <li data-k="tool"><time>09:14:11</time><span class="l"><i>▸</i> <b>Edit</b> packages/sync/src/retry.ts</span><span class="r">+4 −2</span></li>
+    <li data-k="tool"><time>09:14:11</time><span class="l"><i>▸</i> <b>Edit</b> packages/sync/test/retry.test.ts</span><span class="r">+19</span></li>
+    <li data-k="tool"><time>09:14:12</time><span class="l"><i>▸</i> <b>Bash</b> mise run test packages/sync</span><span class="r">49 passed</span></li>
+    <li data-k="think"><time>09:14:40</time><span class="l">Tests green. The page has to say what the code now does, so the pull request carries the paragraph edit as well.</span></li>
+    <li data-k="mcp"><time>09:14:41</time><span class="l"><i>▸</i> <b>uberblick</b> edit_block Sync: retry and backoff › paragraph 4</span><span class="r">accepted</span></li>
+    <li data-k="tool"><time>09:14:43</time><span class="l"><i>▸</i> <b>Bash</b> git commit -m "sync: stop after the second failed retry (#2142)"</span><span class="r">3 files</span></li>
+    <li data-k="tool"><time>09:14:45</time><span class="l"><i>▸</i> <b>Bash</b> gh pr create --label needs-review</span><span class="r">#2143</span></li>
+    <li data-k="done"><time>09:14:45</time><span class="l">✓ done · 1 attempt · 3 pages read over MCP · pull request #2143 · needs-review</span></li>
+  </ol>
+</div>
 <div class="flow loop" role="img" aria-label="An issue is filed; the preparer links the pages it depends on; the implementer reads them over MCP and builds; the pull request carries a corpus update; the pages stay true and the next issue starts from them.">
   <div class="step"><span class="k">issue</span><b>Filed with pointers</b><span>to the pages it depends on</span></div>
   <span class="arr" aria-hidden="true"></span>
@@ -153,6 +176,31 @@ ub mcp install claude">Copy</button></span></div>
 </ul>
 </section>
 <script>
+(() => {
+  const log = document.getElementById('tlog'), btn = document.getElementById('tuiReplay');
+  const items = [...log.children]; const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let run = 0, timers = [];
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+  function show(li, id, after) {
+    li.classList.add('on');
+    const r = li.querySelector('.r'); if (r) { r.classList.remove('on'); later(() => { if (id === run) r.classList.add('on'); }, 350 + Math.random() * 400); }
+    if (li.dataset.k === 'think') {
+      const l = li.querySelector('.l'); const words = l.dataset.t.split(' '); l.textContent = ''; let k = 0;
+      (function word() { if (id !== run) return; if (k < words.length) { l.textContent += (k ? ' ' : '') + words[k++]; log.scrollTop = log.scrollHeight; later(word, 55 + Math.random() * 50); } else later(after, 700); })();
+    } else { log.scrollTop = log.scrollHeight; later(after, li.dataset.k === 'mcp' ? 650 : 520); }
+  }
+  function all() { items.forEach(li => { li.classList.add('on'); const l = li.querySelector('.l'); if (li.dataset.k === 'think') l.textContent = l.dataset.t; const r = li.querySelector('.r'); if (r) r.classList.add('on'); }); }
+  function play() {
+    timers.forEach(clearTimeout); timers = []; const id = ++run;
+    items.forEach(li => { li.classList.remove('on'); const r = li.querySelector('.r'); if (r) r.classList.remove('on'); });
+    if (reduce) { all(); return; }
+    let i = 0; (function next() { if (id !== run) return; if (i < items.length) show(items[i++], id, next); else later(play, 9000); })();
+  }
+  items.forEach(li => { if (li.dataset.k === 'think') { const l = li.querySelector('.l'); l.dataset.t = l.textContent; } });
+  btn.addEventListener('click', play);
+  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); play(); } }, { threshold: 0.3 });
+  io.observe(log);
+})();
 (() => {
   const $ = id => document.getElementById(id);
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;

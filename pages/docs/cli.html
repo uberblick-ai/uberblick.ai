@@ -6,7 +6,7 @@
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / CLI reference</p>
   <h1>CLI reference</h1>
-  <p class="lede"><code>ub</code> is the Uberblick command line. It sets up a project's workspace, shares it through a hub, shows its state, and connects the web app and your agents to it. Eight commands, one page each, and a few principles that hold for all of them.</p>
+  <p class="lede"><code>ub</code> is the Uberblick command line. It sets up a project's workspace, shares it through a hub, shows its state, and connects the web app and your agents to it. Eight commands, one page each.</p>
 </div>
 <article class="col">
 
@@ -24,14 +24,7 @@
   <p>Which workspace a command acts on is decided by the project directory it runs in: <a href="/docs/cli/binding">Project binding</a>.</p>
   </section>
 
-  <section class="q" id="principles"><h2>Principles</h2>
-  <ul>
-    <li>A command group without a subcommand never acts; it prints its own help. <code>ub workspace</code>, <code>ub auth</code> and <code>ub mcp</code> each print their help and stop. <code>--help</code> anywhere prints the help and does nothing else.</li>
-    <li>A command that needs a login stops and names <code>ub auth login</code>. None of them starts a sign-in on its own.</li>
-    <li>Commands that need a workspace use the project's <code>.uberblick.json</code>, the nearest one you own above the current directory. There is no default; without a binding a command says so and stops. See <a href="/docs/cli/binding">Project binding</a>.</li>
-    <li>Commands that point the project at a different workspace print the path they wrote, the previous workspace and the command that switches back. Promote is not a switch: it keeps the workspace and moves it to a hub, so it prints what it wrote and the share link.</li>
-    <li>Commands that report state take <code>--json</code>: one JSON object on stdout and nothing else there, warnings and logs on stderr.</li>
-    <li>Exit 0 is success or a confirmed answer, 1 a failure or an answer the hub could not confirm, 2 a usage error, printed with the usage on stderr.</li>
-  </ul>
+  <section class="q" id="exit"><h2>Exit codes and output</h2>
+  <p>0 is success or a confirmed answer, 1 a failure or an answer the hub could not confirm, 2 a usage error. Commands that report state take <code>--json</code>: one JSON object on stdout and nothing else there. A bare command group such as <code>ub workspace</code> prints its help and does nothing.</p>
   </section>
 </article>

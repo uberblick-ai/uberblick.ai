@@ -110,6 +110,7 @@ for (const box of document.querySelectorAll('.tabs')) {{
 }}
 (() => {{
   const side = document.querySelector('details.side'), wide = matchMedia('(min-width: 900px)');
+  if (!side) return;
   const sync = () => {{ if (wide.matches) side.open = true; }};
   sync(); wide.addEventListener('change', sync);
 }})();
