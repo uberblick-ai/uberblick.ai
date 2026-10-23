@@ -1,0 +1,28 @@
+<head>
+<title>ub uninstall · Uberblick docs</title>
+<meta name="description" content="Remove a Homebrew installation of ub and choose whether this computer's workspaces and logins go too.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
+  <h1><code>ub uninstall</code></h1>
+  <p class="lede"><code>ub uninstall</code> removes a Homebrew installation and asks whether this computer's Uberblick data should go too. <code>brew uninstall</code> alone removes only the program: workspaces in <code>~/.local/share/uberblick</code> and logins in <code>~/.config/uberblick</code> stay behind. This command is the convenience wrapper that leaves no residue.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="run"><h2>Run it</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub uninstall">Copy</button></div><pre><span class="p">$</span> ub uninstall
+<span class="o">Uberblick 0.4.9, installed with Homebrew.
+
+Local data on this computer:
+  ~/.local/share/uberblick/   3 workspaces (1 local-only: this is its only copy)
+  ~/.config/uberblick/        logins for hub.example.org, machine settings
+
+Uninstall Uberblick? [y/N] y
+Also delete the local data above? [y/N] n
+Kept local data. Removing the program...
+==&gt; Uninstalling uberblick-ai/tap/uberblick</span></pre></section>
+  <p>Both questions default to no. Deleting the data removes the two directories and nothing else: <code>.uberblick.json</code> files in your projects and everything on a hub stay as they are. Data is refused while <code>ub open</code> is still serving a workspace. <code>--yes</code> uninstalls without asking and keeps the data; <code>--yes --delete-data</code> removes both. Only Homebrew installations are handled; a source checkout or any other copy is left unchanged with exit 1.</p>
+  </section>
+  <p class="next">Next: <a href="/docs/cli/binding">Project binding</a>.</p>
+</article>

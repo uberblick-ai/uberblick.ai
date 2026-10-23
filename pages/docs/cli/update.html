@@ -41,5 +41,5 @@ restart ub open and running agents to use it</span></pre></section>
   <section class="q" id="scenarios"><h2>Scenarios</h2>
   <dl class="scen"><dt>The hub needs a newer version</dt><dd>A hub that speaks a newer sync protocol refuses older clients. <code>ub status</code> shows <code>connection  refused: the hub needs a newer Uberblick</code>; work stays on this computer until <code>ub update</code>.</dd><dt>Running from a checkout</dt><dd><code>ub update: this `ub` runs from a source checkout. Run `git pull`, then `mise run setup` to update it. Nothing has changed.</code>, exit 1. Then <code>mise run build-web</code> before <code>ub open</code>.</dd><dt>A copy ub does not know</dt><dd>Installed from npm, or copied by hand: <code>ub update</code> refuses with exit 1 and leaves it unchanged. Update it the way it was installed.</dd></dl>
   </section>
-  <p class="next">Next: <a href="/docs/cli/binding">Project binding</a>.</p>
+  <p class="next">Next: <a href="/docs/cli/uninstall">ub uninstall</a>.</p>
 </article>

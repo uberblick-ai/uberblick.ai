@@ -142,7 +142,7 @@ ASIDE = """  <details class="side" open>
 DOCS = [
     ('Get started', '/docs/motivation', [('/docs/motivation', 'Motivation'), ('/docs/install', 'Install'), ('/docs/workspaces', 'Workspaces'), ('/docs/hub', 'Run a hub')]),
     ('Core concepts', '/docs/documents', [('/docs/documents', 'Documents'), ('/docs/decisions', 'Decision records'), ('/docs/guidance', 'Guidance pages'), ('/docs/agents', 'Agents over MCP')]),
-    ('CLI reference', '/docs/cli', [('/docs/cli/auth', 'ub auth'), ('/docs/cli/workspace', 'ub workspace'), ('/docs/cli/mcp', 'ub mcp'), ('/docs/cli/open', 'ub open'), ('/docs/cli/status', 'ub status'), ('/docs/cli/doctor', 'ub doctor'), ('/docs/cli/data', 'ub data'), ('/docs/cli/update', 'ub update'), ('/docs/cli/binding', 'Project binding')]),
+    ('CLI reference', '/docs/cli', [('/docs/cli/auth', 'ub auth'), ('/docs/cli/workspace', 'ub workspace'), ('/docs/cli/mcp', 'ub mcp'), ('/docs/cli/open', 'ub open'), ('/docs/cli/status', 'ub status'), ('/docs/cli/doctor', 'ub doctor'), ('/docs/cli/data', 'ub data'), ('/docs/cli/update', 'ub update'), ('/docs/cli/uninstall', 'ub uninstall'), ('/docs/cli/binding', 'Project binding')]),
     ('Custom Markdown', '/docs/markdown', [('/docs/markdown', 'Markdown baseline'), ('/docs/markdown/extensions', 'Markdown extensions'), ('/docs/markdown/diagrams', 'Diagrams'), ('/docs/markdown/wireframes', 'Wireframes'), ('/docs/markdown/charts', 'Charts'), ('/docs/markdown/embeds', 'Embeds')]),
     (None, None, [('/docs/faq', 'FAQ'), ('/changelog', 'Changelog')]),
 ]
