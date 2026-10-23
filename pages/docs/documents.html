@@ -27,13 +27,17 @@
   <p>A link to another page survives renames and shows up as a backlink on the page it points at, so a decision record knows which briefs rely on it. A link to a GitHub issue or pull request is recognised and shown with its number. This is how an agent asked to work on #1588 finds the decisions that govern it: <a href="/docs/decisions">decision records</a> link the issues they settle, and one call returns them.</p>
   </section>
 
+  <section class="q" id="tags"><h2>Tags group pages so agents read less</h2>
+  <p>A tag names a group of pages: <code>sync</code>, <code>web</code>, <code>billing</code>, whatever your product splits into. Renaming a tag renames it everywhere. One tag, <code>guidance</code> by default, marks the <a href="/docs/guidance">pages an agent reads before it writes</a>. We put a line <code>Touches: sync, web</code> at the top of our GitHub issues: a hint for the implementing agent which pages are likely to matter, so it reads those and leaves the rest alone.</p>
+  </section>
+
+  <section class="q" id="kinds"><h2>Two kinds of page</h2>
+  <p>A regular page, which is everything above, and a <a href="/docs/decisions">decision record</a>: a question as the title, the answer in force with who settled it and when, and every earlier answer underneath. Agents propose, people decide, and the next agent that touches the issue finds the record first.</p>
+  </section>
+
   <section class="q" id="numbers"><h2>Keep the numbers in the page</h2>
   <p>A page can own data: any JSON, kept in named collections, and a <a href="/docs/markdown/charts">chart</a> or a table in the page draws from it. A weekly report then has its numbers in the page, not in a screenshot, and a reader can comment on the record that looks wrong.</p>
   <p>We use it to keep the relevant subset of what lives elsewhere. An agent fetches from another source over MCP, works out what matters and stores that in the page for reference. Our own example: once a week an agent reads the CI runs from GitHub, takes the median run length and stores it as one record with the date. A line chart on the page shows how long CI takes over time, and the discussion about it happens in the comments next to it. Scripts write the same way with <code>ub data update</code>.</p>
-  </section>
-
-  <section class="q" id="done"><h2>When a page has served</h2>
-  <p>Archive it. An archived page still answers when something links to it, can be restored, and on a hub can be deleted for good. Any page can be exported as one Markdown file, with Uberblick's own blocks as fenced source that other tools at least show. The workspace itself is one SQLite file per computer; <a href="/guides/first-workspace">Your first workspace</a> shows where it lives.</p>
   </section>
 
   <section class="q" id="how"><h2>How this works underneath</h2>
