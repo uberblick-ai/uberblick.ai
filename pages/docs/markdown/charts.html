@@ -10,7 +10,7 @@
 </div>
 <article class="col">
   <section class="q" id="chart"><h2>Source beside drawing</h2>
-  <p>A chart pasted as an image is stale the day after. Here a document owns named collections of JSON records beside its prose, and a <code>chart</code> fence holds only the mapping: which collection, which fields. The values live in the records, so when an agent writes new ones with <code>update_data</code>, every chart and table that reads them refreshes, and the source stays a few lines of JSON that are easy to review.</p>
+  <p>A chart pasted as an image is stale the day after. Here a document owns named collections of JSON records beside its prose, and a <code>chart</code> fence holds only the mapping: which collection, which fields. The values live in the records, so when an agent writes new ones, every chart and table that reads them refreshes, and the source stays a few lines of JSON that are easy to review.</p>
   <div class="tabs ex"><div class="tablist" role="tablist" aria-label="chart example"><button role="tab" id="t-chart-v" aria-selected="true" aria-controls="p-chart-v" type="button">Displayed</button><button role="tab" id="t-chart-m" aria-selected="false" aria-controls="p-chart-m" type="button">Markdown</button><button class="copy" type="button" data-copy="```chart
 {
   &quot;version&quot;: 1,
@@ -42,15 +42,10 @@
   </section>
 
   <section class="q" id="data"><h2>Where the numbers live</h2>
-  <p>Each document has a data area: named collections, each with a JSON schema and records with an id and a value. Agents read it with <code>get_data</code> and write it with <code>update_data</code>, one validated batch per call: set the schema, replace or delete records, upsert whole records. Records that fail the schema are kept, marked invalid, and left out of every chart with a count of how many were skipped. <code>get_doc</code> reports the collection names and counts beside the blocks. From the terminal, <a href="/docs/cli/data">ub data</a> prints a collection as JSON and applies a batch from a file, which is how a script or an Action feeds a report.</p>
+  <p>Every Uberblick document can hold custom JSON data next to its prose. The data is structured by a JSON schema that an agent defines and updates over MCP, and the records that fail it are kept, marked and left out of the drawings rather than breaking them. From the terminal, <a href="/docs/cli/data">ub data</a> prints and updates the same data, which is how a script or an Action feeds a report.</p>
   </section>
 
-  <section class="q" id="types"><h2>Line, bar, table</h2>
-  <ul>
-    <li><strong>Line</strong>: <code>"type":"line"</code>, one <code>x</code> field of type number or date, and one to eight <code>y</code> series, each with a field and optional label, unit, axis range and reference line. <code>"layout":"panels"</code> draws one small chart per series with its latest value; <code>"limit"</code> keeps the latest N records; <code>"missing"</code> says whether a gap breaks or bridges the line.</li>
-    <li><strong>Bar</strong>: the same mapping with <code>"type":"bar"</code> on a series. A bar-only chart is still <code>"type":"line"</code> at the top; bars draw behind lines when they share a chart, on their own axis.</li>
-    <li><strong>Table</strong>: <code>"type":"table"</code> with one to thirty <code>columns</code>, each a field with an optional label and a text, number, date or link format, plus <code>sort</code> and <code>limit</code>. Readers sort the shown rows by clicking a header; that is never saved.</li>
-  </ul>
-  <p>A chart never draws more than 5,000 records. Charts render in the editor and export as their source fence; Markdown keeps the mapping but not the data, so an export alone cannot recreate a view.</p>
+  <section class="q" id="types"><h2>What it can show</h2>
+  <p>The data draws as line charts, bar charts or data tables, with one chart per series as an option and a sortable table for the raw rows. We support a small set of visualizations on purpose; request what you need in a <a href="https://github.com/uberblick-ai/uberblick-2/issues">GitHub issue</a> and we will add it. A chart draws up to 5,000 records. Charts render in the editor and export as their source fence; Markdown keeps the mapping but not the data, so an export alone cannot recreate a view.</p>
   </section>
 </article>
