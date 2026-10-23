@@ -1,0 +1,21 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build and lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      # The build is standard-library Python; a page that fails to build must
+      # not reach main, where Pages deploys it.
+      - run: python3 build.py
+      - run: npx -y @biomejs/biome@2.5.9 lint --error-on-warnings .

@@ -1,14 +1,14 @@
-"""Build uberblick.ai from site/pages into site/out.
+"""Build uberblick.ai from pages into out.
 
 Standard library only:
 
-    python3 site/build.py
+    python3 build.py
 
-Every site/pages/<path>.html is one page. It starts with a <head> block (title,
+Every pages/<path>.html is one page. It starts with a <head> block (title,
 description, the page's own stylesheet) and continues with the page's main
 content. The build wraps it in the document skeleton and the shell every page
 shares (top bar, a sidebar for its section, footer), links the shared stylesheet and writes it to
-site/out/<path>/index.html, so the page is served at /<path> with no extension
+out/<path>/index.html, so the page is served at /<path> with no extension
 (Cloudflare Pages redirects /<path>.html there). pages/index.html is /, and
 pages/404.html is the not-found page Pages serves as out/404.html. Everything
 in site/static is copied to site/out as it is: the shared stylesheet, the page
@@ -19,8 +19,8 @@ newest release tag when git can name one (a shallow checkout shows none).
 A page's <!-- recent changes --> line becomes the five newest entries from
 the repository's CHANGELOG.md (each section's date and summary paragraph) and
 the blog, newest first. The site has no changelog page of its own; links go to
-CHANGELOG.md on GitHub. The changelog is read from ../CHANGELOG.md when the site
-sits inside the repository and fetched from GitHub otherwise, so the build also
+CHANGELOG.md on GitHub. The changelog is read from ../CHANGELOG.md when a uberblick-2
+checkout sits beside this one and fetched from GitHub otherwise, so the build also
 works from a checkout of the site alone; the release tag falls back the same way.
 
 Blog posts live in pages/blog/<year>/<slug>.html and carry, in their <head>,
@@ -50,6 +50,7 @@ CHANGELOG, RECENT, POSTS = ROOT.parent / 'CHANGELOG.md', '<!-- recent changes --
 CHANGELOG_URL = 'https://github.com/uberblick-ai/uberblick-2/blob/main/CHANGELOG.md'
 REPO = 'https://github.com/uberblick-ai/uberblick-2'
 RAW_CHANGELOG = 'https://raw.githubusercontent.com/uberblick-ai/uberblick-2/main/CHANGELOG.md'
+API_CHANGELOG = 'https://api.github.com/repos/uberblick-ai/uberblick-2/contents/CHANGELOG.md'
 TAGS = 'https://api.github.com/repos/uberblick-ai/uberblick-2/tags?per_page=100'
 SITE = os.environ.get('SITE_URL', 'https://uberblick.ai').rstrip('/')
 NOINDEX = '<meta name="robots" content="noindex">\n' if os.environ.get('SITE_NOINDEX') else ''
@@ -167,10 +168,13 @@ GUIDES = [
 KINDS = {'release': 'Release', 'design note': 'Design note', 'building note': 'Building note'}
 
 
-def fetch(url):
+def fetch(url, accept=None):
     """Text from a public GitHub URL, or None when the network is not there."""
+    headers = {'User-Agent': 'uberblick.ai build'}
+    if accept:
+        headers['Accept'] = accept
     try:
-        with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'uberblick.ai build'}), timeout=15) as r:
+        with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=15) as r:
             return r.read().decode()
     except (OSError, ValueError):
         return None
@@ -193,9 +197,10 @@ def changelog():
     """The changelog text: the repository's file beside the site, else fetched from GitHub."""
     if CHANGELOG.is_file():
         return CHANGELOG.read_text()
-    text = fetch(RAW_CHANGELOG)
+    # raw.githubusercontent.com first; the contents API serves the same file where only api.github.com is reachable.
+    text = fetch(RAW_CHANGELOG) or fetch(API_CHANGELOG, 'application/vnd.github.raw+json')
     if text is None:
-        sys.exit(f'CHANGELOG.md: neither {CHANGELOG} nor {RAW_CHANGELOG} is readable')
+        sys.exit(f'CHANGELOG.md: neither {CHANGELOG} nor {RAW_CHANGELOG} nor {API_CHANGELOG} is readable')
     return text
 
 
