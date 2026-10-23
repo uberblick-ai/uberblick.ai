@@ -36,7 +36,7 @@ Ctrl-C to stop.</span></pre></section>
   "workspaceId": "uberblick-3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f",
   "hubUrl": null
 }</pre></section>
-<p>Commit the binding. Every terminal command, every MCP server and every agent that starts inside the directory looks upward for the nearest <code>.uberblick.json</code> and lands in the same workspace. There is no current workspace on the machine, only the one a directory points at. Two shell variables, <code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code>, override the file for one process; see <a href="/docs/cli/binding">Project binding</a>.</p>
+<p>Commit the binding once the workspace is on a hub; a binding to a local-only workspace helps nobody who clones the project. Every terminal command, every MCP server and every agent that starts inside the directory looks upward for the nearest <code>.uberblick.json</code> and lands in the same workspace. There is no current workspace on the machine, only the one a directory points at. Two shell variables, <code>UB_WORKSPACE_ID</code> and <code>UB_HUB_URL</code>, override the file for one process; see <a href="/docs/cli/binding">Project binding</a>.</p>
 <p>A third directory, <code>~/.config/uberblick</code>, appears the first time it is needed. It holds the computer's own signing secret, made along with the workspace so agents can sync with the local hub before the first <code>ub open</code>, and, once you sign in to a hub, the device credential. It is never part of a workspace.</p>
 </section>
 

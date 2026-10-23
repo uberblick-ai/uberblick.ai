@@ -36,7 +36,7 @@
   </section>
 
   <section class="q" id="numbers"><h2>Keep the numbers in the page</h2>
-  <p>A page can own data: any JSON, kept in named collections, and a <a href="/docs/markdown/charts">chart</a> or a table in the page draws from it. A weekly report then has its numbers in the page, not in a screenshot, and a reader can comment on the record that looks wrong.</p>
+  <p>A page can own data: any JSON, kept in named collections, and a <a href="/docs/markdown/charts">chart</a> or a table in the page draws from it. A weekly report then has its numbers in the page, not in a screenshot, and a reader can comment on the record that looks wrong. One caveat: the Markdown export carries the chart's mapping, not its records; the data stays with the page.</p>
   <p>We use it to keep the relevant subset of what lives elsewhere. An agent fetches from another source over MCP, works out what matters and stores that in the page for reference. Our own example: once a week an agent reads the CI runs from GitHub, takes the median run length and stores it as one record with the date. A line chart on the page shows how long CI takes over time, and the discussion about it happens in the comments next to it. Scripts write the same way with <code>ub data update</code>.</p>
   <figure class="shot">
     <div class="bar"><span><b>Report: CI run length</b> · Web UI</span><span>chart from data</span></div>
