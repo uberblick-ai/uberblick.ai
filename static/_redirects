@@ -13,3 +13,4 @@
 /docs/install/check /docs/cli/doctor 301
 /docs/install/update /docs/cli/update 301
 /docs/install/remove /docs/install 301
+/changelog https://github.com/uberblick-ai/uberblick-2/blob/main/CHANGELOG.md 301

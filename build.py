@@ -18,8 +18,8 @@ The sidebar marks the page whose path matches the link; the top bar shows the
 newest release tag when git can name one (a shallow checkout shows none).
 A page's <!-- recent changes --> line becomes the five newest entries from
 the repository's CHANGELOG.md (each section's date and summary paragraph) and
-the blog, newest first. pages/changelog.html's <!-- changelog --> line becomes
-the whole changelog. The changelog is read from ../CHANGELOG.md when the site
+the blog, newest first. The site has no changelog page of its own; links go to
+CHANGELOG.md on GitHub. The changelog is read from ../CHANGELOG.md when the site
 sits inside the repository and fetched from GitHub otherwise, so the build also
 works from a checkout of the site alone; the release tag falls back the same way.
 
@@ -46,7 +46,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 PAGES, STATIC, OUT = ROOT / 'pages', ROOT / 'static', ROOT / 'out'
-CHANGELOG, RECENT, FULL, POSTS = ROOT.parent / 'CHANGELOG.md', '<!-- recent changes -->', '<!-- changelog -->', '<!-- posts -->'
+CHANGELOG, RECENT, POSTS = ROOT.parent / 'CHANGELOG.md', '<!-- recent changes -->', '<!-- posts -->'
+CHANGELOG_URL = 'https://github.com/uberblick-ai/uberblick-2/blob/main/CHANGELOG.md'
 REPO = 'https://github.com/uberblick-ai/uberblick-2'
 RAW_CHANGELOG = 'https://raw.githubusercontent.com/uberblick-ai/uberblick-2/main/CHANGELOG.md'
 TAGS = 'https://api.github.com/repos/uberblick-ai/uberblick-2/tags?per_page=100'
@@ -85,7 +86,7 @@ SKELETON = """<!doctype html>
 <footer class="foot">
   <span>MIT license</span>
   <a href="https://github.com/uberblick-ai/uberblick-2">Source</a>
-  <a href="/changelog">Changelog</a>
+  <a href="{CHANGELOG_URL}">Changelog</a>
   <a href="/blog/feed.xml">Feed</a>
   <a href="https://github.com/uberblick-ai/homebrew-tap">Homebrew tap</a>
   <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/SECURITY.md">Security</a>
@@ -125,7 +126,7 @@ ABOUT = """    <section class="blk about" id="about">
       <div class="cols">
         <div><h3>Docs</h3><ul><li><a href="/docs/install">Install</a></li><li><a href="/docs/workspaces">Workspaces</a></li><li><a href="/docs/documents">Documents</a></li><li><a href="/docs/hub">Run a hub</a></li><li><a href="/docs/cli">CLI reference</a></li><li><a href="/docs/faq">FAQ</a></li></ul></div>
         <div><h3>Agents</h3><ul><li><a href="/docs/agents">Agents over MCP</a></li><li><a href="/docs/guidance">Guidance pages</a></li><li><a href="/docs/decisions">Decision records</a></li><li><a href="https://agents.uberblick.ai">ub-agents</a></li><li><a href="https://skills.uberblick.ai">Skills</a></li></ul></div>
-        <div><h3>Project</h3><ul><li><a href="/blog">Blog</a></li><li><a href="/changelog">Changelog</a></li><li><a href="/guides">Guides</a></li><li><a href="/compare">Compare</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2">GitHub</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2/blob/main/SECURITY.md">Security</a></li></ul></div>
+        <div><h3>Project</h3><ul><li><a href="/blog">Blog</a></li><li><a href="{CHANGELOG_URL}">Changelog</a></li><li><a href="/guides">Guides</a></li><li><a href="/compare">Compare</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2">GitHub</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2/blob/main/SECURITY.md">Security</a></li></ul></div>
       </div>
     </section>
 """
@@ -144,7 +145,7 @@ DOCS = [
     ('Core concepts', '/docs/documents', [('/docs/documents', 'Documents'), ('/docs/decisions', 'Decision records'), ('/docs/guidance', 'Guidance pages'), ('/docs/agents', 'Agents over MCP')]),
     ('CLI reference', '/docs/cli', [('/docs/cli/auth', 'ub auth'), ('/docs/cli/workspace', 'ub workspace'), ('/docs/cli/mcp', 'ub mcp'), ('/docs/cli/open', 'ub open'), ('/docs/cli/status', 'ub status'), ('/docs/cli/doctor', 'ub doctor'), ('/docs/cli/data', 'ub data'), ('/docs/cli/update', 'ub update'), ('/docs/cli/uninstall', 'ub uninstall'), ('/docs/cli/binding', 'Project binding')]),
     ('Custom Markdown', '/docs/markdown', [('/docs/markdown', 'Markdown baseline'), ('/docs/markdown/extensions', 'Markdown extensions'), ('/docs/markdown/diagrams', 'Diagrams'), ('/docs/markdown/wireframes', 'Wireframes'), ('/docs/markdown/charts', 'Charts'), ('/docs/markdown/embeds', 'Embeds')]),
-    (None, None, [('/docs/faq', 'FAQ'), ('/changelog', 'Changelog')]),
+    (None, None, [('/docs/faq', 'FAQ'), (CHANGELOG_URL, 'Changelog')]),
 ]
 GUIDES = [
     (None, None, [('/guides', 'All guides')]),
@@ -207,50 +208,11 @@ def recent(text, posts, count=5):
     items = []
     for tag, day, summary in releases(text)[:count]:
         more = next((p for p in live if p['kind'] == 'release' and p['title'].startswith(tag)), None)
-        items.append((day, 'Release', f'<a href="/changelog#{tag}">{tag}</a>: {inline(summary)}' + (f' <a href="{more["path"]}">Read the post</a>' if more else '')))
+        items.append((day, 'Release', f'<a href="{REPO}/releases/tag/{tag}">{tag}</a>: {inline(summary)}' + (f' <a href="{more["path"]}">Read the post</a>' if more else '')))
         live = [p for p in live if p is not more]
     items += [(p['date'], KINDS[p['kind']], f'<a href="{p["path"]}">{html.escape(p["title"], quote=False)}</a>') for p in live]
     items.sort(key=lambda i: i[0], reverse=True)
     return '\n  '.join(f'<li><time>{day}</time><span class="tag">{kind}</span><span>{text}</span></li>' for day, kind, text in items[:count])
-
-
-def full_changelog(text):
-    """The whole CHANGELOG.md as HTML: one section per release, a list per heading."""
-    out, in_list = [], False
-    def close():
-        nonlocal in_list
-        if in_list:
-            out.append('</ul>')
-            in_list = False
-    lines = text.split('\n')
-    for i, line in enumerate(lines):
-        if line.startswith('## '):
-            close()
-            if out:
-                out.append('</section>')
-            m = re.match(r'## (v\S+) — (\d{4}-\d{2}-\d{2})', line)
-            if not m:
-                sys.exit(f'CHANGELOG.md line {i + 1}: a release heading is "## vX.Y.Z — YYYY-MM-DD"')
-            out.append(f'<section class="q" id="{m[1]}"><h2>{m[1]} <time>{m[2]}</time></h2>')
-        elif line.startswith('### '):
-            close()
-            out.append(f'<h3>{html.escape(line[4:])}</h3>')
-        elif line.startswith('- '):
-            if not in_list:
-                out.append('<ul>')
-                in_list = True
-            out.append(f'<li>{inline(line[2:])}</li>')
-        elif line.startswith('  ') and in_list:
-            out[-1] = out[-1][:-5] + ' ' + inline(line) + '</li>'
-        elif line.strip() == '':
-            close()
-        elif out and not line.startswith('#'):
-            close()
-            out.append(f'<p>{inline(line)}</p>')
-    close()
-    if out:
-        out.append('</section>')
-    return '\n'.join(out)
 
 
 def meta(head, name):
@@ -313,7 +275,7 @@ def feed(posts):
 
 def section(path, posts=()):
     """The sidebar title and groups for a page, or None for a page without a sidebar."""
-    if path.startswith('/docs/') or path == '/changelog':
+    if path.startswith('/docs/'):
         return 'Docs', DOCS
     if path == '/guides' or path.startswith('/guides/'):
         return 'Guides', GUIDES
@@ -400,8 +362,6 @@ def main():
         head, body = split(page.read_text(), name)
         if RECENT in body:
             body = body.replace(RECENT, recent(log, posts))
-        if FULL in body:
-            body = body.replace(FULL, full_changelog(log))
         if POSTS in body:
             body = body.replace(POSTS, post_list(posts))
         path, target = route(page)
