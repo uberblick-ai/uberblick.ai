@@ -13,6 +13,8 @@
 .changelog h3 { font-size: 13px; font-weight: 600; margin: 14px 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em }
 .changelog ul { margin: 0 0 12px; padding-left: 22px; display: grid; gap: 4px; font-size: 14.5px }
 .hero.sub .lede strong { font-weight: 600 }
+/* Sub-page titles fill the column; the 22ch cap and balanced lines are for the landing page. */
+.hero.sub h1 { max-width: none; text-wrap: pretty }
 
 /* The "Next:" line at the end of a sub-page in a topic. */
 .next { margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 14px; color: var(--muted) }
