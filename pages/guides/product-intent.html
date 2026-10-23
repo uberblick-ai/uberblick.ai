@@ -19,7 +19,7 @@
   <li><b>Write the intended behaviour first, as a document.</b> Not the implementation: who it is for, the jobs, the rules, the scenarios with the exact expected result. Pin the pages that matter in the sidebar, so an agent that has never seen the workspace starts from <code>get_sidebar</code> and knows where to look.</li>
   <li><b>File the issue with pointers.</b> The issue cites the pages it depends on by title and id. Nothing in the issue restates them, so there is one place to be wrong.</li>
   <li><b>The agent reads before it writes.</b> The preparer and the implementer search the workspace for the pages the change touches, read them, and check the decision records that link the issue. The reviewer checks the result against the same pages, not against the issue text.</li>
-  <li><b>The pull request updates the pages.</b> Every PR carries a short "Corpus update" section: which document, which block, what it now says. The workspace describes the product as shipped, never code that has not merged.</li>
+  <li><b>The pull request updates the pages.</b> Every PR carries a short "Corpus update" section: which document, which block, what it now says. The workspace describes the product as intended. A page may be ahead of the code; that gap is an issue, and the pull request that closes it updates the page.</li>
 </ol>
 </section>
 
