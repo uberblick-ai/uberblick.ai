@@ -51,10 +51,9 @@ page's "Legacy login" button in `build.py` goes with it. DNS and the WAF rules
 stay as they are. Removing the Worker's routes puts the legacy app back in
 front of everything.
 
-The workflow needs two repository secrets, a maintainer step:
-`CLOUDFLARE_ACCOUNT_ID`, and `CLOUDFLARE_API_TOKEN` with Account › Workers
-Scripts: Edit and Zone › Workers Routes: Edit on uberblick.ai. No token lives in
-the repository.
+The workflow deploys with two repository secrets, `CLOUDFLARE_ACCOUNT_ID` and
+`CLOUDFLARE_API_TOKEN`. [DEPLOYING.md](DEPLOYING.md) says how to create,
+rotate and check them, and how to deploy from a laptop with `mise run deploy`.
 
 A release in uberblick-2 does not trigger a deploy here, so the home page's
 Recent changes list catches up with the next push to this repository or a
@@ -63,5 +62,16 @@ redirects to `/<path>`, which the build writes as `out/<path>/index.html`.
 `SITE_URL` and `SITE_NOINDEX` (see the top of `build.py`) are build-time
 settings for a second host.
 
-Locally, `python3 build.py && npx -y wrangler@4.152.0 dev` serves the site on
-http://localhost:8787; the legacy paths have no origin there.
+## Working locally
+
+[mise](https://mise.jdx.dev) installs Node, Python and fnox from `mise.toml`:
+
+```sh
+mise trust mise.toml
+mise run serve   # build, then serve on http://localhost:8787 with the Worker's routing
+mise run lint    # Biome, then a wrangler dry run
+mise run ci      # build, then lint: what CI runs
+```
+
+The legacy paths have no origin on localhost; everything else behaves as on
+uberblick.ai, including the 404 page and the redirects from `static/_redirects`.
