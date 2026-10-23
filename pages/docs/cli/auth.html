@@ -32,7 +32,7 @@ available workspaces:
   3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f | Acme product
   4f0b9c2e-7a1d-4e6b-9c35-8d2e1f6a0b47 | Design reviews</span></pre></section>
   <p>The hub learns your GitHub login and nothing else. Login does not change the project binding and does not download every workspace: the next step is usually <a href="/docs/cli/workspace#use">ub workspace use</a> to fetch a specific workspace as a local copy, unless the repository already carries a <code>.uberblick.json</code>, in which case nothing more is needed.</p>
-  <p>The credential belongs to this computer. It lasts 30 days and renews itself after 15 while anything syncs, without another GitHub approval. On a fresh, unclaimed hub the first login claims it: that account becomes hub admin and admin of the default workspace, and login warns before the approval so you do it before anyone else can.</p>
+  <p>The credential belongs to this computer. It lasts 30 days and renews itself after 15 while anything syncs, without another GitHub approval.</p>
   </section>
 
   <section class="q" id="status"><h2>status</h2>
@@ -64,7 +64,7 @@ ub auth logout --all-devices https://hub.example.com">Copy</button></div><pre><s
   </section>
 
   <section class="q" id="scenarios"><h2>Scenarios</h2>
-  <dl class="scen"><dt>Signed in, but the workspace is missing</dt><dd>Your account may have no grant yet, or the hub has suspended the workspace. Ask a workspace admin to add your GitHub account, or a hub admin to restore it. Sync picks up new access without another login.</dd><dt>Claim a fresh hub</dt><dd>Sign in before anyone else can. After the claim, login offers the complete <code>ub workspace use</code> command for the default workspace; running it writes the binding. Login never binds on its own.</dd><dt>Retire a lost or passed-on computer</dt><dd>If you still have it, log out there. Otherwise <code>ub auth logout --all-devices &lt;hub&gt;</code> from any computer with a valid login, then sign back in on the ones you keep.</dd><dt>A computer was away for more than 30 days</dt><dd>Its credential expired with no grace period. <code>ub open</code> and agents keep working on the local copy; <code>ub auth login</code> again and the pending changes reach the hub.</dd><dt>An agent host or an Actions runner</dt><dd>It signs in once like any other computer and holds its own credential, which can be revoked on its own. An agent can also use its own GitHub account; the grant rules are the same.</dd></dl>
+  <dl class="scen"><dt>Signed in, but the workspace is missing</dt><dd>Your account may have no grant yet, or the hub has suspended the workspace. Ask a workspace admin to add your GitHub account, or a hub admin to restore it. Sync picks up new access without another login.</dd><dt>Retire a lost or passed-on computer</dt><dd>If you still have it, log out there. Otherwise <code>ub auth logout --all-devices &lt;hub&gt;</code> from any computer with a valid login, then sign back in on the ones you keep.</dd><dt>A computer was away for more than 30 days</dt><dd>Its credential expired with no grace period. <code>ub open</code> and agents keep working on the local copy; <code>ub auth login</code> again and the pending changes reach the hub.</dd><dt>An agent host or an Actions runner</dt><dd>It signs in once like any other computer and holds its own credential, which can be revoked on its own. An agent can also use its own GitHub account; the grant rules are the same.</dd></dl>
   </section>
   <p class="next">Next: <a href="/docs/cli/workspace">ub workspace</a>.</p>
 </article>

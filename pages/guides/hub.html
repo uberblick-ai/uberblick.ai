@@ -30,7 +30,7 @@ docker compose config --quiet &amp;&amp; docker compose up -d">Copy</button></di
 </section>
 
 <section class="q" id="claim"><h2>3. Claim it</h2>
-<p>Open <code>http://localhost:8080</code> on that machine and choose <strong>Sign in with GitHub</strong>, or run <code>ub auth login http://localhost:8080</code> from it. The first GitHub account that signs in becomes the hub's administrator. Nothing else can claim it afterwards, so do this before you open the hub to the network. Further hub admins are appointed on the host with <code>docker compose exec hub ub-hub hub-admin add &lt;github-login&gt;</code>.</p>
+<p>Open <code>http://localhost:8080</code> on that machine and choose <strong>Sign in with GitHub</strong>, or run <code>ub auth login http://localhost:8080</code> from it. The first GitHub account that signs in claims the hub: it becomes hub admin and admin of the default workspace, and the login warns before the approval. Nothing else can claim it afterwards, so do this before you open the hub to the network. After the claim, login prints the <code>ub workspace use</code> command for the default workspace. Further hub admins are appointed on the host with <code>docker compose exec hub ub-hub hub-admin add &lt;github-login&gt;</code>.</p>
 </section>
 
 <section class="q" id="reach"><h2>4. Make it reachable</h2>
