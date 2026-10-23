@@ -73,12 +73,21 @@ function draw() {
 		});
 	});
 }
-// Two drawings beside each other can be stacked to read them larger.
-for (const b of document.querySelectorAll(".sbs .sbs-size")) {
+// Expand opens one drawing in a full-screen viewer at its natural size, as the editor's expanded block does.
+const viewer = document.createElement("dialog");
+viewer.className = "dviewer";
+viewer.innerHTML = '<div class="dvbar"><span class="dvtitle"></span><button type="button" class="dvclose">Close</button></div><div class="dvport"></div>';
+document.body.append(viewer);
+viewer.querySelector(".dvclose").addEventListener("click", () => viewer.close());
+viewer.addEventListener("click", (e) => { if (e.target === viewer) viewer.close(); });
+for (const b of document.querySelectorAll(".tabs.ex .dexpand")) {
 	b.addEventListener("click", () => {
-		const pair = b.closest(".sbs");
-		const one = pair.classList.toggle("one");
-		for (const t of pair.querySelectorAll(".sbs-size")) t.textContent = one ? "Side by side" : "Larger";
+		const box = b.closest(".tabs.ex");
+		const svg = box.querySelector(".pic svg");
+		if (!svg) return;
+		viewer.querySelector(".dvtitle").textContent = box.querySelector('[role="tab"]').textContent;
+		viewer.querySelector(".dvport").replaceChildren(svg.cloneNode(true));
+		viewer.showModal();
 	});
 }
 if (blocks.length) {
