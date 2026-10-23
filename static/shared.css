@@ -41,6 +41,8 @@ img { max-width: 100%; display: block }
 .top nav { margin-left: auto; display: flex; gap: 20px; font-size: 15px }
 .top nav a { color: var(--muted); text-decoration: none }
 .top nav a:hover { color: var(--fg) }
+.top nav .legacy { color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 3px 10px; margin-block: -4px }
+.top nav .legacy:hover { border-color: var(--fg) }
 .foot { max-width: 1120px; margin: 64px auto 0; border-top: 1px solid var(--line); padding-block: 32px 56px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 24px; font-size: 15px }
 .foot h3 { font-size: 15px; font-weight: 600; color: var(--fg); margin: 0 0 12px }
 .foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px }

@@ -9,10 +9,17 @@ description, the page's own stylesheet) and continues with the page's main
 content. The build wraps it in the document skeleton and the shell every page
 shares (top bar, a sidebar for its section, footer), links the shared stylesheet and writes it to
 out/<path>/index.html, so the page is served at /<path> with no extension
-(Cloudflare Pages redirects /<path>.html there). pages/index.html is /, and
-pages/404.html is the not-found page Pages serves as out/404.html. Everything
-in site/static is copied to site/out as it is: the shared stylesheet, the page
-stylesheets, the fonts and the Pages _headers file.
+(Cloudflare redirects /<path>/ there, see wrangler.jsonc). pages/index.html is
+/, and pages/404.html is the not-found page served as out/404.html. Everything
+in static/ is copied to out/ as it is: the shared stylesheet, the page
+stylesheets, the fonts and the _headers and _redirects files.
+
+Every page gets a canonical link, Open Graph and Twitter tags (the share image
+is static/img/og.png unless the page's <head> names its own <meta name="image">)
+and JSON-LD: the home page as a SoftwareApplication, blog posts as a BlogPosting,
+pages with a breadcrumb as a BreadcrumbList. The build also writes robots.txt
+(the legacy Rails app's paths stay disallowed) and sitemap.xml with every
+indexed page and the date of its source file's last commit.
 
 The sidebar marks the page whose path matches the link; the top bar shows the
 newest release tag when git can name one (a shallow checkout shows none).
@@ -54,6 +61,24 @@ API_CHANGELOG = 'https://api.github.com/repos/uberblick-ai/uberblick-2/contents/
 TAGS = 'https://api.github.com/repos/uberblick-ai/uberblick-2/tags?per_page=100'
 SITE = os.environ.get('SITE_URL', 'https://uberblick.ai').rstrip('/')
 NOINDEX = '<meta name="robots" content="noindex">\n' if os.environ.get('SITE_NOINDEX') else ''
+OG_IMAGE = '/img/og.png'  # 1200 x 630, static/img/og.png
+LICENSE_URL = f'{REPO}/blob/main/LICENSE'
+ROBOTS = """# uberblick.ai is the website plus, on a few paths, the legacy Rails app
+# (worker/index.js in the site repository). The app's pages are not for search.
+User-agent: *
+Allow: /
+Disallow: /app
+Disallow: /dashboard
+Disallow: /sign-in
+Disallow: /sign-out
+Disallow: /auth/
+Disallow: /mcp
+Disallow: /search
+Disallow: /settings/
+Disallow: /up
+
+Sitemap: {site}/sitemap.xml
+"""
 
 SKELETON = """<!doctype html>
 <html lang="en">
@@ -67,7 +92,7 @@ SKELETON = """<!doctype html>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/shared.css">
-{head}{canonical}{noindex}</head>
+{head}{canonical}{social}{noindex}</head>
 <body>
 <header class="top">
   <a class="mark" href="/">uberblick</a>
@@ -77,7 +102,7 @@ SKELETON = """<!doctype html>
     <a href="/blog">Blog</a>
     <a href="/compare">Compare</a>
     <a href="https://github.com/uberblick-ai/uberblick-2">GitHub</a>
-  </nav>
+{legacy}  </nav>
 </header>
 <div class="layout{solo}">
 {aside}  <main class="main">
@@ -132,6 +157,11 @@ for (const box of document.querySelectorAll('.tabs')) {{
 </body>
 </html>
 """
+
+# The landing page links the legacy Rails app's sign-in from the top bar while
+# that app still runs behind uberblick.ai (worker/index.js passes /sign-in to
+# it). Remove this with the app.
+LEGACY_LOGIN = '    <a class="legacy" href="/sign-in">Legacy login</a>\n'
 
 ABOUT = """    <section class="blk about" id="about">
       <h2>Who builds this.</h2>
@@ -229,7 +259,7 @@ def recent(text, posts, count=5):
         live = [p for p in live if p is not more]
     items += [(p['date'], KINDS[p['kind']], f'<a href="{p["path"]}">{html.escape(p["title"], quote=False)}</a>') for p in live]
     items.sort(key=lambda i: i[0], reverse=True)
-    return '\n  '.join(f'<li><time>{day}</time><span class="tag">{kind}</span><span>{text}</span></li>' for day, kind, text in items[:count])
+    return '\n  '.join(f'<li><time datetime="{day}">{day}</time><span class="tag">{kind}</span><span>{text}</span></li>' for day, kind, text in items[:count])
 
 
 def meta(head, name):
@@ -256,7 +286,7 @@ def post_list(posts):
     for p in posts:
         if p['draft']:
             continue
-        items.append(f'<li><time>{p["date"]}</time><span class="tag">{KINDS[p["kind"]]}</span><span><a href="{p["path"]}">{html.escape(p["title"], quote=False)}</a><small>{html.escape(p["summary"], quote=False)} · {html.escape(p["author"], quote=False)}</small></span></li>')
+        items.append(f'<li><time datetime="{p["date"]}">{p["date"]}</time><span class="tag">{KINDS[p["kind"]]}</span><span><a href="{p["path"]}">{html.escape(p["title"], quote=False)}</a><small>{html.escape(p["summary"], quote=False)} · {html.escape(p["author"], quote=False)}</small></span></li>')
     return '\n  '.join(items)
 
 
@@ -355,6 +385,63 @@ def split(text, name):
     return head, body.strip('\n')
 
 
+def jsonld(obj):
+    return '<script type="application/ld+json">' + json.dumps(obj, ensure_ascii=False).replace('</', '<\\/') + '</script>\n'
+
+
+def social(path, head, body, blog):
+    """Open Graph and Twitter tags plus JSON-LD for one page, from its head and its breadcrumb."""
+    title = html.unescape(re.search(r'<title>(.*?)</title>', head, re.S)[1].strip())
+    short = title.split(' · ', 1)[1] if path == '/' and ' · ' in title else re.sub(r' · Uberblick( \w+)?$', '', title)
+    description, day, author = meta(head, 'description'), meta(head, 'date'), meta(head, 'author')
+    image, url = meta(head, 'image') or OG_IMAGE, f'{SITE}{path}'
+    alt = 'Uberblick: a knowledge base for humans and agents alike' if image == OG_IMAGE else short
+    post = blog and day != ''
+    tags = [('og:site_name', 'Uberblick'), ('og:type', 'article' if post else 'website'), ('og:title', short),
+            ('og:description', description), ('og:url', url), ('og:image', f'{SITE}{image}'),
+            ('og:image:width', '1200'), ('og:image:height', '630'), ('og:image:alt', alt)]
+    if post:
+        tags += [('article:published_time', day), ('article:author', author)]
+    names = [('twitter:card', 'summary_large_image'), ('twitter:title', short), ('twitter:description', description), ('twitter:image', f'{SITE}{image}')]
+    out = ''.join(f'<meta property="{p}" content="{html.escape(v)}">\n' for p, v in tags)
+    out += ''.join(f'<meta name="{n}" content="{html.escape(v)}">\n' for n, v in names)
+    if path == '/':
+        out += jsonld({'@context': 'https://schema.org', '@type': 'SoftwareApplication', 'name': 'Uberblick', 'url': SITE,
+                       'description': description, 'applicationCategory': 'DeveloperApplication', 'operatingSystem': 'macOS',
+                       'offers': {'@type': 'Offer', 'price': '0', 'priceCurrency': 'USD'}, 'license': LICENSE_URL,
+                       'sameAs': ['https://github.com/uberblick-ai', REPO]})
+    if post:
+        out += jsonld({'@context': 'https://schema.org', '@type': 'BlogPosting', 'headline': short, 'description': description,
+                       'datePublished': day, 'author': {'@type': 'Person', 'name': author},
+                       'publisher': {'@type': 'Organization', 'name': 'Uberblick', 'url': SITE},
+                       'mainEntityOfPage': url, 'image': f'{SITE}{image}'})
+    crumb = re.search(r'<p class="crumb">(.*?)</p>', body, re.S)
+    if crumb and path != '/':
+        items = [(html.unescape(t), f'{SITE}{h}'.rstrip('/') or SITE) for h, t in re.findall(r'<a href="([^"]+)">([^<]+)</a>', crumb[1])]
+        items.append((short, url))
+        out += jsonld({'@context': 'https://schema.org', '@type': 'BreadcrumbList',
+                       'itemListElement': [{'@type': 'ListItem', 'position': i, 'name': n, 'item': u} for i, (n, u) in enumerate(items, 1)]})
+    return out
+
+
+def lastmod(page):
+    """The date of the source file's last commit; today when git cannot say (a tarball, a file not committed yet)."""
+    try:
+        day = subprocess.run(['git', 'log', '-1', '--format=%cs', '--', str(page)], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        day = ''
+    return day or date.today().isoformat()
+
+
+def sitemap(entries):
+    urls = ''.join(f'<url><loc>{html.escape(SITE + path)}</loc><lastmod>{lastmod(page)}</lastmod></url>\n' for path, page in entries)
+    return f'<?xml version="1.0" encoding="utf-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urls}</urlset>\n'
+
+
+def robots():
+    return 'User-agent: *\nDisallow: /\n' if NOINDEX else ROBOTS.format(site=SITE)
+
+
 def route(page):
     rel = page.relative_to(PAGES).with_suffix('')
     if rel.name == '404':
@@ -370,7 +457,7 @@ def main():
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(STATIC, OUT)
-    built, hrefs, tag, log = set(), set(), version(), changelog()
+    built, hrefs, entries, tag, log = set(), set(), [], version(), changelog()
     pages = sorted(PAGES.rglob('*.html'))
     posts = sorted((post(p, *split(p.read_text(), p.relative_to(ROOT).as_posix())) for p in pages if re.fullmatch(r'\d{4}', p.parent.name) and p.parent.parent == PAGES / 'blog'),
                    key=lambda p: (p['date'], p['path']), reverse=True)
@@ -384,7 +471,10 @@ def main():
         path, target = route(page)
         blog = path == '/blog' or path.startswith('/blog/')
         noindex = NOINDEX or ('<meta name="robots" content="noindex">\n' if blog and meta(head, 'draft') else '')
-        head = re.sub(r'<meta name="(date|author|kind|draft)" content="[^"]*">\n', '', head)
+        social_tags = social(path, head, body, blog)
+        if path != '/404' and not (blog and meta(head, 'draft')):
+            entries.append((path, page))
+        head = re.sub(r'<meta name="(date|author|kind|draft|image)" content="[^"]*">\n', '', head)
         if blog:
             head += '<link rel="alternate" type="application/atom+xml" title="Uberblick blog" href="/blog/feed.xml">\n'
         canonical = '' if path == '/404' else f'<link rel="canonical" href="{SITE}{path}">\n'
@@ -393,12 +483,16 @@ def main():
         side = sidebar(path, found[1]) if found else ''
         aside = ASIDE.format(side_title=found[0], side=side) if found else ''
         about = ABOUT if path == '/' else ''
-        target.write_text(SKELETON.format(head=head, canonical=canonical, noindex=noindex, version=tag, solo='' if found else ' solo', aside=aside, about=about, body=body))
+        legacy = LEGACY_LOGIN if path == '/' else ''
+        target.write_text(SKELETON.format(head=head, canonical=canonical, social=social_tags, noindex=noindex, version=tag, solo='' if found else ' solo', aside=aside, about=about, legacy=legacy, body=body))
         built.add(path)
         hrefs |= {h.split('#')[0] for h in re.findall(r'href="(/[^"]*)"', body + side + about)}
     (OUT / 'blog').mkdir(parents=True, exist_ok=True)
     (OUT / 'blog' / 'feed.xml').write_text(feed(posts))
     built.add('/blog/feed.xml')
+    (OUT / 'robots.txt').write_text(robots())
+    (OUT / 'sitemap.xml').write_text(sitemap(entries))
+    built |= {'/robots.txt', '/sitemap.xml'}
     missing = sorted(h for h in hrefs if h and h not in built and not (OUT / h.lstrip('/')).is_file())
     print(f'built {len(built)} pages into {OUT.relative_to(ROOT.parent)}')
     if missing:

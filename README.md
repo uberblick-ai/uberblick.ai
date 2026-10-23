@@ -40,23 +40,39 @@ to linking this one.
 
 ## Deploying
 
-A Cloudflare Pages project connected to this repository builds the site from
-`main` on every push. Its settings, all in the Pages dashboard, are a maintainer
-step; no token lives in the repository:
+`.github/workflows/deploy.yml` builds the site and deploys it as the Cloudflare
+Worker in `wrangler.jsonc` on every push to `main`, and by hand from the Actions
+tab. The Worker serves `out/` as static assets; the routes `uberblick.ai/*`
+and `www.uberblick.ai/*` that put it in front of the domain are Terraform's,
+in uberblick-infra (www and next redirect to the apex). `worker/index.js` passes
+the legacy Rails app's paths, such as `/app`, `/mcp` and the OAuth endpoints,
+to the origin behind the uberblick.ai DNS record, so that app keeps working
+until it is shut down; the list of paths lives in that file, and the landing
+page's "Legacy login" button in `build.py` goes with it. DNS and the WAF rules
+stay as they are. Removing the routes in uberblick-infra puts the legacy app
+back in front of everything.
 
-| Setting | Value |
-| --- | --- |
-| Production branch | `main` |
-| Root directory | the repository root |
-| Build command | `python3 build.py` |
-| Build output directory | `out` |
-| Environment variable `SITE_URL` | the origin the project serves, for example `https://next.uberblick.ai`; omitted, the canonical links name `https://uberblick.ai` |
-| Environment variable `SITE_NOINDEX` | set to `1` on a host search engines should not index |
-| Custom domain | the host name; Cloudflare adds the DNS record when the zone is on Cloudflare, otherwise add a CNAME to the project's `pages.dev` host |
+The workflow deploys with two organisation secrets, `CLOUDFLARE_ACCOUNT_ID` and
+`CLOUDFLARE_API_TOKEN`. [DEPLOYING.md](DEPLOYING.md) says how to create,
+rotate and check them, and how to deploy from a laptop.
 
-The new site runs on next.uberblick.ai first, from a project with
-`SITE_URL=https://next.uberblick.ai` and `SITE_NOINDEX=1`; uberblick.ai stays as
-it is until the move. A release in uberblick-2 does not trigger a build here, so
-the home page's Recent changes list catches up with the next push to this
-repository (or a manual deploy in the Pages dashboard). Pages serves `404.html` for unknown paths and redirects
-`/<path>.html` to `/<path>`, which is why the build writes extensionless pages.
+A release in uberblick-2 does not trigger a deploy here, so the home page's
+Recent changes list catches up with the next push to this repository or a
+manual run of the deploy workflow. Unknown paths get `404.html`; `/<path>/`
+redirects to `/<path>`, which the build writes as `out/<path>/index.html`.
+`SITE_URL` and `SITE_NOINDEX` (see the top of `build.py`) are build-time
+settings for a second host.
+
+## Working locally
+
+[mise](https://mise.jdx.dev) installs Node and Python from `mise.toml`:
+
+```sh
+mise trust mise.toml
+mise run serve   # build, then serve on http://localhost:8787 with the Worker's routing
+mise run lint    # Biome, then a wrangler dry run
+mise run ci      # build, then lint: what CI runs
+```
+
+The legacy paths have no origin on localhost; everything else behaves as on
+uberblick.ai, including the 404 page and the redirects from `static/_redirects`.

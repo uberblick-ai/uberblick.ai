@@ -1,0 +1,29 @@
+[tools]
+node = "22"
+python = "3.13"
+
+# The build is standard-library Python; wrangler (Node) serves and deploys it.
+[tasks.build]
+description = "Build the site into out/"
+run = "python3 build.py"
+
+[tasks.serve]
+description = "Build, then serve the site on http://localhost:8787 with the Worker's routing"
+run = "python3 build.py && npx -y wrangler@4.152.0 dev"
+
+[tasks.lint]
+description = "Biome on the stylesheets and the Worker, then a wrangler dry run"
+run = [
+  "npx -y @biomejs/biome@2.5.9 lint --error-on-warnings .",
+  "npx -y wrangler@4.152.0 deploy --dry-run",
+]
+
+[tasks.ci]
+description = "What CI runs: build, then lint"
+run = ["mise run build", "mise run lint"]
+
+# A deploy from a laptop, after `npx wrangler login` once (DEPLOYING.md).
+# Pushes to main deploy on their own through .github/workflows/deploy.yml.
+[tasks.deploy]
+description = "Build and deploy the Worker with your own Cloudflare login"
+run = "python3 build.py && npx -y wrangler@4.152.0 deploy"

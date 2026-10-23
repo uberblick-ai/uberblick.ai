@@ -17,7 +17,7 @@
 
 <section class="blk" id="why"><h2>The docs folder is where context goes to die.</h2>
 <p>Every team keeps the reasoning behind its code somewhere: a Markdown folder in the repo, a Notion space, a few notebooks. The folder goes stale because nobody reads it. The wiki is far from the code and farther from the agents. Nobody is sure who keeps what up to date.</p>
-<p>Uberblick is one workspace for the three who need that reasoning: the agent that writes the code, the engineer who runs the agent, and the product manager who asked for the feature. Each has its own way in, MCP for the agent and the browser for the people. Evidence, numbers and decisions land in the workspace instead of in one engineer's chat session.</p>
+<p>Uberblick is one workspace for the three who need that reasoning: the agent that writes the code, the engineer who runs the agent, and the product manager who asked for the feature. Each has its own way in, MCP for the agent and the browser for the people. Evidence, numbers and decisions land in the workspace instead of in one engineer's chat session. It is basically a wiki for LLMs and humans.</p>
 </section>
 
 <section class="blk" id="demo">
@@ -67,7 +67,7 @@
 
 <section class="blk" id="mcp">
 <div class="blk-h"><h2>An opinionated MCP: the right context, nothing more.</h2><a href="/docs/agents">Agents over MCP</a></div>
-<p class="blk-intro">An agent gets the pages its change needs without cluttering its context window. The server sorts the relevant from the irrelevant: it names the few pages tagged as guidance when the agent connects, the decisions linked to the issue come with one call, and search finds the rest. Implementation agents get pointers to the right pages and read them over the local MCP server. No prompt engineering, no context spamming, no hoping.</p>
+<p class="blk-intro">An agent gets the pages its change needs without cluttering its context window. The server sorts the relevant from the irrelevant: it names the few pages tagged as guidance when the agent connects, the decisions linked to the issue come with one call, and search finds the rest. Implementation agents get pointers to the right pages and read them over the local MCP server. No prompt engineering, no context spamming, no hoping. This is context engineering for the whole team, not for one chat session.</p>
 <div class="issue" role="img" aria-label="A GitHub issue, #2142 Apply the retry limit, with a Read first section that names three workspace pages the implementing agent reads over MCP: the delivery report of 16 October, the decision record Retry limit on sync, and the page Sync: retry and backoff. Below: three pages of fifty-two in the context window, the other forty-nine stayed where they were.">
   <div class="ihead"><span class="ititle">Apply the retry limit</span><span class="ino">#2142</span></div>
   <div class="imeta"><span class="istate">Open</span><span>bk-one opened this just now</span><span class="ilbl">needs-preparation</span><span class="ilbl">priority:medium</span></div>
@@ -94,7 +94,7 @@
 
 <section class="blk" id="ub-agents">
 <div class="blk-h"><h2>Works best with ub-agents.</h2><a href="https://agents.uberblick.ai">agents.uberblick.ai</a></div>
-<p class="blk-intro">Uberblick holds what the product should do; it does not track tasks. Delivery lives on GitHub, and <a href="https://agents.uberblick.ai">ub-agents</a> is the loop that runs it there: roles in a few lines of YAML, driven by labels, on Actions, with any agent and no server. Every issue starts from the pages and every pull request brings them up to date. Retrospectives propose changes to the pages and to the loop's own rules; a person decides each one. It is how Uberblick itself is built, and <a href="/blog/2026/built-on-its-own-pages">we write down how that goes</a>.</p>
+<p class="blk-intro">Uberblick holds what the product should do; it does not track tasks. Delivery lives on GitHub, and <a href="https://agents.uberblick.ai">ub-agents</a> is the loop that runs it there: roles in a few lines of YAML, driven by labels, on Actions, with any agent and no server. Harness engineering and loop engineering, in other words, with a person on the loop. Every issue starts from the pages and every pull request brings them up to date. Retrospectives propose changes to the pages and to the loop's own rules; a person decides each one. It is how Uberblick itself is built, and <a href="/blog/2026/built-on-its-own-pages">we write down how that goes</a>.</p>
 <div class="tui" role="img" aria-label="The ub-agents terminal, agent tab, working issue 2142: it reads the issue, the harness protocols and the three pages named in the issue over MCP, thinks, edits the code and the tests, runs them, updates the page paragraph over MCP, commits and opens pull request 2143 labelled needs-review.">
   <div class="tbar"><span class="tab on">1 Agent</span><span class="tab">2 Issue</span><span class="tab">3 Runs</span><span class="sep"></span><span class="tab u">Formatted</span><span class="tab">Raw (u)</span><button type="button" id="tuiReplay">Replay</button></div>
   <div class="thead"><div class="t1"><span class="ino">⌥2142</span> Apply the retry limit</div><div class="t2">implementer · claude claude-opus-5-5 xhigh · attempt 1</div></div>

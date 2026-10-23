@@ -19,3 +19,5 @@ jobs:
       # not reach main, where Pages deploys it.
       - run: python3 build.py
       - run: npx -y @biomejs/biome@2.5.9 lint --error-on-warnings .
+      # Bundles the Worker and checks wrangler.jsonc without deploying.
+      - run: npx -y wrangler@4.152.0 deploy --dry-run
