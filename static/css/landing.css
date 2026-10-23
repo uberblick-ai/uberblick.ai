@@ -134,7 +134,7 @@ mark.sel { background: oklch(0.85 0.12 75 / 40%); color: inherit; border-bottom:
   font: 400 12px/1.42 var(--mono); box-shadow: 0 18px 40px oklch(0 0 0 / 12%); }
 .tui .tscreen { display: grid; grid-template-columns: minmax(0, 46fr) minmax(0, 66fr); gap: 10px; height: 450px; }
 /* Both panes keep one height through every state of the run, so the page never jumps under the reader. */
-.tui .pane { position: relative; min-width: 0; height: 100%; box-sizing: border-box; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--trule); border-radius: 6px; padding: 12px 10px 8px; }
+.tui .pane { position: relative; min-width: 0; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; border: 1px solid var(--trule); border-radius: 6px; padding: 12px 10px 8px; }
 .tui .twork { border-color: var(--tacc); }
 .tui .ptitle { position: absolute; top: calc(-0.71em - 1px); left: 8px; padding: 0 6px; background: var(--tbg); color: var(--tacc); white-space: nowrap; }
 .tui .tagent .ptitle { color: var(--tmut); }
