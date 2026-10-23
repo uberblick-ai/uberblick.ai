@@ -1,0 +1,24 @@
+// The site on Cloudflare: one Worker that serves out/ as static assets and
+// hands the legacy Rails app's paths to the origin behind the uberblick.ai DNS
+// record (worker/index.js). Deployed by .github/workflows/deploy.yml.
+{
+  "name": "uberblick-ai",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-23",
+  "workers_dev": false,
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "out",
+    "binding": "ASSETS",
+    // out/<path>/index.html is served at /<path>; /<path>/ redirects there.
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page",
+    // Every request reaches worker/index.js first, so the legacy paths never
+    // fall through to a 404 page and www redirects before any asset is served.
+    "run_worker_first": true
+  },
+  "routes": [
+    { "pattern": "uberblick.ai/*", "zone_name": "uberblick.ai" },
+    { "pattern": "www.uberblick.ai/*", "zone_name": "uberblick.ai" }
+  ]
+}

@@ -9,10 +9,10 @@ description, the page's own stylesheet) and continues with the page's main
 content. The build wraps it in the document skeleton and the shell every page
 shares (top bar, a sidebar for its section, footer), links the shared stylesheet and writes it to
 out/<path>/index.html, so the page is served at /<path> with no extension
-(Cloudflare Pages redirects /<path>.html there). pages/index.html is /, and
-pages/404.html is the not-found page Pages serves as out/404.html. Everything
-in site/static is copied to site/out as it is: the shared stylesheet, the page
-stylesheets, the fonts and the Pages _headers file.
+(Cloudflare redirects /<path>/ there, see wrangler.jsonc). pages/index.html is
+/, and pages/404.html is the not-found page served as out/404.html. Everything
+in static/ is copied to out/ as it is: the shared stylesheet, the page
+stylesheets, the fonts and the _headers and _redirects files.
 
 The sidebar marks the page whose path matches the link; the top bar shows the
 newest release tag when git can name one (a shallow checkout shows none).
@@ -77,7 +77,7 @@ SKELETON = """<!doctype html>
     <a href="/blog">Blog</a>
     <a href="/compare">Compare</a>
     <a href="https://github.com/uberblick-ai/uberblick-2">GitHub</a>
-  </nav>
+{legacy}  </nav>
 </header>
 <div class="layout{solo}">
 {aside}  <main class="main">
@@ -132,6 +132,11 @@ for (const box of document.querySelectorAll('.tabs')) {{
 </body>
 </html>
 """
+
+# The landing page links the legacy Rails app's sign-in from the top bar while
+# that app still runs behind uberblick.ai (worker/index.js passes /sign-in to
+# it). Remove this with the app.
+LEGACY_LOGIN = '    <a class="legacy" href="/sign-in">Legacy login</a>\n'
 
 ABOUT = """    <section class="blk about" id="about">
       <h2>Who builds this.</h2>
@@ -393,7 +398,8 @@ def main():
         side = sidebar(path, found[1]) if found else ''
         aside = ASIDE.format(side_title=found[0], side=side) if found else ''
         about = ABOUT if path == '/' else ''
-        target.write_text(SKELETON.format(head=head, canonical=canonical, noindex=noindex, version=tag, solo='' if found else ' solo', aside=aside, about=about, body=body))
+        legacy = LEGACY_LOGIN if path == '/' else ''
+        target.write_text(SKELETON.format(head=head, canonical=canonical, noindex=noindex, version=tag, solo='' if found else ' solo', aside=aside, about=about, legacy=legacy, body=body))
         built.add(path)
         hrefs |= {h.split('#')[0] for h in re.findall(r'href="(/[^"]*)"', body + side + about)}
     (OUT / 'blog').mkdir(parents=True, exist_ok=True)
