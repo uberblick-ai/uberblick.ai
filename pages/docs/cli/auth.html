@@ -44,7 +44,7 @@ stored available workspaces:
 hub&#x27;s current answer:
 login (hub)  accepted
 hub admin (hub)  no</span></pre></section>
-  <p>The stored login and the workspaces it knew at the last sign-in, then one read-only question to the hub: is this login still accepted, and is the account a hub admin. It never renews or writes anything. Exit 0 for a confirmed answer either way, including a local binding with no hub; exit 1 when the hub could not confirm, which is not the same as not being an admin. <code>--json</code> prints the same report as one object.</p>  <div class="tablewrap"><table>
+  <p>Shows the stored login and asks the hub once whether it is still accepted and whether the account is a hub admin. It changes nothing. <code>--json</code> prints the same report as one object.</p>  <div class="tablewrap"><table>
     <thead><tr><th>Outcome</th><th>Exit</th><th>Next step</th></tr></thead>
     <tbody>
       <tr><td><code>hub-admin</code>, <code>not-hub-admin</code></td><td>0</td><td>None</td></tr>
@@ -60,11 +60,8 @@ hub admin (hub)  no</span></pre></section>
 <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth logout
 ub auth logout --all-devices https://hub.example.com">Copy</button></div><pre><span class="p">$</span> ub auth logout
 <span class="p">$</span> ub auth logout --all-devices https://hub.example.com</pre></section>
-  <p>Revokes this computer on the hub and removes its login here. Sync with that hub stops; workspace copies, memberships and the project binding stay. With <code>--all-devices</code> every device of your GitHub account on that hub is revoked, this one last. If the hub cannot be reached, nothing is revoked and the login is kept, exit 1; a revocation the hub could not confirm still removes the login and says the computer is not yet revoked, to be finished from another signed-in computer.</p>
+  <p>Revokes this computer on the hub and removes its login here. <code>--all-devices</code> revokes every computer of your GitHub account on that hub, this one last.</p>
   </section>
 
-  <section class="q" id="scenarios"><h2>Scenarios</h2>
-  <dl class="scen"><dt>Signed in, but the workspace is missing</dt><dd>Your account may have no grant yet, or the hub has suspended the workspace. Ask a workspace admin to add your GitHub account, or a hub admin to restore it. Sync picks up new access without another login.</dd><dt>Retire a lost or passed-on computer</dt><dd>If you still have it, log out there. Otherwise <code>ub auth logout --all-devices &lt;hub&gt;</code> from any computer with a valid login, then sign back in on the ones you keep.</dd><dt>A computer was away for more than 30 days</dt><dd>Its credential expired with no grace period. <code>ub open</code> and agents keep working on the local copy; <code>ub auth login</code> again and the pending changes reach the hub.</dd><dt>An agent host or an Actions runner</dt><dd>It signs in once like any other computer and holds its own credential, which can be revoked on its own. An agent can also use its own GitHub account; the grant rules are the same.</dd></dl>
-  </section>
   <p class="next">Next: <a href="/docs/cli/workspace">ub workspace</a>.</p>
 </article>
