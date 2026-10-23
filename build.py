@@ -124,7 +124,7 @@ ABOUT = """    <section class="blk about" id="about">
       <p>Uberblick, ub-agents and the small libraries beside them, such as wireframe and ablauf, are made by a team in Berlin that likes to find out how far AI engineering can go. What holds up in our own work becomes a framework and a few products that run on GitHub alone, so a team no longer needs Notion, Linear or Jira beside it. Take them as a starting point for your own variant. <a href="/docs/motivation">Why each of them exists</a>.</p>
       <div class="cols">
         <div><h3>Docs</h3><ul><li><a href="/docs/install">Install and update</a></li><li><a href="/docs/workspaces">Workspaces</a></li><li><a href="/docs/documents">Documents</a></li><li><a href="/docs/hub">Run a hub</a></li><li><a href="/docs/cli">CLI reference</a></li><li><a href="/docs/faq">FAQ</a></li></ul></div>
-        <div><h3>Agents</h3><ul><li><a href="/docs/agents">Agents over MCP</a></li><li><a href="/docs/guidance">Guidance pages</a></li><li><a href="/docs/decisions">Decision records</a></li><li><a href="/docs/mcp">MCP reference</a></li><li><a href="https://agents.uberblick.ai">ub-agents</a></li><li><a href="https://skills.uberblick.ai">Skills</a></li></ul></div>
+        <div><h3>Agents</h3><ul><li><a href="/docs/agents">Agents over MCP</a></li><li><a href="/docs/guidance">Guidance pages</a></li><li><a href="/docs/decisions">Decision records</a></li><li><a href="https://agents.uberblick.ai">ub-agents</a></li><li><a href="https://skills.uberblick.ai">Skills</a></li></ul></div>
         <div><h3>Project</h3><ul><li><a href="/blog">Blog</a></li><li><a href="/changelog">Changelog</a></li><li><a href="/guides">Guides</a></li><li><a href="/compare">Compare</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2">GitHub</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2/blob/main/SECURITY.md">Security</a></li></ul></div>
       </div>
     </section>
@@ -140,16 +140,16 @@ ASIDE = """  <details class="side" open>
 # Each section has its own sidebar and sees nothing else: docs pages the docs tree, guides the
 # guides, blog pages the posts. The landing page, Compare and Not found have none.
 DOCS = [
-    ('Get started', [('/docs/motivation', 'Motivation'), ('/docs/install', 'Install and update', [('/docs/install', 'Install'), ('/docs/install/check', 'Check the setup'), ('/docs/install/update', 'Update'), ('/docs/install/remove', 'Remove it')]), ('/docs/workspaces', 'Workspaces'), ('/docs/hub', 'Run a hub')]),
-    ('Core concepts', [('/docs/documents', 'Documents'), ('/docs/decisions', 'Decision records'), ('/docs/guidance', 'Guidance pages'), ('/docs/agents', 'Agents over MCP', [('/docs/agents', 'Set up'), ('/docs/mcp', 'MCP reference'), ('/docs/instructions', 'Agent instructions')])]),
-    ('CLI reference', [('/docs/cli', 'Overview'), ('/docs/cli/binding', 'Project binding'), ('/docs/cli/auth', 'ub auth'), ('/docs/cli/workspace', 'ub workspace'), ('/docs/cli/mcp', 'ub mcp'), ('/docs/cli/open', 'ub open'), ('/docs/cli/status', 'ub status'), ('/docs/cli/doctor', 'ub doctor'), ('/docs/cli/data', 'ub data'), ('/docs/cli/update', 'ub update')]),
-    ('Custom Markdown', [('/docs/markdown', 'Markdown baseline'), ('/docs/markdown/extensions', 'Markdown extensions'), ('/docs/markdown/diagrams', 'Diagrams'), ('/docs/markdown/wireframes', 'Wireframes'), ('/docs/markdown/charts', 'Charts'), ('/docs/markdown/embeds', 'Embeds')]),
-    (None, [('/docs/faq', 'FAQ'), ('/changelog', 'Changelog')]),
+    ('Get started', '/docs/motivation', [('/docs/motivation', 'Motivation'), ('/docs/install', 'Install and update', [('/docs/install', 'Install'), ('/docs/install/check', 'Check the setup'), ('/docs/install/update', 'Update'), ('/docs/install/remove', 'Remove it')]), ('/docs/workspaces', 'Workspaces'), ('/docs/hub', 'Run a hub')]),
+    ('Core concepts', '/docs/documents', [('/docs/documents', 'Documents'), ('/docs/decisions', 'Decision records'), ('/docs/guidance', 'Guidance pages'), ('/docs/agents', 'Agents over MCP')]),
+    ('CLI reference', '/docs/cli', [('/docs/cli/binding', 'Project binding'), ('/docs/cli/auth', 'ub auth'), ('/docs/cli/workspace', 'ub workspace'), ('/docs/cli/mcp', 'ub mcp'), ('/docs/cli/open', 'ub open'), ('/docs/cli/status', 'ub status'), ('/docs/cli/doctor', 'ub doctor'), ('/docs/cli/data', 'ub data'), ('/docs/cli/update', 'ub update')]),
+    ('Custom Markdown', '/docs/markdown', [('/docs/markdown', 'Markdown baseline'), ('/docs/markdown/extensions', 'Markdown extensions'), ('/docs/markdown/diagrams', 'Diagrams'), ('/docs/markdown/wireframes', 'Wireframes'), ('/docs/markdown/charts', 'Charts'), ('/docs/markdown/embeds', 'Embeds')]),
+    (None, None, [('/docs/faq', 'FAQ'), ('/changelog', 'Changelog')]),
 ]
 GUIDES = [
-    (None, [('/guides', 'All guides')]),
-    ('Start', [('/guides/first-workspace', 'Your first workspace'), ('/guides/hub', 'Set up a hub')]),
-    ('Jobs', [('/guides/product-intent', 'Product intent'), ('/guides/decisions', 'Decisions that stay decided'), ('/guides/reports', 'Reports with the numbers'), ('/guides/flows', 'Flows and screens as text')]),
+    (None, None, [('/guides', 'All guides')]),
+    ('Start', None, [('/guides/first-workspace', 'Your first workspace'), ('/guides/hub', 'Set up a hub')]),
+    ('Jobs', None, [('/guides/product-intent', 'Product intent'), ('/guides/decisions', 'Decisions that stay decided'), ('/guides/reports', 'Reports with the numbers'), ('/guides/flows', 'Flows and screens as text')]),
 ]
 KINDS = {'release': 'Release', 'design note': 'Design note', 'building note': 'Building note'}
 
@@ -318,13 +318,16 @@ def section(path, posts=()):
     if path == '/guides' or path.startswith('/guides/'):
         return 'Guides', GUIDES
     if path == '/blog' or path.startswith('/blog/'):
-        return 'Posts', [(None, [('/blog', 'All posts')]), ('Posts', [(p['path'], p['title']) for p in posts if not p['draft']]), (None, [('/blog/feed.xml', 'Atom feed')])]
+        return 'Posts', [(None, None, [('/blog', 'All posts')]), ('Posts', None, [(p['path'], p['title']) for p in posts if not p['draft']]), (None, None, [('/blog/feed.xml', 'Atom feed')])]
     return None
 
 
 def sidebar(path, groups):
-    """A link may carry sub-pages as a third item; they are listed only while the reader is on
-    the topic or one of its sub-pages, like a docs tree that opens where you are."""
+    """Groups of links. A group with a page of its own is a link that stays folded until the
+    reader is inside it, like a docs tree that opens where you are; its page is not repeated
+    among the children when it only introduces them. A group without a page is a plain heading
+    and always open. A link may carry sub-pages as a third item; they are listed only while the
+    reader is on the topic or one of its sub-pages."""
     def link(href, label):
         on = ' class="on"' if href == path else ''
         return f'<a{on} href="{href}">{label}</a>'
@@ -337,15 +340,27 @@ def sidebar(path, groups):
         if inside:
             html += '<ul class="sub">' + ''.join(f'<li>{link(h, l)}</li>' for h, l in subs) + '</ul>'
         return f'<li>{html}</li>'
+    def covers(entry):
+        href, _, *rest = entry
+        return path == href or any(path == h for h, _ in (rest[0] if rest else []))
+    def group(title, href, links):
+        if href is None:
+            return f'<li><span class="grp">{title}</span><ul>' + ''.join(item(e) for e in links) + '</ul></li>'
+        inside = path == href or any(covers(e) for e in links)
+        on = ' on' if path == href and not any(e[0] == href for e in links) else ''
+        html = f'<a class="grp{on}" href="{href}">{title}</a>'
+        if inside:
+            html += '<ul>' + ''.join(item(e) for e in links) + '</ul>'
+        return f'<li>{html}</li>'
     out, groups_html = [], []
-    for title, links in groups:
+    for title, href, links in groups:
         if title is None:
             if groups_html:
                 out.append('      <ul>' + ''.join(groups_html) + '</ul>\n')
                 groups_html = []
             out.append('      <ul class="plain">' + ''.join(item(e) for e in links) + '</ul>\n')
         else:
-            groups_html.append(f'<li><span class="grp">{title}</span><ul>' + ''.join(item(e) for e in links) + '</ul></li>')
+            groups_html.append(group(title, href, links))
     if groups_html:
         out.append('      <ul>' + ''.join(groups_html) + '</ul>\n')
     return ''.join(out)

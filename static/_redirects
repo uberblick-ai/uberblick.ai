@@ -8,3 +8,5 @@
 /docs/configuration /docs/cli/binding 301
 /docs/editor /docs/documents 301
 /docs/access /docs/cli/workspace 301
+/docs/mcp /docs/agents 301
+/docs/instructions /docs/agents 301
