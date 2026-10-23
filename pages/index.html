@@ -68,16 +68,26 @@
 <section class="blk" id="mcp">
 <div class="blk-h"><h2>An opinionated MCP: the right context, nothing more.</h2><a href="/docs/agents">Agents over MCP</a></div>
 <p class="blk-intro">An agent gets the pages its change needs without cluttering its context window. The server sorts the relevant from the irrelevant: it names the few pages tagged as guidance when the agent connects, the decisions linked to the issue come with one call, and search finds the rest. Implementation agents get pointers to the right pages and read them over the local MCP server. No prompt engineering, no context spamming, no hoping.</p>
-<div class="calls" role="img" aria-label="The MCP calls of one change: on connect the server points at two guidance pages; find_decisions for the issue returns the record in force; the agent reads the principles page and the record, searches for the block to change, and edits that one block. Three pages of fifty-two were in its context.">
-  <div class="cap"><span>One change, what the agent read</span><span>#2142 · Apply the retry limit</span></div>
-  <ol>
-    <li><span class="k">connect</span><span class="t">Workspace guidance: before your first write, read what applies with <code>get_doc</code>: Product principles, Writing pages</span><span class="r">2 pointers</span></li>
-    <li><span class="k">find_decisions</span><span class="t">#2142</span><span class="r">Retry limit on sync · in force</span></li>
-    <li><span class="k">get_doc</span><span class="t">Product principles</span><span class="r">1.9 KB</span></li>
-    <li><span class="k">get_doc</span><span class="t">Retry limit on sync</span><span class="r">0.8 KB</span></li>
-    <li><span class="k">search</span><span class="t">"retry"</span><span class="r">Sync: retry and backoff · 1 block</span></li>
-    <li><span class="k">edit_block</span><span class="t">Sync: retry and backoff › paragraph 4</span><span class="r ok">accepted</span></li>
-  </ol>
+<div class="issue" role="img" aria-label="A GitHub issue, #2142 Apply the retry limit, with a Read first section that names three workspace pages the implementing agent reads over MCP: the delivery report of 16 October, the decision record Retry limit on sync, and the page Sync: retry and backoff. Below: three pages of fifty-two in the context window, the other forty-nine stayed where they were.">
+  <div class="ihead"><span class="ititle">Apply the retry limit</span><span class="ino">#2142</span></div>
+  <div class="imeta"><span class="istate">Open</span><span>bk-one opened this just now</span><span class="ilbl">needs-preparation</span><span class="ilbl">priority:medium</span></div>
+  <div class="ibody">
+    <h4>What</h4>
+    <p>Sync stops after the second failed retry of the same request and reports the failure, instead of retrying until the timeout.</p>
+    <h4>Why</h4>
+    <p>Three of this week's wasted runs were third retries on the same failure. The retry limit was decided in May and never applied.</p>
+    <h4 class="read">Read first <small>over MCP, before the first write</small></h4>
+    <ul class="iread">
+      <li><span class="pg">Delivery report, 16 October</span><span class="note">the wasted runs, with the numbers</span><span class="id">b7e2a9c4</span></li>
+      <li><span class="pg">Retry limit on sync</span><span class="note">decision record · in force</span><span class="id">5d08f1e3</span></li>
+      <li><span class="pg">Sync: retry and backoff</span><span class="note">the page to change, paragraph 4</span><span class="id">9c41d2ab</span></li>
+    </ul>
+    <h4>Acceptance criteria</h4>
+    <ul class="icheck">
+      <li>A request that fails twice is not retried a third time, and the failure names the request.</li>
+      <li>The paragraph on Sync: retry and backoff says two, and the delivery report of the following week shows no third retries.</li>
+    </ul>
+  </div>
   <p class="sum"><b>3 pages of 52</b> in the context window. The other 49 stayed where they were.</p>
 </div>
 </section>

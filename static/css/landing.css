@@ -116,20 +116,33 @@ mark.sel { background: oklch(0.85 0.12 75 / 55%); color: inherit; border-radius:
 #term { min-height: 198px; }
 .blk .block { margin: 0; }
 
-/* The MCP call log: one change, the calls it made, what each one brought into context. */
-.calls { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); margin: 0 0 18px; overflow: hidden; }
-.calls .cap { display: flex; justify-content: space-between; gap: 12px; padding: 8px 14px; border-bottom: 1px solid var(--line); font: 500 12px var(--mono); color: var(--muted); letter-spacing: 0.02em; }
-.calls ol { list-style: none; margin: 0; padding: 4px 0; }
-.calls li { display: grid; grid-template-columns: 128px minmax(0, 1fr) auto; gap: 14px; align-items: baseline; padding: 7px 14px; font-size: 15.5px; line-height: 1.45; }
-.calls li + li { border-top: 1px solid color-mix(in oklch, var(--line), transparent 50%); }
-.calls .k { font: 500 13.5px var(--mono); color: var(--accent); }
-.calls .t code { font-size: 0.92em; }
-.calls .r { font: 500 13.5px var(--mono); color: var(--muted); text-align: right; white-space: nowrap; }
-.calls .r.ok { color: var(--fg); }
-.calls .sum { margin: 0; padding: 10px 14px; border-top: 1px solid var(--line); background: var(--tint); font-size: 15.5px; }
+/* A sample GitHub issue: the Read first section names the pages the implementing agent reads over MCP. */
+.issue { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); margin: 0 0 18px; overflow: hidden; }
+.issue .ihead { display: flex; align-items: baseline; gap: 10px; padding: 14px 16px 4px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.issue .ino { font: 500 15px var(--mono); color: var(--muted); }
+.issue .imeta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 0 16px 12px; font-size: 14px; color: var(--muted); border-bottom: 1px solid var(--line); }
+.issue .istate { font: 500 12.5px var(--mono); color: #fff; background: #1f883d; border-radius: 999px; padding: 2px 9px; }
+.issue .ilbl { font: 500 12.5px var(--mono); color: var(--fg); background: var(--tint); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+.issue .ibody { padding: 6px 16px 10px; font-size: 15.5px; line-height: 1.5; }
+.issue h4 { margin: 12px 0 4px; font-size: 15.5px; font-weight: 600; }
+.issue h4 small { font-weight: 400; font-size: 13.5px; color: var(--muted); margin-left: 6px; }
+.issue .ibody p { margin: 0 0 4px; }
+.issue h4.read { color: var(--accent); }
+.issue .iread { list-style: none; margin: 4px 0 8px; padding: 0; border-left: 3px solid var(--accent); }
+.issue .iread li { display: grid; grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto; gap: 10px; align-items: baseline; padding: 5px 12px; }
+.issue .iread li + li { border-top: 1px solid color-mix(in oklch, var(--line), transparent 50%); }
+.issue .iread .pg { font-weight: 600; }
+.issue .iread .pg::before { content: ""; display: inline-block; width: 11px; height: 14px; margin: 0 8px -2px 0; border: 1.5px solid currentColor; border-radius: 2px; opacity: 0.75; }
+.issue .iread .note { font: 400 14.5px var(--sans); color: var(--muted); }
+.issue .iread .id { font: 500 13px var(--mono); color: var(--muted); }
+.issue .icheck { margin: 2px 0 4px; padding: 0 0 0 2px; list-style: none; }
+.issue .icheck li { padding-left: 26px; position: relative; margin: 2px 0; }
+.issue .icheck li::before { content: ""; position: absolute; left: 2px; top: 5px; width: 13px; height: 13px; border: 1.5px solid var(--muted); border-radius: 3px; }
+.issue .sum { margin: 0; padding: 10px 16px; border-top: 1px solid var(--line); background: var(--tint); font-size: 15.5px; }
+@media (max-width: 640px) {
+  .issue .iread li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
 @media (max-width: 899px) {
-  .calls li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
-  .calls .r { text-align: left; white-space: normal; }
 }
 /* The ub-agents loop: four steps in a row, stacked on a phone. The row ends with a return arrow. */
 .flow { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); gap: 10px; align-items: stretch; margin: 0 0 18px; }
