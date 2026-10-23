@@ -12,7 +12,7 @@
 
 <section class="blk video" id="video">
 <div class="vframe" role="img" aria-label="Placeholder for the five-minute demo video"><span class="vplay" aria-hidden="true"></span><span class="vlabel">Five-minute demo · coming soon</span></div>
-<p class="vnote">Install, pin two pages, watch the first refusal, comment in the browser, hand the issue to ub-agents, read the pull request. Recorded live on the real product.</p>
+<p class="vnote">Not recorded yet. It will show one session on the real product: install, write a page, comment in the browser, hand the issue to ub-agents, read the pull request.</p>
 </section>
 
 <section class="blk" id="why"><h2>The docs folder is where context goes to die.</h2>
@@ -67,26 +67,29 @@
 
 <section class="blk" id="mcp">
 <div class="blk-h"><h2>An opinionated MCP: the right context, nothing more.</h2><a href="/docs/agents">Agents over MCP</a></div>
-<p class="blk-intro">An agent gets the pages its change needs without cluttering its context window. The server sorts the relevant from the irrelevant: it names the few pages tagged as guidance when the agent connects, the decisions linked to the issue come with one call, and search finds the rest. Implementation agents get pointers to the right pages and read them over the local MCP server. No prompt engineering, no context spamming, no hoping. This is context engineering for the whole team, not for one chat session.</p>
-<div class="issue" role="img" aria-label="A GitHub issue, #2142 Apply the retry limit, with a Read first section that names three workspace pages the implementing agent reads over MCP: the delivery report of 16 October, the decision record Retry limit on sync, and the page Sync: retry and backoff. Below: three pages of fifty-two in the context window, the other forty-nine stayed where they were.">
-  <div class="ihead"><span class="ititle">Apply the retry limit</span><span class="ino">#2142</span></div>
-  <div class="imeta"><span class="istate">Open</span><span>bk-one opened this just now</span><span class="ilbl">needs-preparation</span><span class="ilbl">priority:medium</span></div>
-  <div class="ibody">
-    <h4>What</h4>
-    <p>Sync stops after the second failed retry of the same request and reports the failure, instead of retrying until the timeout.</p>
-    <h4>Why</h4>
-    <p>Three of this week's wasted runs were third retries on the same failure. The retry limit was decided in May and never applied.</p>
-    <h4 class="read">Read first <small>over MCP, before the first write</small></h4>
-    <ul class="iread">
-      <li><span class="pg">Delivery report, 16 October</span><span class="note">the wasted runs, with the numbers</span><span class="id">b7e2a9c4</span></li>
-      <li><span class="pg">Retry limit on sync</span><span class="note">decision record · in force</span><span class="id">5d08f1e3</span></li>
-      <li><span class="pg">Sync: retry and backoff</span><span class="note">the page to change, paragraph 4</span><span class="id">9c41d2ab</span></li>
-    </ul>
-    <h4>Acceptance criteria</h4>
-    <ul class="icheck">
-      <li>A request that fails twice is not retried a third time, and the failure names the request.</li>
-      <li>The paragraph on Sync: retry and backoff says two, and the delivery report of the following week shows no third retries.</li>
-    </ul>
+<p class="blk-intro">An agent gets the pages its change needs without cluttering its context window. The server sorts the relevant from the irrelevant: it names the few pages tagged as guidance when the agent connects, the decisions linked to the issue come with one call, and search finds the rest. Implementation agents get pointers to the right pages and read them over the local MCP server. This is context engineering for the whole team, not for one chat session.</p>
+<div class="issue" role="img" aria-label="A GitHub issue, #2142 Apply the retry limit, open, filed by bk-one, with a Read first section that names three workspace pages the implementing agent reads over MCP: the delivery report of 16 October, the decision record Retry limit on sync, and the page Sync: retry and backoff. Below: three pages of fifty-two in the context window, the other forty-nine stayed where they were.">
+  <div class="ihead"><h3 class="ititle">Apply the retry limit <span class="ino">#2142</span></h3><span class="istate">Open</span></div>
+  <div class="icomment">
+    <div class="ctop"><span class="av" aria-hidden="true"></span><b>bk-one</b> opened just now<span class="member">Member</span></div>
+    <div class="ibody">
+      <p>Touches: sync</p>
+      <h4>What</h4>
+      <p>Sync stops after the second failed retry of the same request and reports the failure, instead of retrying until the timeout.</p>
+      <h4>Why</h4>
+      <p>Three of this week's wasted runs were third retries on the same failure. The retry limit was decided in May and never applied.</p>
+      <h4>Read first</h4>
+      <ul class="iread">
+        <li><span class="pg">Delivery report, 16 October</span> · the wasted runs, with the numbers</li>
+        <li><span class="pg">Retry limit on sync</span> · decision record, in force</li>
+        <li><span class="pg">Sync: retry and backoff</span> · the page to change, paragraph 4</li>
+      </ul>
+      <h4>Acceptance criteria</h4>
+      <ul class="icheck">
+        <li>A request that fails twice is not retried a third time, and the failure names the request.</li>
+        <li>The paragraph on Sync: retry and backoff says two, and the next delivery report shows no third retries.</li>
+      </ul>
+    </div>
   </div>
   <p class="sum"><b>3 pages of 52</b> in the context window. The other 49 stayed where they were.</p>
 </div>
@@ -95,38 +98,53 @@
 <section class="blk" id="ub-agents">
 <div class="blk-h"><h2>Works best with ub-agents.</h2><a href="https://agents.uberblick.ai">agents.uberblick.ai</a></div>
 <p class="blk-intro">Uberblick holds what the product should do; it does not track tasks. Delivery lives on GitHub, and <a href="https://agents.uberblick.ai">ub-agents</a> is the loop that runs it there: roles in a few lines of YAML, driven by labels, on Actions, with any agent and no server. Harness engineering and loop engineering, in other words, with a person on the loop. Every issue starts from the pages and every pull request brings them up to date. Retrospectives propose changes to the pages and to the loop's own rules; a person decides each one. It is how Uberblick itself is built, and <a href="/blog/2026/built-on-its-own-pages">we write down how that goes</a>.</p>
-<div class="tui" role="img" aria-label="The ub-agents terminal, agent tab, working issue 2142: it reads the issue, the harness protocols and the three pages named in the issue over MCP, thinks, edits the code and the tests, runs them, updates the page paragraph over MCP, commits and opens pull request 2143 labelled needs-review.">
-  <div class="tbar"><span class="tab on">1 Agent</span><span class="tab">2 Issue</span><span class="tab">3 Runs</span><span class="sep"></span><span class="tab u">Formatted</span><span class="tab">Raw (u)</span><button type="button" id="tuiReplay">Replay</button></div>
-  <div class="thead"><div class="t1"><span class="ino">⌥2142</span> Apply the retry limit</div><div class="t2">implementer · claude claude-opus-5-5 xhigh · attempt 1</div></div>
-  <ol class="tlog" id="tlog">
-    <li data-k="tool"><time>09:14:02</time><span class="l"><i>▸</i> <b>Bash</b> gh issue view 2142 --json title,body,labels</span><span class="r">ok</span></li>
-    <li data-k="think"><time>09:14:03</time><span class="l">The issue names three pages to read first and the paragraph to change. I'll read the harness, then the pages over MCP, before touching code.</span></li>
-    <li data-k="tool"><time>09:14:03</time><span class="l"><i>▸</i> <b>Read</b> AGENTS.md</span><span class="r">118 lines</span></li>
-    <li data-k="tool"><time>09:14:03</time><span class="l"><i>▸</i> <b>Read</b> .agents/protocols/implementation.md</span><span class="r">212 lines</span></li>
-    <li data-k="mcp"><time>09:14:05</time><span class="l"><i>▸</i> <b>uberblick</b> get_doc Delivery report, 16 October</span><span class="r">1.2 KB</span></li>
-    <li data-k="mcp"><time>09:14:05</time><span class="l"><i>▸</i> <b>uberblick</b> find_decisions #2142</span><span class="r">Retry limit on sync · in force</span></li>
-    <li data-k="mcp"><time>09:14:06</time><span class="l"><i>▸</i> <b>uberblick</b> get_doc Sync: retry and backoff</span><span class="r">0.9 KB · paragraph 4</span></li>
-    <li data-k="think"><time>09:14:09</time><span class="l">The decision says two retries. The page still says "until the timeout", and the report shows three third retries this week. The code reads MAX_RETRIES from the sync config with no default, so the loop runs until the deadline. Two files to change, one paragraph to update.</span></li>
-    <li data-k="tool"><time>09:14:09</time><span class="l"><i>▸</i> <b>Grep</b> MAX_RETRIES packages/sync/src</span><span class="r">2 files</span></li>
-    <li data-k="tool"><time>09:14:11</time><span class="l"><i>▸</i> <b>Edit</b> packages/sync/src/retry.ts</span><span class="r">+4 −2</span></li>
-    <li data-k="tool"><time>09:14:11</time><span class="l"><i>▸</i> <b>Edit</b> packages/sync/test/retry.test.ts</span><span class="r">+19</span></li>
-    <li data-k="tool"><time>09:14:12</time><span class="l"><i>▸</i> <b>Bash</b> mise run test packages/sync</span><span class="r">49 passed</span></li>
-    <li data-k="think"><time>09:14:40</time><span class="l">Tests green. The page has to say what the code now does, so the pull request carries the paragraph edit as well.</span></li>
-    <li data-k="mcp"><time>09:14:41</time><span class="l"><i>▸</i> <b>uberblick</b> edit_block Sync: retry and backoff › paragraph 4</span><span class="r">accepted</span></li>
-    <li data-k="tool"><time>09:14:43</time><span class="l"><i>▸</i> <b>Bash</b> git commit -m "sync: stop after the second failed retry (#2142)"</span><span class="r">3 files</span></li>
-    <li data-k="tool"><time>09:14:45</time><span class="l"><i>▸</i> <b>Bash</b> gh pr create --label needs-review</span><span class="r">#2143</span></li>
-    <li data-k="done"><time>09:14:45</time><span class="l">✓ done · 1 attempt · 3 pages read over MCP · pull request #2143 · needs-review</span></li>
-  </ol>
-</div>
-<div class="flow loop" role="img" aria-label="An issue is filed; the preparer links the pages it depends on; the implementer reads them over MCP and builds; the pull request carries a corpus update; the pages stay true and the next issue starts from them.">
-  <div class="step"><span class="k">issue</span><b>Filed with pointers</b><span>to the pages it depends on</span></div>
-  <span class="arr" aria-hidden="true"></span>
-  <div class="step"><span class="k">implementer</span><b>Reads them over MCP</b><span>then builds against them</span></div>
-  <span class="arr" aria-hidden="true"></span>
-  <div class="step"><span class="k">reviewer</span><b>Checks the result</b><span>against the pages, not the issue</span></div>
-  <span class="arr" aria-hidden="true"></span>
-  <div class="step ok"><span class="k">pull request</span><b>Updates the page</b><span>which block, what it now says</span></div>
-  <span class="arr back" aria-hidden="true"></span>
+<div class="tui" role="img" aria-label="The ub-agents terminal view. Left, the Work pane: issue 2142 appears under Eligible, moves to Running, and ends under Recent activity with its pull request. Right, the Agent tab of that run: it reads the issue, the harness protocols and the three pages named in the issue over MCP, about 750 tokens, thinks, edits the code and the tests, runs them, updates the page paragraph over MCP, commits and opens pull request 2143 labelled needs-review.">
+  <div class="twork">
+    <div class="ptitle">Work · pass complete</div>
+    <div class="sec" data-s="run"><div class="sh">Running · <span id="trunN">0</span></div>
+      <div class="row idle" id="tidle">Idle · nothing eligible for this launcher</div>
+      <div class="row" id="trun" hidden><span class="g" id="tspin">⠋</span><span class="ref"><em>⌥</em>2142</span><span class="tt">Apply the retry limit</span><span class="st" id="tel">00:00</span></div>
+      <div class="sub" id="trunsub" hidden>implementer · this launcher · attempt 1</div>
+    </div>
+    <div class="sec" data-s="elig" id="telig" hidden><div class="sh">Eligible · 1</div>
+      <div class="row"><span class="g">●</span><span class="ref"><em>⌥</em>2142</span><span class="tt">Apply the retry limit</span><span class="st">next</span></div>
+      <div class="sub">implementer</div>
+    </div>
+    <div class="sec" data-s="recent"><div class="sh">Recent activity · <span id="trecN">2</span> today</div>
+      <div class="row" id="tdone" hidden><span class="g">✓</span><span class="ref"><em>⌥</em>2142</span><span class="tt">Apply the retry limit</span><span class="st">#2143</span></div>
+      <div class="sub" id="tdonesub" hidden>implementer · 09:14 · needs-review</div>
+      <div class="row"><span class="g">✓</span><span class="ref"><em>⌥</em>2138</span><span class="tt">Count wasted runs in the delivery report</span><span class="st">merged</span></div>
+      <div class="sub">integrator · 08:52 · squash-merged</div>
+      <div class="row"><span class="g">✓</span><span class="ref"><em>⌥</em>2138</span><span class="tt">Count wasted runs in the delivery report</span><span class="st">approved</span></div>
+      <div class="sub">reviewer · 08:31</div>
+    </div>
+    <div class="pfoot">uberblick-ai/uberblick-2 · <span id="tact">idle</span></div>
+  </div>
+  <div class="tagent">
+    <div class="tbar"><span class="tab on">1 Agent</span><span class="tab">2 Issue</span><span class="tab">3 Runs</span><span class="sep"></span><span class="tab u">Formatted</span><span class="tab">Raw</span><button type="button" id="tuiReplay">Replay</button></div>
+    <div class="thead" id="thead" hidden><div class="t1"><span class="ino">⌥2142</span> Apply the retry limit</div><div class="t2">implementer · claude claude-opus-5-5 xhigh · attempt 1</div></div>
+    <p class="tempty" id="tempty">No run in progress.</p>
+    <ol class="tlog" id="tlog">
+      <li data-k="tool"><time>09:14:02</time><span class="l"><i>▸</i> <b>Bash</b> gh issue view 2142 --json title,body,labels</span></li>
+      <li data-k="think"><time>09:14:03</time><span class="l">The issue names three pages to read first and the paragraph to change. I'll read the harness, then the pages over MCP, before touching code.</span></li>
+      <li data-k="tool"><time>09:14:03</time><span class="l"><i>▸</i> <b>Read</b> AGENTS.md</span></li>
+      <li data-k="tool"><time>09:14:03</time><span class="l"><i>▸</i> <b>Read</b> .agents/protocols/implementation.md</span></li>
+      <li data-k="mcp"><time>09:14:05</time><span class="l"><i>▸</i> <b>mcp__uberblick__find_decisions</b> uberblick-ai/uberblick-2#2142</span><span class="r">1 record · ≈60 tokens</span></li>
+      <li data-k="mcp"><time>09:14:05</time><span class="l"><i>▸</i> <b>mcp__uberblick__get_doc</b> b7e2a9c4-1f36-4a8e-9d02-6c5e7b3a9f10</span><span class="r">Delivery report, 16 October · ≈310 tokens</span></li>
+      <li data-k="mcp"><time>09:14:06</time><span class="l"><i>▸</i> <b>mcp__uberblick__get_doc</b> 5d08f1e3-7a2b-4c6d-8e91-3f4a5b6c7d80</span><span class="r">Retry limit on sync · ≈180 tokens</span></li>
+      <li data-k="mcp"><time>09:14:06</time><span class="l"><i>▸</i> <b>mcp__uberblick__get_doc</b> 9c41d2ab-3e5f-4071-b8c2-1d6e9f0a2b34</span><span class="r">Sync: retry and backoff · ≈240 tokens</span></li>
+      <li data-k="think"><time>09:14:09</time><span class="l">The decision says two retries. The page still says "until the timeout", and the report shows three third retries this week. The code reads MAX_RETRIES from the sync config with no default, so the loop runs until the deadline. Two files to change, one paragraph to update.</span></li>
+      <li data-k="tool"><time>09:14:09</time><span class="l"><i>▸</i> <b>Grep</b> MAX_RETRIES</span></li>
+      <li data-k="tool"><time>09:14:11</time><span class="l"><i>▸</i> <b>Edit</b> packages/sync/src/retry.ts <em class="add">+4</em> <em class="del">−2</em></span></li>
+      <li data-k="tool"><time>09:14:11</time><span class="l"><i>▸</i> <b>Edit</b> packages/sync/test/retry.test.ts <em class="add">+20</em> <em class="del">−1</em></span></li>
+      <li data-k="tool" data-wait="1500" data-el="28"><time>09:14:12</time><span class="l"><i>▸</i> <b>Bash</b> mise run test packages/sync<span class="el"></span></span></li>
+      <li data-k="think"><time>09:14:40</time><span class="l">Tests green. The page has to say what the code now does, so the pull request carries the paragraph edit as well.</span></li>
+      <li data-k="mcp"><time>09:14:41</time><span class="l"><i>▸</i> <b>mcp__uberblick__edit_block</b> 9c41d2ab-3e5f-4071-b8c2-1d6e9f0a2b34</span><span class="r">paragraph 4 · accepted</span></li>
+      <li data-k="tool"><time>09:14:43</time><span class="l"><i>▸</i> <b>Bash</b> git commit -m "sync: stop after the second failed retry (#2142)"</span></li>
+      <li data-k="tool"><time>09:14:45</time><span class="l"><i>▸</i> <b>Bash</b> gh pr create --label needs-review</span></li>
+      <li data-k="done"><time>09:14:45</time><span class="l">✓ run finished</span></li>
+    </ol>
+  </div>
 </div>
 </section>
 
@@ -148,8 +166,8 @@
 <p class="blk-intro">As the editor shows it. The question is the title. The record on top is under review: a proposed answer, the report it rests on, and the RFC page where the discussion happens. The history below keeps every record on the topic, the answer in force and the ones it replaced, so nobody has to ask why twice.</p>
 <figure class="shot">
   <div class="bar"><span><b>What are supported devices?</b> · Web UI</span><span>decision</span></div>
-  <img class="l" src="/img/decision-light.png" width="1280" height="918" alt="A decision topic in the Uberblick editor: the question as the title, an open proposal marked Under review with its evidence and RFC linked, and a history with the answer in force and a superseded record.">
-  <img class="d" src="/img/decision-dark.png" width="1280" height="918" alt="The same decision topic in dark mode.">
+  <img class="l" src="/img/decision-light.png" width="1279" height="918" alt="A decision topic in the Uberblick editor, tagged devices and web-ui: the question as the title, an open proposal marked Under review with its report and RFC linked, and a history with the answer in force, We currently support only desktop and iPad resolutions, and a superseded record.">
+  <img class="d" src="/img/decision-dark.png" width="1279" height="918" alt="The same decision topic in dark mode.">
 </figure>
 </section>
 
@@ -177,24 +195,60 @@ ub mcp install claude">Copy</button></span></div>
 </section>
 <script>
 (() => {
-  const log = document.getElementById('tlog'), btn = document.getElementById('tuiReplay');
-  const items = [...log.children]; const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let run = 0, timers = [];
+  const $ = id => document.getElementById(id);
+  const log = $('tlog'), btn = $('tuiReplay'), items = [...log.children];
+  const idle = $('tidle'), run = $('trun'), runsub = $('trunsub'), elig = $('telig'), done = $('tdone'), donesub = $('tdonesub');
+  const head = $('thead'), empty = $('tempty'), spin = $('tspin'), el = $('tel'), runN = $('trunN'), recN = $('trecN'), act = $('tact');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FRAMES = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏';
+  let gen = 0, timers = [], spinner = 0;
   const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+  const secs = t => { const [h, m, s] = t.split(':').map(Number); return h * 3600 + m * 60 + s; };
+  const claim = secs('09:14:00');
+  const pad = n => String(n).padStart(2, '0');
+  const elapsed = t => { const d = secs(t) - claim; return `${pad(Math.floor(d / 60))}:${pad(d % 60)}`; };
+  // The Work pane walks idle → eligible → running → done; the Agent tab follows.
+  function state(s) {
+    const running = s === 'running', after = s === 'done';
+    elig.hidden = s !== 'eligible';
+    idle.hidden = running; run.hidden = runsub.hidden = !running; runN.textContent = running ? '1' : '0';
+    done.hidden = donesub.hidden = !after; recN.textContent = after ? '3' : '2';
+    head.hidden = !(running || after); empty.hidden = running || after;
+    act.textContent = running ? 'running assignment' : 'idle';
+    clearInterval(spinner);
+    if (running) spinner = setInterval(() => { spin.textContent = FRAMES[(FRAMES.indexOf(spin.textContent) + 1) % FRAMES.length]; }, 100);
+  }
   function show(li, id, after) {
-    li.classList.add('on');
-    const r = li.querySelector('.r'); if (r) { r.classList.remove('on'); later(() => { if (id === run) r.classList.add('on'); }, 350 + Math.random() * 400); }
+    li.classList.add('on'); el.textContent = elapsed(li.querySelector('time').textContent);
+    const r = li.querySelector('.r'); if (r) { r.classList.remove('on'); later(() => { if (id === gen) r.classList.add('on'); }, 350 + Math.random() * 400); }
+    log.scrollTop = log.scrollHeight;
     if (li.dataset.k === 'think') {
       const l = li.querySelector('.l'); const words = l.dataset.t.split(' '); l.textContent = ''; let k = 0;
-      (function word() { if (id !== run) return; if (k < words.length) { l.textContent += (k ? ' ' : '') + words[k++]; log.scrollTop = log.scrollHeight; later(word, 55 + Math.random() * 50); } else later(after, 700); })();
-    } else { log.scrollTop = log.scrollHeight; later(after, li.dataset.k === 'mcp' ? 650 : 520); }
+      (function word() { if (id !== gen) return; if (k < words.length) { l.textContent += (k ? ' ' : '') + words[k++]; log.scrollTop = log.scrollHeight; later(word, 55 + Math.random() * 50); } else later(after, 700); })();
+    } else if (li.dataset.el) {
+      const s = li.querySelector('.el'), total = +li.dataset.el; let n = 0;
+      (function tick() { if (id !== gen) return; n = Math.min(total, n + 4); s.textContent = ` · ${n}s`; if (n < total) later(tick, 450); else later(after, 400); })();
+    } else later(after, li.dataset.k === 'mcp' ? 650 : 520);
   }
-  function all() { items.forEach(li => { li.classList.add('on'); const l = li.querySelector('.l'); if (li.dataset.k === 'think') l.textContent = l.dataset.t; const r = li.querySelector('.r'); if (r) r.classList.add('on'); }); }
+  function all() {
+    state('done'); el.textContent = elapsed('09:14:45');
+    items.forEach(li => { li.classList.add('on'); const l = li.querySelector('.l'); if (li.dataset.k === 'think') l.textContent = l.dataset.t; const r = li.querySelector('.r'); if (r) r.classList.add('on'); const s = li.querySelector('.el'); if (s) s.textContent = ` · ${li.dataset.el}s`; });
+  }
   function play() {
-    timers.forEach(clearTimeout); timers = []; const id = ++run;
-    items.forEach(li => { li.classList.remove('on'); const r = li.querySelector('.r'); if (r) r.classList.remove('on'); });
+    timers.forEach(clearTimeout); timers = []; const id = ++gen;
+    items.forEach(li => { li.classList.remove('on'); const r = li.querySelector('.r'); if (r) r.classList.remove('on'); const s = li.querySelector('.el'); if (s) s.textContent = ''; });
+    log.scrollTop = 0; state('idle');
     if (reduce) { all(); return; }
-    let i = 0; (function next() { if (id !== run) return; if (i < items.length) show(items[i++], id, next); else later(play, 9000); })();
+    later(() => { if (id === gen) state('eligible'); }, 1000);
+    later(() => {
+      if (id !== gen) return; state('running'); el.textContent = '00:00';
+      let i = 0;
+      (function next() {
+        if (id !== gen) return;
+        if (i < items.length) { const li = items[i++]; later(() => show(li, id, next), +(li.dataset.wait || 0)); }
+        else later(() => { if (id !== gen) return; state('done'); later(play, 9000); }, 900);
+      })();
+    }, 2800);
   }
   items.forEach(li => { if (li.dataset.k === 'think') { const l = li.querySelector('.l'); l.dataset.t = l.textContent; } });
   btn.addEventListener('click', play);

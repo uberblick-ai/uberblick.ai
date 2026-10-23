@@ -1,78 +1,60 @@
 <head>
 <title>Set up a hub · Uberblick</title>
-<meta name="description" content="Share an Uberblick workspace with a team: run the hub with Docker, claim it with your GitHub account, make it reachable, upload the workspace you have, add members, and connect their computers.">
+<meta name="description" content="Share an Uberblick workspace with a team: start the hub with one line, claim it with your GitHub account, upload the workspace you have, add members, and connect their computers and agents.">
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <section class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / <a href="/guides">Guides</a></p>
   <h1>Set up a hub.</h1>
-  <p class="lede">A hub is the one piece of Uberblick that runs on a server. It keeps a copy of each shared workspace, admits members by their GitHub account, and passes changes between computers that each keep their own full copy. This guide takes a local workspace from <a href="/guides/first-workspace">Your first workspace</a> to one a team edits, in six steps. The <a href="/docs/hub">Run a hub</a> page has the reference.</p>
+  <p class="lede">A hub is the one piece of Uberblick that runs on a server. It keeps a copy of each shared workspace, admits members by their GitHub account, and passes changes between computers that each keep their own full copy. This guide takes a local workspace from <a href="/guides/first-workspace">Your first workspace</a> to one a team edits, in five steps. The <a href="/docs/hub">Run a hub</a> page has the reference.</p>
 </section>
 
 <div class="col">
 <section class="q" id="where"><h2>1. Pick a machine</h2>
-<p>Any Linux box with Docker Engine 28 or newer on x86_64, or a Mac with Docker Desktop for a hub that only your own computers use. A small virtual machine is plenty: the hub stores workspaces in SQLite and does no heavy work. Give it a name other computers can resolve. Tailscale is the easy answer for a team; a public host name with port 443 open works too.</p>
+<p>Any Linux box with Docker Engine 28 or newer on x86_64, or a Mac with Docker Desktop for a hub that only your own computers use. A small virtual machine is plenty: the hub stores workspaces in SQLite and does no heavy work. Give it a name other computers can resolve. <a href="https://tailscale.com">Tailscale</a> is the easy answer for a team; a public host name with port 443 open works too.</p>
 </section>
 
 <section class="q" id="start"><h2>2. Start the hub</h2>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="mkdir -p ~/uberblick-remote &amp;&amp; cd ~/uberblick-remote
-for f in compose.yml remote.env.example remote.https.yml remote.tailscale.yml; do
-  curl -fL -o $f https://github.com/uberblick-ai/uberblick-2/releases/download/hub-v0.4.8/$f
-done
-cp remote.env.example .env &amp;&amp; chmod 600 .env
-docker compose config --quiet &amp;&amp; docker compose up -d">Copy</button></div><pre><span class="p">$</span> mkdir -p ~/uberblick-remote &amp;&amp; cd ~/uberblick-remote
-<span class="p">$</span> for f in compose.yml remote.env.example remote.https.yml remote.tailscale.yml; do
-    curl -fL -o $f https://github.com/uberblick-ai/uberblick-2/releases/download/hub-v0.4.8/$f
-  done
-<span class="p">$</span> cp remote.env.example .env &amp;&amp; chmod 600 .env
-<span class="p">$</span> docker compose config --quiet &amp;&amp; docker compose up -d</pre></section>
-<p>Four files from one hub release and a private <code>.env</code> with <code>HUB_VERSION</code> set to that release; the <a href="https://github.com/uberblick-ai/uberblick-2/releases/latest">latest release</a> names it. The hub is now listening on <code>http://localhost:8080</code> of that machine and nowhere else. Workspaces and the claim live in named Docker volumes, so restarts and updates keep them.</p>
+<p>On the hub machine from step 1, not on your own computer. Set <code>HUB_HOST</code> to the name the other computers will use: the machine's Tailscale name, such as <code>machine.tailnet.ts.net</code>, or a public host name with port 443 open. One line does the rest.</p>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="HUB_HOST=hub.example.com /bin/bash -c &quot;$(curl -fsSL https://uberblick.ai/setup-hub.sh)&quot;">Copy</button></div><pre><span class="p">$</span> HUB_HOST=hub.example.com /bin/bash -c "$(curl -fsSL https://uberblick.ai/setup-hub.sh)"
+<span class="o">checked    curl, Docker Engine 28.3.1, Docker Compose 2.29.2, ports 8080 and 443 free
+release    hub-v0.4.9, four files into ~/uberblick-remote
+wrote      ~/uberblick-remote/.env (HUB_VERSION=0.4.9, WEB_HOST=hub.example.com)
+started    hub healthy on https://hub.example.com
+next       claim it from your own computer: ub auth login hub.example.com</span></pre></section>
+<p>The script checks Docker before it downloads anything, starts the newest hub release and waits until it is healthy. The hub serves TLS itself on that name. The same line run again later updates it. Variables, routes and the <code>ub-hub</code> commands are on <a href="/docs/hub">Run a hub</a>.</p>
 </section>
 
 <section class="q" id="claim"><h2>3. Claim it</h2>
-<p>Open <code>http://localhost:8080</code> on that machine and choose <strong>Sign in with GitHub</strong>, or run <code>ub auth login http://localhost:8080</code> from it. The first GitHub account that signs in claims the hub: it becomes hub admin and admin of the default workspace, and the login warns before the approval. Nothing else can claim it afterwards, so do this before you open the hub to the network. After the claim, login prints the <code>ub workspace use</code> command for the default workspace. Further hub admins are appointed on the host with <code>docker compose exec hub ub-hub hub-admin add &lt;github-login&gt;</code>.</p>
-</section>
-
-<section class="q" id="reach"><h2>4. Make it reachable</h2>
-<p>Set one route in <code>.env</code> and run <code>docker compose up -d</code> again.</p>
-<div class="tablewrap"><table>
-  <thead><tr><th>Route</th><th>In <code>.env</code></th></tr></thead>
-  <tbody>
-    <tr><td>Tailscale, recommended (Linux)</td><td><code>WEB_HOST=machine.tailnet.ts.net</code> and <code>TAILSCALE_IP</code> from <code>tailscale ip -4</code></td></tr>
-    <tr><td>A public host name</td><td><code>WEB_HOST=hub.example.com</code>, with port 443 open</td></tr>
-  </tbody>
-</table></div>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="docker compose config --quiet &amp;&amp; docker compose up -d
-docker compose exec hub ub-hub status">Copy</button></div><pre><span class="p">$</span> docker compose config --quiet &amp;&amp; docker compose up -d
-<span class="p">$</span> docker compose exec hub ub-hub status</pre></section>
-<p>The hub serves TLS itself on the host name you gave it. Clients refuse an unencrypted hub unless it runs on the same machine, so there is no insecure mode to forget to turn off.</p>
-</section>
-
-<section class="q" id="promote"><h2>5. Upload the workspace you have</h2>
-<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="cd ~/Projects/my-product
-ub auth login https://hub.example.com
-ub workspace promote https://hub.example.com">Copy</button></div><pre><span class="p">$</span> cd ~/Projects/my-product
-<span class="p">$</span> ub auth login https://hub.example.com
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth login hub.example.com">Copy</button></div><pre><span class="p">$</span> ub auth login hub.example.com
 <span class="o">hub        https://hub.example.com
 open       https://github.com/login/device
 code       WDJB-MJHT
 waiting for approval…
-signed in  octocat on https://hub.example.com</span>
-<span class="p">$</span> ub workspace promote https://hub.example.com
+this hub has no admin yet; the account that approves becomes its admin
+signed in  octocat on https://hub.example.com, hub admin
+default workspace: ub workspace use https://hub.example.com/8a1f3c5e-2d4b-4e6f-9a0c-1b2d3e4f5a6b</span></pre></section>
+<p>From your own computer. The first GitHub account that signs in claims the hub: it becomes hub admin and admin of the default workspace, and the login warns before the approval. Nothing else can claim it afterwards, so do this right after the hub is up.</p>
+</section>
+
+<section class="q" id="promote"><h2>4. Upload the workspace you have</h2>
+<section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="cd ~/Projects/my-product
+ub workspace promote hub.example.com">Copy</button></div><pre><span class="p">$</span> cd ~/Projects/my-product
+<span class="p">$</span> ub workspace promote hub.example.com
 <span class="o">uploading  My product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f) to https://hub.example.com
 verified   14 documents, including archived ones
 promoted   My product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f, https://hub.example.com)
 wrote      ~/Projects/my-product/.uberblick.json
 share link: https://hub.example.com/3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f
 commit .uberblick.json so teammates only need ub auth login</span></pre></section>
-<p>Back on your own computer. Promote uploads the local copy as it is, same id, same history, archived pages included, verifies the upload, and only then rewrites the binding. Interrupted? Run it again; it resumes. Commit the changed <code>.uberblick.json</code> so the repository points everyone at the shared copy. Starting from nothing instead? The hub comes with a default workspace; its id is shown after the claim.</p>
+<p>Still on your own computer, in the project directory, signed in since the claim. Promote uploads the local copy as it is, same id, same history, archived pages included, verifies the upload, and only then rewrites the binding. Interrupted? Run it again; it resumes. Commit the changed <code>.uberblick.json</code> so the repository points everyone at the shared copy. Starting from nothing instead? The hub comes with a default workspace; the claim printed its <code>ub workspace use</code> line.</p>
 </section>
 
-<section class="q" id="members"><h2>6. Add people and connect their computers</h2>
+<section class="q" id="members"><h2>5. Add people and connect their computers</h2>
 <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace member add dana">Copy</button></div><pre><span class="p">$</span> ub workspace member add dana
 <span class="o">Grant access on https://hub.example.com to workspace 3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f for "dana" (GitHub account 480938) as member? [y/N] y
 added "dana" (GitHub account 480938) as member</span></pre></section>
-<p>Members are GitHub logins; there are no Uberblick accounts. A member reads and writes everything in the workspace, from the browser and over MCP, and a workspace admin also manages members. Then each person, on their computer, in the cloned repository:</p>
+<p>Also from your own computer, in the project directory: the command talks to the hub the directory is bound to, so nothing runs on the hub machine. Members are GitHub logins; there are no Uberblick accounts. A member reads and writes everything in the workspace, from the browser and over MCP, and a workspace admin also manages members. Then each person, on their computer, in the cloned repository:</p>
 <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub auth login https://hub.example.com
 ub workspace use https://hub.example.com/3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f
 ub open">Copy</button></div><pre><span class="p">$</span> ub auth login https://hub.example.com
@@ -82,7 +64,7 @@ using      My product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f, https://hub.example
 wrote      ~/Projects/my-product/.uberblick.json
 open it with: ub open</span>
 <span class="p">$</span> ub open</pre></section>
-<p>With the committed <code>.uberblick.json</code> in the clone, the middle command is not even needed: <code>ub auth login</code> reads the hub from the file. Each computer now has its own SQLite file and works offline; the hub merges what comes back. Agents need nothing extra: an MCP server started in the directory uses the computer's login. A server that runs agents, such as an Actions runner, signs in once like any other computer and can be revoked on its own.</p>
-<p class="small">Keeping it running, backups and updates: <a href="/docs/hub">Run a hub</a>. Roles: <a href="/docs/cli/workspace#member">ub workspace member</a>. Devices and signing out: <a href="/docs/cli/auth">ub auth</a>.</p>
+<p>With the committed <code>.uberblick.json</code> in the clone, the middle command is not even needed: <code>ub auth login</code> reads the hub from the file. Each computer now has its own SQLite file and works offline; the hub merges what comes back. Agents need nothing extra: an MCP server started in the directory uses the computer's login. A server that runs agents, such as an Actions runner, signs in once like any other computer and can be revoked on its own. An agent that runs elsewhere, in a cloud session or a hosted assistant, needs no <code>ub</code> at all: the hub serves the same MCP tools at <code>https://hub.example.com/mcp/&lt;workspace-id&gt;</code>; the person adds that URL to their client, signs in with GitHub in the browser, and the connection appears in their device list, where it is revoked like a computer.</p>
+<p class="small">Routes, <code>ub-hub</code>, endpoints and updates: <a href="/docs/hub">Run a hub</a>. Roles: <a href="/docs/cli/workspace#member">ub workspace member</a>. Devices and signing out: <a href="/docs/cli/auth">ub auth</a>.</p>
 </section>
 </div>

@@ -109,7 +109,7 @@ SKELETON = """<!doctype html>
 {body}
 {about}  </main>
 </div>
-<footer class="foot">
+<footer class="foot{solo}">
   <div><h3>Projects</h3><ul>
     <li><a href="/">Uberblick</a></li>
     <li><a href="https://agents.uberblick.ai">ub-agents</a></li>
@@ -166,11 +166,6 @@ LEGACY_LOGIN = '    <a class="legacy" href="/sign-in">Legacy login</a>\n'
 ABOUT = """    <section class="blk about" id="about">
       <h2>Who builds this.</h2>
       <p>Uberblick, ub-agents and the small libraries beside them, such as wireframe and ablauf, are made by a team in Berlin that likes to find out how far AI engineering can go. What holds up in our own work becomes a framework and a few products that run on GitHub alone, so a team no longer needs Notion, Linear or Jira beside it. Take them as a starting point for your own variant. <a href="/docs/motivation">Why each of them exists</a>.</p>
-      <div class="cols">
-        <div><h3>Docs</h3><ul><li><a href="/docs/install">Install</a></li><li><a href="/docs/workspaces">Workspaces</a></li><li><a href="/docs/documents">Documents</a></li><li><a href="/docs/hub">Run a hub</a></li><li><a href="/docs/cli">CLI reference</a></li><li><a href="/docs/faq">FAQ</a></li></ul></div>
-        <div><h3>Agents</h3><ul><li><a href="/docs/agents">Agents over MCP</a></li><li><a href="/docs/guidance">Guidance pages</a></li><li><a href="/docs/decisions">Decision records</a></li><li><a href="https://agents.uberblick.ai">ub-agents</a></li><li><a href="https://skills.uberblick.ai">Skills</a></li></ul></div>
-        <div><h3>Project</h3><ul><li><a href="/blog">Blog</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2/blob/main/CHANGELOG.md">Changelog</a></li><li><a href="/guides">Guides</a></li><li><a href="/compare">Compare</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2">GitHub</a></li><li><a href="https://github.com/uberblick-ai/uberblick-2/blob/main/SECURITY.md">Security</a></li></ul></div>
-      </div>
     </section>
 """
 
