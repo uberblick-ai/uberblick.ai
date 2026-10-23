@@ -56,7 +56,7 @@ Ctrl-C to stop.</span></pre></section>
 </section>
 
 <section class="q" id="more"><h2>More than one</h2>
-<p>A workspace is a project's, not the machine's, so a second project gets a second workspace: run <code>ub workspace create</code> in its directory and a second SQLite file appears next to the first. Two projects can also share one workspace: copy the binding file, or run <code>ub workspace use 3f0c2a1e</code> with the id, or a unique prefix of it, of a workspace this machine already has.</p>
+<p>A workspace belongs to a project, not to the machine. A second project gets its own: run <code>ub workspace create</code> in its directory and a second SQLite file appears next to the first. Two projects can also share one workspace: copy the binding file, or run <code>ub workspace use 3f0c2a1e</code> with the id, or a unique prefix of it, of a workspace this machine already has.</p>
 <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace list
 ub status">Copy</button></div><pre><span class="p">$</span> ub workspace list
 <span class="o">* 3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f | My product       | local
@@ -69,14 +69,14 @@ account     none needed for a local workspace
 chosen by   project config in ~/Projects/my-product
 stored in   ~/.local/share/uberblick/3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f.sqlite
 problems    none</span></pre></section>
-<p><code>ub workspace list</code> is one row per copy on this computer, the one this directory uses marked. <code>ub status</code> says where that selection came from. <code>ub workspace fork</code> copies the bound workspace into a new file with a new id and binds the directory to the copy, which is how you try a restructuring nobody else sees.</p>
+<p><code>ub workspace list</code> is one row per copy on this computer, the one this directory uses marked. <code>ub status</code> says where that selection came from.</p>
 </section>
 
 <section class="q" id="remove"><h2>Remove one</h2>
 <section class="block terminal"><div class="cap"><span>Terminal</span><button type="button" data-copy="ub workspace remove 3f0c">Copy</button></div><pre><span class="p">$</span> ub workspace remove 3f0c
 <span class="o">Delete this computer's copy of workspace 3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f? This is the only copy of this local-only workspace. [y/N] y
 removed 3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f from this computer</span></pre></section>
-<p>Removal deletes this computer's file and nothing else. A workspace that lives on a hub is fetched again with <code>ub workspace use</code> and the link; a local-only workspace is gone, which is why the command asks. It refuses while this directory still uses the workspace or <code>ub open</code> serves it, so switch away and stop <code>ub open</code> first, and restart any agent that had the workspace open, because their MCP servers refuse to write to a removed workspace. The binding file stays; delete it or point it elsewhere.</p>
+<p>Removal deletes this computer's file and nothing else. A workspace that lives on a hub is fetched again with <code>ub workspace use</code> and the link; a local-only workspace is gone, which is why the command asks. It refuses while this directory still uses the workspace or <code>ub open</code> serves it, so switch away and stop <code>ub open</code> first, and restart any agent that had the workspace open, because their MCP servers refuse to write to a removed workspace. The binding file stays; delete it or point it elsewhere. To remove a workspace from the hub itself, use the web UI.</p>
 </section>
 
 <section class="q" id="share"><h2>How to grant others access</h2>
