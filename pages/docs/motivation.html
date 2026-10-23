@@ -11,11 +11,14 @@
 <article class="col">
   <section class="q" id="premise"><h2>The premise</h2>
   <p>People and coding agents now work in the same codebase. Agents are only as good as the context they get: what the product should do, what was decided and why, what the numbers say. Most of that lives in local files and never gets shared. What is shared sits in tools that were not built for agents or MCP.</p>
+  <p>The same context has three readers: the agent building the change, the engineer running it, and the product manager who planned it. Each wants it in a different form. The agent wants a few exact blocks pulled into its context window and nothing else. The engineer wants to check at a glance what the agent read and what it wrote. The product manager wants to read, comment and decide. One shared workspace, with a native interface for each.</p>
   <p>Our bet: one place for delivery, GitHub, and context that agents and people can both reach, each in the form that suits them. GitHub has the work. It lacks a home for the reasoning and the records. That is what we build, so a team can run on GitHub alone.</p>
   </section>
 
   <section class="q" id="pain"><h2>The pain</h2>
   <p>We started where everyone starts, with Markdown files in the repo. They went stale. Plans drafted in an agent session on one laptop died on that laptop. What agents wrote was often a wall of text. Then the files began to fill up every agent's context, and we caught ourselves writing index pages and a glossary so an agent could find its way through our own notes. That was the moment something felt wrong: we were building a wiki by hand, for machines.</p>
+  <p>Decisions hurt most. An agent that does not know a question was settled reopens it in code, with a plan and good arguments. We re-litigated the same choices every few weeks because the answer lived in a chat log on somebody's laptop. Numbers had the same problem: the report with the figures was a screenshot in a pull request, and the next report started from zero.</p>
+  <p>And every run starts cold. Agents have no memory, only what they are given, so the shape of what they are given decides the quality of the work. Giving them everything does not work; the context window fills with what does not matter. A short curated list that applies to everything, and the rest pulled by the change, does.</p>
   </section>
 
   <section class="q" id="three"><h2>What we built</h2>
