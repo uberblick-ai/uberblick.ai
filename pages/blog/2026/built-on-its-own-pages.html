@@ -28,7 +28,7 @@
     <thead><tr><th>1 to 21 October</th><th>Count</th></tr></thead>
     <tbody>
       <tr><td>Issues the loop closed with a merged pull request</td><td>389</td></tr>
-      <tr><td>Of those, merged without a person stepping in</td><td>193</td></tr>
+      <tr><td>Of those, autonomous as defined below</td><td>193</td></tr>
       <tr><td>Times the loop stopped and waited for a person</td><td>185</td></tr>
       <tr><td>Agent runs started</td><td>2,599</td></tr>
       <tr><td>Of those, wasted</td><td>220</td></tr>
@@ -49,17 +49,17 @@
     </svg>
     <figcaption>Delivery report in the Uberblick workspace, collection days, 1 to 21 October 2026, read 23 October.</figcaption>
   </figure>
-  <p>Autonomous follows the delivery report's definition: the integrator merged the delivery with no wasted run, no stop and no notice that a person had to act. A reviewer sending the work back still counts; a wasted run does not, which is why the stops in the table are fewer than the deliveries that were not autonomous. A day with five deliveries swings the line. By week it reads 29% (1 to 4 October), 45%, 54% and 74% (19 to 21 October).</p>
+  <p>Autonomous follows the delivery report's definition: the integrator merged the delivery with no wasted run, no stop and no notice that a person had to act. A reviewer sending the work back still counts; a wasted run does not. Stops are counted separately, as events. A day with five deliveries swings the line. By week it reads 29% (1 to 4 October), 45%, 54% and 74% (19 to 21 October).</p>
   </section>
 
   <section class="q" id="retros"><h2>Retros, and autonomy rising slowly</h2>
-  <p>It was clear that the first runs would have errors, and they did. A branch's code migrated the shared workspace copy, reviews ran on heads that had moved on, runs sat for a quarter of an hour on a runner that was still installing its libraries. That is why we added retrospectives to the loop. When a run lost something real, the agent posts one short paragraph: the cost, the cause, and the smallest change that would have prevented it. Two from the implementer, as the agent wrote them.</p>
-  <p>On the <a href="https://github.com/uberblick-ai/uberblick-2/issues/1831">Hocuspocus upgrade</a> the preparation had guessed what the upstream release changed instead of reading it, because headless runs could not reach the package registry. <a href="https://github.com/uberblick-ai/uberblick-2/discussions/1015#discussioncomment-19001332">The retro</a>:</p>
+  <p>It was clear that the first runs would have errors, and they did. Branch code migrated the shared workspace copy, reviewers checked commits that had moved on, runs waited a quarter of an hour for a runner to install its libraries. That is why we added retrospectives to the loop. When a run lost something real, the agent posts one short paragraph: the cost, the cause, and the smallest change that would have prevented it. Two from the implementer, as the agent wrote them.</p>
+  <p>On the <a href="https://github.com/uberblick-ai/uberblick-2/issues/1831">Hocuspocus upgrade</a> the preparation had missed a second change in the upstream release, how the library rejects a login, because headless runs could not read the package registry and had guessed instead. The agent stopped and sent the issue back. <a href="https://github.com/uberblick-ai/uberblick-2/discussions/1015#discussioncomment-19001332">The retro</a>:</p>
   <blockquote><p>The Hocuspocus upgrade needs another preparation pass because the scope covered awareness removal but missed the close-then-throw authentication-refusal change in the same upstream lifecycle update. The implementation is retained, but handoff stopped at that contract gap. Checking late refusal delivery through the composed admission suite during dependency characterization would have exposed the scope choice before implementation.</p></blockquote>
-  <p>The next day <a href="https://github.com/uberblick-ai/uberblick-2/pull/2036">a change to the loop's permissions</a> let preparers read the registry and the release notes before writing the contract.</p>
-  <p>On <a href="https://github.com/uberblick-ai/uberblick-2/issues/1062">#1062</a> a colour fix that was correct in the tokens would have nearly hidden the terminal controls, so the agent threw its own prototype away. <a href="https://github.com/uberblick-ai/uberblick-2/discussions/1015#discussioncomment-18724627">The retro</a>:</p>
+  <p>On 21 October <a href="https://github.com/uberblick-ai/uberblick-2/pull/2036">a change to the loop's permissions</a> let preparers read the registry and the release notes before writing the contract.</p>
+  <p>On <a href="https://github.com/uberblick-ai/uberblick-2/issues/1062">#1062</a> two parts of the UI shared a text colour. A fix that was right for one would have nearly hidden the other's controls, so the agent threw its own prototype away and sent the issue back. <a href="https://github.com/uberblick-ai/uberblick-2/discussions/1015#discussioncomment-18724627">The retro</a>:</p>
   <blockquote><p>The rendered verification for #1062 found a contract gap after a panel utility prototype had begun: enabled code-copy text uses shared muted ink at 60% opacity, while terminal controls use that same ink over a fixed dark sibling screen. The token-only fix for the first nearly hides the second, so the run returned the issue and discarded its prototype. For future shared-ink changes, preparation should include the rendered consumers' opacity and overlapping grounds when bounding scope; ancestor-only token ratios missed the necessary fixed-ground consumer correction here.</p></blockquote>
-  <p>Nobody reads three hundred retros by hand. A <a href="https://skills.uberblick.ai/skills/ub-agents-deliver-report">skill evaluates the day's deliveries</a> and retros every morning and files issues to improve the loop; a person decides each one. More on that in a later note.</p>
+  <p>Nobody reads every retro by hand. A <a href="https://skills.uberblick.ai/skills/ub-agents-deliver-report">skill evaluates the day's deliveries</a> and retros every morning and files issues to improve the loop; a person decides each one. More on that in a later note.</p>
   <p>Then we saw a slight increase in autonomy. Not because the models changed in those weeks, but because we got better at describing the issues, and because the documents and the decision records the agents read got better with every retro.</p>
   </section>
 
@@ -75,7 +75,7 @@
   </section>
 
   <section class="q" id="next"><h2>Next</h2>
-  <p>The next notes go one level down: how the server makes an agent read the pages before it writes, and where that held and where it did not; whether a decision record written by an agent and approved by a person keeps a question closed across the runs that follow; and the retro loop itself, the part we are least sure of.</p>
+  <p>The next notes go one level down: how the server makes an agent read the pages before it writes, and where that held; whether a decision record written by an agent and approved by a person keeps a question closed across later runs; and the retro loop itself, the part we are least sure of.</p>
   <p>If you want to try this on your own repository: <a href="/guides/install">install Uberblick</a>, follow <a href="/guides/first-ten-minutes">your first ten minutes</a>, then add <a href="https://agents.uberblick.ai">ub-agents</a>.</p>
   </section>
 </article>
