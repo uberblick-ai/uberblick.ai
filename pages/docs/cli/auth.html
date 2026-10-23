@@ -6,7 +6,7 @@
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / <a href="/docs/cli">CLI reference</a></p>
   <h1><code>ub auth</code></h1>
-  <p class="lede"><code>ub auth</code> signs this computer in to a hub so it can sync shared workspaces. A local workspace needs no sign-in. No command ever starts a login on its own: one that needs it stops and names <code>ub auth login</code>.</p>
+  <p class="lede"><code>ub auth</code> signs this computer in to a hub so it can sync shared workspaces. A local workspace needs no sign-in. The login dialog is never opened automatically, only by <code>ub auth login</code>. A command that needs a login asks you to run that step.</p>
 </div>
 <article class="col">
 
@@ -18,7 +18,7 @@ commands:
   login [hub]            # Sign in to a hub with GitHub
   status [hub] [--json]  # Check the stored login and current hub administration
   logout [hub]           # Sign this computer out of a hub; --all-devices signs out all of yours</pre></section>
-  <p>A bare <code>ub auth</code> prints this help and does nothing. Each subcommand takes a hub address; without one it uses the hub of this project's binding. A hub on another computer must be <code>https://</code> or <code>wss://</code>; a cleartext address is refused before anything is sent, with the secure form named.</p>
+  <p>Each subcommand takes a hub address; without one it uses the hub of this project's binding. A hub on another computer must be <code>https://</code> or <code>wss://</code>; a cleartext address is refused before anything is sent, with the secure form named.</p>
   </section>
 
   <section class="q" id="login"><h2>login</h2>

@@ -41,7 +41,7 @@ ub workspace use https://hub.example.com/3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f">C
 using      Acme product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f, https://hub.example.com)
 wrote      ~/Projects/acme/.uberblick.json
 open it with: ub open</span></pre></section>
-  <p><code>ub workspace use</code> takes a hub link with the workspace id as its last segment, or an id of a workspace this machine already has. It fetches the whole workspace and only then writes the binding. With a committed <code>.uberblick.json</code> in the clone, <code>ub auth login</code> alone is enough. It never starts a sign-in and never merges two workspaces. Someone has to have granted you access first: <a href="/docs/cli/workspace#member">ub workspace member</a>.</p>
+  <p><code>ub workspace use</code> takes a hub link with the workspace id as its last segment, or an id of a workspace this machine already has. It fetches the whole workspace and only then writes the binding. With a committed <code>.uberblick.json</code> in the clone, <code>ub auth login</code> alone is enough. It asks you to run <code>ub auth login</code> when the login is missing, and never merges two workspaces. Someone has to have granted you access first: <a href="/docs/cli/workspace#member">ub workspace member</a>.</p>
   </section>
 
   <section class="q" id="list"><h2>See what this machine has</h2>

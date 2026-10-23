@@ -22,7 +22,7 @@ commands:
   fork             # Create an independent local copy with a new workspace UUID
   promote &lt;hub&gt;    # Promote a local workspace to a remote hub
   member &lt;command&gt; # Grant and manage access to a workspace on a hub (admins only)</pre></section>
-  <p>A bare <code>ub workspace</code> prints this help and never acts. <code>create</code>, <code>use</code>, <code>fork</code> and <code>promote</code> write the project's <code>.uberblick.json</code>; what that file holds and how it is found is on <a href="/docs/cli/binding">Project binding</a>.</p>
+  <p><code>create</code>, <code>use</code>, <code>fork</code> and <code>promote</code> write the project's <code>.uberblick.json</code>; what that file holds and how it is found is on <a href="/docs/cli/binding">Project binding</a>.</p>
   </section>
 
   <section class="q" id="create"><h2>create</h2>
@@ -48,7 +48,7 @@ open it with: ub open</span></pre></section>
 wrote      ~/Projects/notes/.uberblick.json
 previous   Acme product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f, https://hub.example.com)
 switch back with: ub workspace use 3f0c2a1e</span></pre></section>
-  <p>Selects this project's workspace and writes the binding. An id, or a unique prefix of one, selects a copy this computer already has. A hub link, <code>https://hub.example.com/&lt;workspace-id&gt;</code>, fetches the workspace from that hub first; it needs a prior <a href="/docs/cli/auth">ub auth login</a> and says so instead of starting one. A document address from the browser is not a workspace link. Two workspaces are never merged, and the browser's workspace switcher changes only the view; this binding decides where agents write.</p>
+  <p>Selects this project's workspace and writes the binding. An id, or a unique prefix of one, selects a copy this computer already has. A hub link, <code>https://hub.example.com/&lt;workspace-id&gt;</code>, fetches the workspace from that hub first; it needs a prior <a href="/docs/cli/auth">ub auth login</a> and asks you to run it when it is missing. A document address from the browser is not a workspace link. Two workspaces are never merged, and the browser's workspace switcher changes only the view; this binding decides where agents write.</p>
   </section>
 
   <section class="q" id="fork"><h2>fork</h2>
@@ -70,7 +70,7 @@ promoted   My Workspace (b3eea2f9-a8dc-40f2-a3d9-b27742620b1f, https://hub.examp
 wrote      ~/Projects/notes/.uberblick.json
 share link: https://hub.example.com/b3eea2f9-a8dc-40f2-a3d9-b27742620b1f
 commit .uberblick.json so teammates only need ub auth login</span></pre></section>
-  <p>Uploads the local workspace to a hub as it is: same id, same history, archived documents included. The upload is verified before the project is switched to the hub copy. It needs a sign-in and the account must be a hub admin; the uploader becomes the workspace's admin. Without a sign-in nothing is uploaded and the workspace stays local. Interrupted? Run it again and it resumes. Promote is not a switch, so there is no switch-back line; it prints the share link to pass on.</p>
+  <p>Uploads the local workspace to a hub as it is: same id, same history, archived documents included. The upload is verified before the project is switched to the hub copy. It needs a sign-in, which it asks you to run when missing, and the account must be a hub admin; the uploader becomes the workspace's admin. Without a sign-in nothing is uploaded and the workspace stays local. Interrupted? Run it again and it resumes. Promote is not a switch, so there is no switch-back line; it prints the share link to pass on.</p>
   </section>
 
   <section class="q" id="member"><h2>member</h2>
