@@ -10,7 +10,7 @@
   <p class="crumb"><a href="/">Uberblick</a> / <a href="/blog">Blog</a> / Building note</p>
   <h1>Built on its own pages: how we're building Uberblick with Uberblick</h1>
   <p class="byline"><time datetime="2026-10-23">2026-10-23</time> · Ben · <span class="tag">Building note</span></p>
-  <p class="lede">We are starting a series on how we build Uberblick with Uberblick. Not because the product is finished, but because the way it is built is the point: issues on GitHub, agents in four roles, a workspace of pages that say what the product should do, and one person on the loop. This first note says where that came from, what three weeks of it produced, and what we learned.</p>
+  <p class="lede">Uberblick is built with Uberblick: issues on GitHub, agents in four roles, a workspace of pages that say what the product should do, and one person on the loop. Not because the product is finished, but because the way it is built is the point. This note says where that came from, what three weeks of it produced, and what we learned.</p>
 </div>
 <article class="col">
 
@@ -21,7 +21,7 @@
   </section>
 
   <section class="q" id="three-weeks"><h2>Three weeks, one engineer</h2>
-  <p>The loop started around the beginning of October. Three weeks later, with mainly one engineer working on all of this, we are pretty close to autonomy. Almost everything you see here was built by that loop: the editor, the CLI, the MCP server, the hub, this website.</p>
+  <p>The loop started around the beginning of October. Three weeks later, with mainly one engineer working on all of this, we are pretty close to autonomy. Almost everything you see here was built by that loop: the editor, the CLI, the MCP server, the hub, this website. One piece of evidence from this week: the document history browser was designed on a workspace page, <a href="https://github.com/uberblick-ai/uberblick-2/issues/2214">issue #2214</a> was cut from that page, and the loop merged it as <a href="https://github.com/uberblick-ai/uberblick-2/pull/2222">PR #2222</a> four hours later. How we get from idea to merged pull request is a note of its own.</p>
   <p>The loop is <code>ub-agents</code> on GitHub Actions: four roles in a few lines of YAML, steered by labels. A preparer writes scope and criteria into the issue, an implementer codes and opens the pull request, a reviewer reviews the exact head, an integrator merges. We run Claude Code and Codex side by side. Every run has the agent's local copy of the Uberblick workspace available through the MCP server, so the pages are within reach whether or not someone pasted them into the issue.</p>
   <p>The numbers below come from the delivery report in our workspace, 1 to 21 October, every day of it with a record.</p>
   <div class="tablewrap"><table>
@@ -59,7 +59,7 @@
   <p>On 21 October <a href="https://github.com/uberblick-ai/uberblick-2/pull/2036">a change to the loop's permissions</a> let preparers read the registry and the release notes before writing the contract.</p>
   <p>On <a href="https://github.com/uberblick-ai/uberblick-2/issues/1062">#1062</a> two parts of the UI shared a text colour. A fix that was right for one would have nearly hidden the other's controls, so the agent threw its own prototype away and sent the issue back. <a href="https://github.com/uberblick-ai/uberblick-2/discussions/1015#discussioncomment-18724627">The retro</a>:</p>
   <blockquote><p>The rendered verification for #1062 found a contract gap after a panel utility prototype had begun: enabled code-copy text uses shared muted ink at 60% opacity, while terminal controls use that same ink over a fixed dark sibling screen. The token-only fix for the first nearly hides the second, so the run returned the issue and discarded its prototype. For future shared-ink changes, preparation should include the rendered consumers' opacity and overlapping grounds when bounding scope; ancestor-only token ratios missed the necessary fixed-ground consumer correction here.</p></blockquote>
-  <p>Nobody reads every retro by hand. A <a href="https://skills.uberblick.ai/skills/ub-agents-deliver-report">skill evaluates the day's deliveries</a> and retros every morning and files issues to improve the loop; a person decides each one. More on that in a later note.</p>
+  <p>Nobody reads every retro by hand. A <a href="https://skills.uberblick.ai/skills/ub-agents-deliver-report">skill evaluates the day's deliveries</a> and retros every morning and files issues to improve the loop; a person decides each one.</p>
   <p>Then we saw a slight increase in autonomy. Not because the models changed in those weeks, but because we got better at describing the issues, and because the documents and the decision records the agents read got better with every retro.</p>
   </section>
 
@@ -70,7 +70,6 @@
     <li><strong>Learn how to cut issues, and work on good issue templates.</strong> A recurring cause of wasted runs was an issue that was too big, or that left out what the agent had to read first.</li>
     <li><strong>Clear gates and agent definitions help a lot.</strong> Look at <a href="https://github.com/uberblick-ai/uberblick-2/commits/main/.agents/roles/implementer.md">how often ours changed</a>: the implementer's definition alone has 52 commits since the end of August, 26 of them in October. Our job was to observe and adjust, a bit like a kindergarten teacher watching a toddler learn to walk: add a guardrail where it struggles, then step back.</li>
     <li><strong>Trust the loop.</strong> Do not jump in when it gets frustrating. Revert, restart the issue or the pull request, and see whether your structural change improves the outcome.</li>
-    <li><strong>Build skills and share them with the team.</strong> We have our own skills page at CampfireFM, like <a href="https://skills.uberblick.ai">skills.uberblick.ai</a>.</li>
   </ul>
   </section>
 
