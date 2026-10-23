@@ -18,7 +18,7 @@ commands:
   login [hub]            # Sign in to a hub with GitHub
   status [hub] [--json]  # Check the stored login and current hub administration
   logout [hub]           # Sign this computer out of a hub; --all-devices signs out all of yours</pre></section>
-  <p>Each subcommand takes a hub address; without one it uses the hub of this <a href="/docs/cli/binding">project's binding</a>. A hub on another computer must be <code>https://</code> or <code>wss://</code>; a cleartext address is refused before anything is sent, with the secure form named.</p>
+  <p>Each subcommand takes a hub address; without one it uses the hub of this <a href="/docs/cli/binding">project's binding</a>. A bare host such as <code>hub.example.com</code> is enough; it is read as the secure address. A hub on another computer spelled <code>http://</code> or <code>ws://</code> is refused before anything is sent.</p>
   </section>
 
   <section class="q" id="login"><h2>login</h2>
