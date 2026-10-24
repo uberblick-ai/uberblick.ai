@@ -50,11 +50,10 @@ One page owns each fact. Link to the owner instead of repeating it.
 
 The site reflects what the product does today. It may run ahead of it on
 purpose, to describe where the product is going. When a page says something
-the product doesn't do yet, file
-issues on uberblick-2 to close the gap, and agree on them with the maintainer
-you work for first: what the page promises, how it should behave, and which
-milestone it lands in. Never leave a promise on the site without an issue
-behind it.
+the product doesn't do yet, file issues on uberblick-2 to close the gap, and
+agree on them with the maintainer you work for first: what the page promises,
+how it should behave, and which milestone it lands in. Never leave a promise
+on the site without an issue behind it.
 
 ## Images and video
 
