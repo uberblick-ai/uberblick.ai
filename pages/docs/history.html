@@ -1,0 +1,53 @@
+<head>
+<title>Document history · Uberblick docs</title>
+<meta name="description" content="Every page on a shared workspace keeps its revisions: who changed what, side by side, with unchanged blocks folded away. Name the revisions that matter; agents read the same history over MCP.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Core concepts</p>
+  <h1>Document history</h1>
+  <p class="lede">Agents edit pages while you are away. The history shows what changed since you last looked, who changed it, and whether it was a person in the browser or an agent over MCP. Every revision of a page on a shared workspace is kept, and you read any of them beside the one before it.</p>
+</div>
+<article class="col">
+
+  <figure class="shot">
+    <video data-light="/video/history-light.mp4" data-dark="/video/history-dark.mp4" data-light-poster="/img/history-light.webp" data-dark-poster="/img/history-dark.webp" src="/video/history-light.mp4" poster="/img/history-light.webp" width="1440" height="900" controls muted loop playsinline preload="none" aria-label="A page called Web UI system: the history opens from the revision id, steps back through three revisions shown side by side, a bar of unchanged blocks opens, then Back to now returns to the live page."></video>
+    <figcaption>The history of Web UI system, a page in the workspace we build Uberblick in.</figcaption>
+  </figure>
+
+  <section class="q" id="open"><h2>Step back from the revision id</h2>
+  <p>Under the title, beside the revision id, <strong>‹</strong> opens the history and steps to older revisions; <strong>›</strong> steps forward again. The sidebar turns into the list of revisions, newest first, each with its author, where the edit came from (the browser or an agent's client) and when. Click an entry to jump straight to it. <strong>Back to now</strong> returns to the live page. History is read-only: nothing you click there changes the page.</p>
+  </section>
+
+  <section class="q" id="compare"><h2>Before on the left, after on the right</h2>
+  <p>A revision shows beside the one before it. Removed text is red on the left, added text green on the right, and a hatched gap holds the place of a block that exists on one side only. Inside a changed paragraph only the changed words are marked, so a one-word fix reads as one word.</p>
+  <p>Unchanged blocks fold into a bar that names the headings inside it, such as <em>18 unchanged blocks · Default to the framework, Always holds</em>. A click opens that run; <strong>Collapse unchanged</strong> in the sidebar opens them all. A slim ruler at the right edge marks where the changes are on the page, and the arrows above it jump to the previous or next change. When the title changed, the header says what it was renamed from.</p>
+  </section>
+
+  <section class="q" id="json"><h2>JSON compares by structure</h2>
+  <figure class="shot">
+    <div class="bar"><span><b>Agent loop settings</b> · Web UI</span><span>history</span></div>
+    <img class="l" src="/img/history-json-light.webp" width="1440" height="900" loading="lazy" decoding="async" alt="The history of a page called Agent loop settings. A JSON tree spans both columns with its rows paired: on the right a new role, preparer, is added in green against a hatched gap on the left; the reviewer's lease_minutes changes from 30 to 45, with only the number marked; browser e2e is added to the required checks. Unchanged parts are folded, such as 3 keys and 2 unchanged items.">
+    <img class="d" src="/img/history-json-dark.webp" width="1440" height="900" loading="lazy" decoding="async" alt="The same comparison in dark mode.">
+  </figure>
+  <p>A <a href="/docs/markdown/json-trees">JSON tree</a> that changed spans both columns, with the earlier rows on the left and this revision's on the right. Formatting and key order never count as changes. List items match by their id, key or name, so a new item shows as one addition and an item that only moved says <em>moved from [2]</em>. Only changed values are tinted, unchanged parts fold away, and <strong>Expand</strong> opens the comparison full screen with search across both sides. A changed diagram shows its full drawing on each side, so the change is visible in the picture itself.</p>
+  </section>
+
+  <section class="q" id="revisions"><h2>What a revision is</h2>
+  <p>Revisions are made for you; there is nothing to save. One revision is one author's stretch of editing: it ends when someone else edits the page, or after fifteen minutes. So the list reads as what each person or agent did, not as a log of keystrokes. The hub keeps the revisions, so history needs a <a href="/docs/hub">shared workspace</a>; a local-only workspace has none.</p>
+  </section>
+
+  <section class="q" id="name"><h2>Name the revisions that matter</h2>
+  <p>The small tag icon before the revision id names the current state of the page: type a name, press Enter, or Escape to cancel. A named revision shows its name where the id would be, and the <strong>Named</strong> tab in the history sidebar lists only those. Name the state you reviewed with the team, or the one a release shipped with, and you can always step back to exactly that text. Whoever named a revision can rename it later, or clear the name to remove it.</p>
+  </section>
+
+  <section class="q" id="agents"><h2>Agents read the same history</h2>
+  <section class="block code"><div class="cap"><span>list_revisions</span></div><pre>{ "uuid": "622ca00f-3dbd-4f65-b749-e46a81e704c4" }
+
+→ [ { "id": "8d8200d3…", "author": { "githubUsername": "bk-one", … },
+      "startedAt": …, "endedAt": null, "name": null },
+    { "id": "2d5a6960…", … } ]</pre></section>
+  <p>Over MCP, <code>list_revisions</code> returns a page's revisions, newest first, and <code>get_revision</code> reads the page as it was at one of them. An agent uses them to see what changed since it last worked on a page, or to quote what a page said when a decision was made. <code>name_revision</code> names the current state, and is meant for when a person asks for it. The tools are on <a href="/docs/agents">Agents over MCP</a>.</p>
+  </section>
+</article>
+<script type="module" src="/js/video.js"></script>
