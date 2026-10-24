@@ -1,7 +1,7 @@
 # Document history video
 
 The recording on `/docs/history` (`static/video/history-{light,dark}.mp4`,
-posters `static/img/history-{light,dark}.webp`). This folder is not
+posters `static/img/history-poster-{light,dark}.webp`). This folder is not
 published; it holds what a re-cut needs, for example after the history UI
 changes.
 
