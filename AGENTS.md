@@ -6,7 +6,7 @@ each kind of page is for, and when to stop and ask.
 
 ## Before you write
 
-Ask Ben about a page's structure whenever you are unsure: which sections it
+Ask the maintainer you work for about a page's structure whenever you are unsure: which sections it
 has, what it leaves out, where it sits in the sidebar. Ask before drafting,
 not after. A page in the wrong shape costs more to fix than the question.
 
@@ -24,8 +24,8 @@ alike. It does not track tasks or delivery; that lives on GitHub.
 - Concrete over abstract: a real situation, a real page, a real number.
 - Never describe the obvious. If a button needs explaining, the UI is wrong.
   File an issue on uberblick-2 instead of documenting around it.
-- When Ben gives you text, keep his intent and his points. Use his words
-  nearly verbatim only when he says so; otherwise find your own.
+- When a maintainer gives you text, keep its intent and its points. Use the
+  words nearly verbatim only when asked to; otherwise find your own.
 - Spell it "Uberblick", never "Überblick". Avoid "LLM wiki", "second brain"
   and "use cases" (the site has guides).
 - A workspace without a hub is a "local-only workspace". Don't say it
