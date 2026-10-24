@@ -50,3 +50,7 @@
 .shot .chart .lbl, .shot .chart .lbl text { fill: var(--muted) }
 .shot .chart .ln { fill: none; stroke: var(--bar-chart); stroke-width: 2; stroke-linejoin: round }
 .shot .chart .pt circle { fill: var(--bar-chart) }
+.fn { font-size: 0.7em; line-height: 0 }
+.fn a { text-decoration: none }
+.footnote { margin-top: 36px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--muted) }
+.footnote > a:first-child { margin-right: 4px; text-decoration: none }

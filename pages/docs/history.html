@@ -1,0 +1,44 @@
+<head>
+<title>Document history · Uberblick docs</title>
+<meta name="description" content="People and agents change pages all day, and small details get lost. Every page keeps its history, so no change slips by: browse earlier versions, mark the ones that matter, and see exactly what changed, JSON included.">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / Docs / Core concepts</p>
+  <h1>Document history</h1>
+  <p class="lede">Your colleagues edit a page in the afternoon, an agent works through it overnight, and by morning a number has moved and a sentence says something slightly different. Changes like these are easy to miss and expensive to find late. So every page keeps its history,<sup class="fn"><a href="#fn-hub" id="ref-hub" aria-label="Footnote 1">1</a></sup> and you can look back at any earlier version and see exactly what changed.</p>
+</div>
+<article class="col">
+
+  <figure class="shot">
+    <video data-light="/video/history-light.mp4" data-dark="/video/history-dark.mp4" data-light-poster="/img/history-light.webp" data-dark-poster="/img/history-dark.webp" src="/video/history-light.mp4" poster="/img/history-light.webp" width="1440" height="900" controls muted loop playsinline preload="none" aria-label="A page called Web UI system: the history opens from the revision id, steps back through three revisions shown side by side, a bar of unchanged blocks opens, then Back to now returns to the live page."></video>
+    <figcaption>The history of Web UI system, a page in the workspace we build Uberblick in.</figcaption>
+  </figure>
+
+  <section class="q" id="why"><h2>No change slips by</h2>
+  <p>A knowledge base that people and agents write together only works if you can trust it. Trust comes from seeing what happened: who changed this paragraph, when, and what it said before. We wanted that to take seconds, not an archaeology session, so you can read a change, decide whether it's right, and move on. Revisions are made on their own while people and agents edit, and edits that belong together are grouped into one step.</p>
+  </section>
+
+  <section class="q" id="compare"><h2>Familiar ways to read a change</h2>
+  <p>We took our cues from the diff views developers live in every day, in their editors and on GitHub: the earlier version beside the later one, with everything that didn't change folded out of the way. Not everyone reads changes that way, so you can switch to an inline view instead, closer to tracked changes in a word processor.</p>
+  </section>
+
+  <section class="q" id="name"><h2>Anchors in a long history</h2>
+  <p>Some versions matter more than others: the one the team agreed on, the one a release shipped with. Give that version a name and it becomes an anchor you can always come back to. You can then read the history from anchor to anchor, with all the small edits in between folded into one step.</p>
+  </section>
+
+  <section class="q" id="json"><h2>JSON gets its own comparison</h2>
+  <figure class="shot">
+    <div class="bar"><span><b>Agent loop settings</b> · Web UI</span><span>history</span></div>
+    <img class="l" src="/img/history-json-light.webp" width="1440" height="900" loading="lazy" decoding="async" alt="The history of a page called Agent loop settings. A JSON tree spans both columns with its rows paired: on the right a new role, preparer, is added in green against a hatched gap on the left; the reviewer's lease_minutes changes from 30 to 45, with only the number marked; browser e2e is added to the required checks. Unchanged parts are folded, such as 3 keys and 2 unchanged items.">
+    <img class="d" src="/img/history-json-dark.webp" width="1440" height="900" loading="lazy" decoding="async" alt="The same comparison in dark mode.">
+  </figure>
+  <p>A lot of our own discussions happen around data: the shape of a schema, an API answer, a config an agent runs with. Comparing that as lines of text hides what actually changed, so we compare it by its structure. A new key reads as one addition, a changed value as one change, and reformatting doesn't count. It felt right to give the thing we argue about most a view of its own. See <a href="/docs/markdown/json-trees">JSON trees</a>.</p>
+  </section>
+
+  <section class="q" id="agents"><h2>Agents look back too</h2>
+  <p>A page in Uberblick describes the intended state, and the history that matters, why something is the way it is, belongs in <a href="/docs/decisions">decision records</a>. Agents should read both before they read the past. Still, a look back is sometimes the quickest answer, so the history is open to agents as well: an agent can check what changed on a page since it last worked on it, instead of guessing from the current text.</p>
+  </section>
+  <p class="footnote" id="fn-hub"><a href="#ref-hub" aria-label="Back to the text">1</a> History lives on the <a href="/docs/hub">hub</a>, so local-only workspaces keep no history.</p>
+</article>
+<script type="module" src="/js/video.js"></script>
