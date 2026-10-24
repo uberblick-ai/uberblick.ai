@@ -1,9 +1,12 @@
 # Cloudflare headers file (served with the assets, see wrangler.jsonc). agents.uberblick.ai and skills.uberblick.ai may load
 # the shared stylesheet and the fonts from here, and a browser fetches fonts
 # with CORS, so these files allow any origin. They change rarely; the fonts
-# never, so they are cached for a year.
+# never, so they are cached for a year. Screenshots under /img change under the
+# same name now and then, so they are cached for a day.
 /shared.css
   Access-Control-Allow-Origin: *
 /fonts/*
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=31536000, immutable
+/img/*
+  Cache-Control: public, max-age=86400
