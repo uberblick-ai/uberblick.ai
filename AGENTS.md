@@ -6,9 +6,10 @@ each kind of page is for, and when to stop and ask.
 
 ## Before you write
 
-Ask the maintainer you work for about a page's structure whenever you are unsure: which sections it
-has, what it leaves out, where it sits in the sidebar. Ask before drafting,
-not after. A page in the wrong shape costs more to fix than the question.
+Ask the maintainer you work for about a page's structure whenever you are
+unsure: which sections it has, what it leaves out, where it sits in the
+sidebar. Ask before drafting, not after. A page in the wrong shape costs more
+to fix than the question.
 
 ## Who we write for
 
