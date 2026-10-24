@@ -28,6 +28,8 @@ alike. It does not track tasks or delivery; that lives on GitHub.
   nearly verbatim only when he says so; otherwise find your own.
 - Spell it "Uberblick", never "Überblick". Avoid "LLM wiki", "second brain"
   and "use cases" (the site has guides).
+- A workspace without a hub is a "local-only workspace". Don't say it
+  "stays on your laptop": a hub workspace lives there too.
 
 ## What each kind of page is for
 
