@@ -46,12 +46,14 @@ alike. It does not track tasks or delivery; that lives on GitHub.
 
 One page owns each fact. Link to the owner instead of repeating it.
 
-## Promises
+## Ahead of the product
 
-A page says what the release it ships with does. When the text needs
-something the product does not do yet, file an issue on uberblick-2 and
-either leave the claim out or say plainly that it is on its way. Hold a page
-that describes an unreleased feature until that release ships.
+The site may describe where the product is going, not only what the current
+release does. When a page says something the product doesn't do yet, file
+issues on uberblick-2 to close the gap, and agree on them with the maintainer
+you work for first: what the page promises, how it should behave, and which
+milestone it lands in. Never leave a promise on the site without an issue
+behind it.
 
 ## Images and video
 
