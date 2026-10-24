@@ -60,8 +60,8 @@ on the site without an issue behind it.
 Screenshots are WebP in a light and dark pair (`.shot` with `img.l` and
 `img.d`), carry width, height and real alt text, and load lazily below the
 fold. Videos come as a light and dark pair (`video.l` and `video.d`) with
-`preload="none"`, and never autoplay. Show the real product on a real page,
-never a mock-up passed off as one.
+`preload="none"`, and never autoplay or loop. Show the real product on a real
+page, never a mock-up passed off as one.
 
 Keep what a re-cut needs next to the site, unpublished: the recording
 script, the storyline, the setup and the encode settings go in
