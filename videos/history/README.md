@@ -1,7 +1,7 @@
 # Document history video
 
 The recording on `/docs/history` (`static/video/history-{light,dark}.mp4`,
-posters `static/img/history-{light,dark}.webp`). This folder is not
+posters `static/img/history-poster-{light,dark}.webp`). This folder is not
 published; it holds what a re-cut needs, for example after the history UI
 changes.
 
@@ -55,8 +55,8 @@ ffmpeg -ss <start> -i <raw>.webm -an -c:v libx264 -preset slow -crf 26 \
 ```
 
 Both takes should come out the same length (37.92 s last time). The poster is
-the frame at video 10.56 s, once 1 of 9 has settled and the cursor has left
-the fold bar, saved with `cwebp -q 82`.
+the frame at video 0:12 (2 of 9, the added ruler paragraph), saved as WebP
+at quality 82.
 
 ## The JSON comparison screenshot
 
