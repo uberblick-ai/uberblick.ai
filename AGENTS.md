@@ -62,3 +62,7 @@ Screenshots are WebP in a light and dark pair (`.shot` with `img.l` and
 fold. Videos come as a light and dark MP4 pair on one `<video data-light
 data-dark>`, played by `static/js/video.js`. Show the real product on a real
 page, never a mock-up passed off as one.
+
+Keep what a re-cut needs next to the site, unpublished: the recording
+script, the storyline, the setup and the encode settings go in
+`videos/<name>/`.
