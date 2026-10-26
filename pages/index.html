@@ -252,6 +252,7 @@ ub mcp install claude">Copy</button></span></div>
   function all() {
     state('done'); el.textContent = elapsed('09:15:04');
     items.forEach(li => { li.classList.add('on'); const l = li.querySelector('.l'); if (li.dataset.k === 'think') l.textContent = l.dataset.t; const r = li.querySelector('.r'); if (r) r.classList.add('on'); const s = li.querySelector('.el'); if (s) s.textContent = ` · ${li.dataset.el}s`; });
+    follow();
   }
   function play() {
     timers.forEach(clearTimeout); timers = []; const id = ++gen;
