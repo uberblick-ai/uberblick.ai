@@ -1,6 +1,6 @@
 <head>
 <title>Markdown extensions · Uberblick docs</title>
-<meta name="description" content="The small additions to Markdown in Uberblick: toggle headings, inline icons, terminal transcripts, cards with a label, a title, a footer and buttons, and GitHub references.">
+<meta name="description" content="The small additions to Markdown in Uberblick: toggle headings, inline icons, terminal transcripts, callouts, cards with a label, a title, a footer and buttons, and GitHub references.">
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <div class="hero sub">
@@ -14,7 +14,7 @@
   </section>
 
   <section class="q" id="icons"><h2>Inline icons and emoji</h2>
-  <p>A curated set of shortcodes, <code>:claude:</code>, <code>:codex:</code> and <code>:github:</code>, renders as the mark in prose, headings, table cells, card parts and button labels, in the size and colour of the surrounding text. The stored text stays the shortcode. An unknown name such as <code>:rocket:</code>, and a time such as <code>10:30:15</code>, stay literal. Emoji are stored as the character itself; in the editor a colon and two letters open a picker.</p>
+  <p>A curated set of shortcodes, <code>:claude:</code>, <code>:codex:</code> and <code>:github:</code>, renders as the mark in prose, headings, table cells, callout icons, card parts and button labels, in the size and colour of the surrounding text. The stored text stays the shortcode. An unknown name such as <code>:rocket:</code>, and a time such as <code>10:30:15</code>, stay literal. Emoji are stored as the character itself; in the editor a colon and two letters open a picker.</p>
   <section class="block code"><div class="cap"><span>Markdown</span></div><pre>button: [:claude: Discuss with Claude](claude://code/new?prompt=Review)</pre></section>
   </section>
 
@@ -24,6 +24,38 @@
 $ ub status
 workspace   Acme product (3f0c2a1e-7b4d-4c2a-9e1f-5a6b7c8d9e0f)
 ```</pre></section>
+  </section>
+
+  <section class="q" id="callouts"><h2>Callouts</h2>
+  <p>Some sentences must not be skimmed past: a precondition, a risk, a step that cannot be undone. A callout sets one such passage apart from the text around it. It is GitHub's alert syntax, a quote whose first line names the variant, so GitHub shows the same text as an alert and any other Markdown tool shows a quote that still starts with its label.</p>
+  <div class="tabs ex"><div class="tablist" role="tablist" aria-label="callout example"><button role="tab" id="t-callout-v" aria-selected="true" aria-controls="p-callout-v" type="button">Displayed</button><button role="tab" id="t-callout-m" aria-selected="false" aria-controls="p-callout-m" type="button">Markdown</button><button class="copy" type="button" data-copy="&gt; [!WARNING]
+&gt; Every browser and every `ub` client is signed out at once.
+&gt; Tell the team before you start.">Copy</button></div>
+  <div class="panel" role="tabpanel" id="p-callout-v" aria-labelledby="t-callout-v"><img class="l" src="/img/blocks/callout-light.webp" alt="A warning callout as the editor shows it" loading="lazy"><img class="d" src="/img/blocks/callout-dark.webp" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-callout-m" aria-labelledby="t-callout-m" hidden><pre>&gt; [!WARNING]
+&gt; Every browser and every `ub` client is signed out at once.
+&gt; Tell the team before you start.</pre></div></div>
+  <p>There are five variants. Pick the one that says what happens if a reader skips the passage.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Variant</th><th>Skipping it means</th></tr></thead>
+    <tbody>
+      <tr><td><code>[!NOTE]</code></td><td>The reader misses useful context.</td></tr>
+      <tr><td><code>[!TIP]</code></td><td>The reader misses an easier or better way.</td></tr>
+      <tr><td><code>[!IMPORTANT]</code></td><td>The reader will not succeed.</td></tr>
+      <tr><td><code>[!WARNING]</code></td><td>Something breaks, or work is lost.</td></tr>
+      <tr><td><code>[!CAUTION]</code></td><td>An action cannot be undone.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Each variant has its own colour and icon, and the label is always written out, so colour is never the only cue. A callout can swap the icon for an emoji or one of the inline icons above; the label and colour stay with the variant. In Markdown the icon is an HTML comment on the line after the marker, which other Markdown tools hide.</p>
+  <div class="tabs ex"><div class="tablist" role="tablist" aria-label="callout icon example"><button role="tab" id="t-callout-icon-v" aria-selected="true" aria-controls="p-callout-icon-v" type="button">Displayed</button><button role="tab" id="t-callout-icon-m" aria-selected="false" aria-controls="p-callout-icon-m" type="button">Markdown</button><button class="copy" type="button" data-copy="&gt; [!TIP]
+&gt; &lt;!-- icon: :claude: --&gt;
+&gt; Ask Claude Code to draft the release notes from the merged pull requests.">Copy</button></div>
+  <div class="panel" role="tabpanel" id="p-callout-icon-v" aria-labelledby="t-callout-icon-v"><img class="l" src="/img/blocks/callout-icon-light.webp" alt="A tip callout with the Claude icon instead of the lightbulb" loading="lazy"><img class="d" src="/img/blocks/callout-icon-dark.webp" alt="" loading="lazy"></div>
+  <div class="panel" role="tabpanel" id="p-callout-icon-m" aria-labelledby="t-callout-icon-m" hidden><pre>&gt; [!TIP]
+&gt; &lt;!-- icon: :claude: --&gt;
+&gt; Ask Claude Code to draft the release notes from the merged pull requests.</pre></div></div>
+  <p>Write one to three sentences that stand on their own, without "Note:" or "Warning:" in front, since the label already says it. A couple per page is plenty; two in a row, or a whole section in a box, and readers stop seeing them. The one thing a reader should act on belongs in a card, and a lasting choice in a decision record.</p>
+  <p>The marker stands alone on the first line, in any letter case; export writes it in uppercase. Anything else stays an ordinary quote: another name such as <code>[!INFO]</code>, a title after the marker, a fold marker or a nested quote. Over MCP a callout is a block of type <code>callout</code> with a <code>variant</code> and an optional <code>icon</code>; an invalid one is refused with <code>invalid_callout</code> and nothing is written.</p>
   </section>
 
   <section class="q" id="card"><h2>Cards</h2>
@@ -51,7 +83,7 @@ Three of this week&#x27;s wasted runs were third retries on the same failure. A 
   </section>
 
   <section class="q" id="use"><h2>When to use one</h2>
-  <p>For the one thing on a page a reader should act on: the recommendation at the end of a report, the warning at the top of a runbook, the next step after a review. One card per page is the norm; a page full of cards is a list wearing boxes. Agents that write reports put the card last and link the issue or the record it rests on in the footer.</p>
+  <p>For the one thing on a page a reader should act on: the recommendation at the end of a report, the next step after a review. A warning or a precondition is a callout, not a card. One card per page is the norm; a page full of cards is a list wearing boxes. Agents that write reports put the card last and link the issue or the record it rests on in the footer.</p>
   </section>
 
   <section class="q" id="github"><h2>GitHub references</h2>

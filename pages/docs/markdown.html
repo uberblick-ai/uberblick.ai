@@ -10,13 +10,13 @@
 </div>
 <article class="col">
   <section class="q" id="standard"><h2>What stays standard</h2>
-  <p>Common standard Markdown, headings, lists, quotes, code and inline formatting, plus GitHub Flavored Markdown tables and strikethrough, reads and writes as everywhere else. A link whose target is a document id, <code>[label](document-uuid)</code>, links to that document, survives renames and counts as a backlink; agents get the id from <code>search</code> or <code>get_sidebar</code> and never guess it from a title. The additions below take one of two shapes: a fence with an info string for source a program reads, or a <code>:::name</code> container for prose with a header. Anything that does not know a shape sees a code block or a paragraph, which is the point.</p>
+  <p>Common standard Markdown, headings, lists, quotes, code and inline formatting, plus GitHub Flavored Markdown tables, strikethrough and alerts such as <code>&gt; [!NOTE]</code>, reads and writes as everywhere else; alerts show as <a href="/docs/markdown/extensions#callouts">callouts</a>. A link whose target is a document id, <code>[label](document-uuid)</code>, links to that document, survives renames and counts as a backlink; agents get the id from <code>search</code> or <code>get_sidebar</code> and never guess it from a title. The additions below take one of two shapes: a fence with an info string for source a program reads, or a <code>:::name</code> container for prose with a header. Anything that does not know a shape sees a code block or a paragraph, which is the point.</p>
   </section>
 
   <section class="q" id="additions"><h2>The additions</h2>
   <p>Each has its own page with the source beside the drawing.</p>
   <ul class="dir">
-    <li><a href="/docs/markdown/extensions"><span class="n">extensions</span><span class="d">The small ones: toggle headings, inline icons, terminal transcripts, cards and GitHub references.</span></a></li>
+    <li><a href="/docs/markdown/extensions"><span class="n">extensions</span><span class="d">The small ones: toggle headings, inline icons, terminal transcripts, callouts, cards and GitHub references.</span></a></li>
     <li><a href="/docs/markdown/diagrams"><span class="n">diagrams</span><span class="d">Flow diagrams as text where the author places the nodes and the renderer only draws.</span></a></li>
     <li><a href="/docs/markdown/wireframes"><span class="n">wireframes</span><span class="d">A screen sketch in a few lines of text, drawn by the editor.<span>Format 0.x; it may still change.</span></span></a></li>
     <li><a href="/docs/markdown/json-trees"><span class="n">json-trees</span><span class="d">Pasted JSON as a foldable tree, values exactly as written.<span>Compared key by key in document history.</span></span></a></li>
