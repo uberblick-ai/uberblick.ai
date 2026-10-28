@@ -1,0 +1,87 @@
+<head>
+<title>Letting agents auto-merge Dependabot pull requests · Uberblick blog</title>
+<meta name="description" content="How we auto-merge Dependabot pull requests with AI agents instead of a workflow, so security updates merge without waiting for anyone: three settings, the rules the agents follow, four real merges and what still waits for a person.">
+<meta name="date" content="2026-10-28">
+<meta name="author" content="Ben">
+<meta name="kind" content="building note">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/blog">Blog</a> / Building note</p>
+  <h1>Letting agents auto-merge Dependabot pull requests</h1>
+  <p class="byline"><time datetime="2026-10-28">2026-10-28</time> · Ben · <span class="tag">Building note</span></p>
+  <p class="lede">Since 22 October, the agent loop that builds Uberblick also merges its Dependabot pull requests, with no person in between. This note says why we wanted that, what we changed to get there, and what still comes to us.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="why"><h2>Why bother</h2>
+  <p>A dependency update is the dullest pull request there is, and also the one that most often sits. It needs no design and no discussion, so it never feels urgent, until the one in the pile is a security fix. Dependabot's automatic security updates open that pull request on their own as soon as an advisory reaches GitHub. The slow part is the merge.</p>
+  <p>The last two weeks made that plain. On 14 October Next.js shipped <a href="https://nextjs.org/blog/nextjs-security-update-october-14-2026">two critical unauthenticated remote code execution fixes</a> in 16.4.1 and 15.5.28. One of them sits in an image library, so for many projects the fix is a lockfile bump of <code>sharp</code>. A week later PHP released <a href="https://en.wikipedia.org/wiki/PHP2Shell">PHP2Shell</a>, CVE-2026-109618 and CVE-2026-109619, found with the help of AI models. <a href="https://aws.amazon.com/blogs/security/amazon-threat-intelligence-identifies-php2shell-exploitation-prior-to-public-disclosure-in-madpot/">Amazon saw an exploitation attempt on 17 October</a>, four days before the flaws were disclosed, and wrote that "AI-assisted analysis makes it cheaper to turn a patch diff or advisory into a working exploit." By the weekend <a href="https://techcrunch.com/2026/10/24/php-ocalypse-how-two-critical-web-bugs-almost-broke-the-internet/">TechCrunch called it the PHP-ocalypse</a>, and sites from Wikimedia to the Internet Archive had gone offline for a while to patch.</p>
+  <p>When a patch can be turned into an exploit in days, and sometimes the exploit comes first, a security update that waits for someone to have a quiet afternoon waits too long. We wanted those to merge as soon as CI is green, and we wanted a person only where judgement is actually needed.</p>
+  </section>
+
+  <section class="q" id="before"><h2>Before</h2>
+  <p>The usual way to auto-merge Dependabot is a GitHub Actions workflow: read the update type with <code>dependabot/fetch-metadata</code>, and turn on auto-merge for patch versions. That merges whatever passes CI and stops at the first red check. We wanted something that reads the diff, knows our rules and can fix a broken test, so we gave the job to the agents that already merge everything else.</p>
+  <p>Our loop is <a href="https://agents.uberblick.ai">ub-agents</a>: a preparer, an implementer, a reviewer and an integrator, steered by GitHub labels. Until 22 October it treated <code>dependabot[bot]</code> like any outside author, and rightly so. An outside pull request needs a maintainer to start it and to approve each new head before an agent runs it. Dependabot rebases often, and every rebase makes a new head.</p>
+  <p>So the last four Dependabot pull requests before the change, <a href="https://github.com/uberblick-ai/uberblick-2/pull/1365">#1365</a>, <a href="https://github.com/uberblick-ai/uberblick-2/pull/1834">#1834</a>, <a href="https://github.com/uberblick-ai/uberblick-2/pull/1982">#1982</a> and <a href="https://github.com/uberblick-ai/uberblick-2/pull/1983">#1983</a>, all needed me. Some stalled twice, once because the Cloudflare preview bot edited its own comment and the loop counted that as new outside feedback. A vite security fix, <a href="https://github.com/uberblick-ai/uberblick-2/pull/2027">#2027</a>, sat for a day untouched.</p>
+  </section>
+
+  <section class="q" id="setup"><h2>Three settings</h2>
+  <p>The change is small. Dependabot's own default label, <code>dependencies</code>, starts the integrator. Dependabot becomes a trusted pull request author, so it needs no start and no head approval. The preview bot's comment no longer counts as outside feedback.</p>
+<section class="block code"><div class="cap"><span>ub-agents.yaml</span></div><pre># Dependabot PRs need no maintainer start or head approval, and their
+# bodies (upstream release notes) never reach agents.
+trusted-pr-authors: [dependabot]
+
+# The preview comment neither suspends a PR nor marks it as outside input.
+trusted-bots: [cloudflare-workers-and-pages]
+
+agents:
+  integrator:
+    # Dependabot labels its PRs `dependencies`, which sends them straight here.
+    trigger: [ready-to-merge, dependencies]</pre></section>
+  <p>Trust here is narrow. The body of a Dependabot pull request pastes the release notes of the package, and anyone who publishes a package writes those. An agent that reads them can be steered by them. So the body never reaches an agent. The title and the diff are the whole stated intent: these packages move to these versions, and nothing else changes.</p>
+  <p>Our <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/.github/dependabot.yml"><code>dependabot.yml</code></a> groups the updates, one pull request for all security fixes and one weekly for minor and patch versions. Version updates wait seven days after a release, so a compromised publish has time to be caught. Security updates never wait.</p>
+  </section>
+
+  <section class="q" id="rules"><h2>What the integrator does</h2>
+  <p>The rules live in our <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/.agents/protocols/delivery-policy.md#dependabot-pull-requests">delivery policy</a>, where the integrator reads them on every run:</p>
+  <ul>
+    <li><strong>Check the intent.</strong> The diff touches only manifests, the lockfile and the pinned versions of workflow actions, and it matches the title. A diff like that owes no agent review.</li>
+    <li><strong>Check the gates.</strong> The required CI checks pass at the head, and the merged tree against today's main passes too.</li>
+    <li><strong>Merge minor and patch, write a report.</strong> Every merge leaves a comment that says what was checked and why it was safe.</li>
+    <li><strong>One repair round.</strong> When CI fails, the implementer gets one try to adapt. Its commit then owes a normal agent review. A second failure goes to a person.</li>
+  </ul>
+  </section>
+
+  <section class="q" id="merges"><h2>Four merges</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Pull request</th><th>Update</th><th>Runs</th><th>Integrator start to merge</th></tr></thead>
+    <tbody>
+      <tr><td><a href="https://github.com/uberblick-ai/uberblick-2/pull/2027">#2027</a></td><td>vite 8.2.2 → 8.2.4, security group</td><td>1</td><td>35 minutes</td></tr>
+      <tr><td><a href="https://github.com/uberblick-ai/uberblick-2/pull/2143">#2143</a></td><td>jdx/mise-action 5.1.2 → 5.2.1</td><td>1</td><td>9 minutes</td></tr>
+      <tr><td><a href="https://github.com/uberblick-ai/uberblick-2/pull/2249">#2249</a></td><td>zod 4.4.3 → 4.6.6, security group</td><td>4</td><td>37 minutes</td></tr>
+      <tr><td>CampfireFM backend</td><td>jdx/mise-action 5.2.2 → 5.2.3</td><td>1</td><td>12 minutes from opening</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">From the run records on each pull request. #2027 shows my account as the merger because that run happened on the launcher on my laptop.</p>
+  <p>The first two were the easy kind, and the merge reports show what easy still includes. On #2027 a WebKit setup step hung for half an hour; the integrator saw the same hang on main, re-ran it once and merged. On #2143 it checked that the new pinned commit really is the upstream tag v5.2.1, and since main moved during the run, it tested the merge against both versions of main.</p>
+  <p>#2249 is the one we like best. The zod update broke a test: zod 4.6.6 writes nullable fields in the advertised MCP schemas as a type list instead of <code>anyOf</code>. The integrator found the failing test, confirmed it passes on main, and <a href="https://github.com/uberblick-ai/uberblick-2/pull/2249#issuecomment-6382473410">sent it back</a> with the cause. The implementer changed two assertions and no production code. Because the pull request now had a commit that was not Dependabot's, the reviewer ran, and it checked every output schema under both zod versions: 56 fields spelled differently, same meaning. Then the integrator merged. Four runs, two models, no person, 37 minutes.</p>
+  <p>Uberblick exists to make the way we build our main product, <a href="https://joincampfire.fm">CampfireFM</a>, work better. So once we had seen this work in Uberblick, we adopted it for the CampfireFM backend too, on its own loop host. The first merge there took 12 minutes: on 27 October Dependabot opened a one-line workflow update at 21:25, the integrator picked it up 36 seconds later, waited for CI and merged it at 21:37.</p>
+  <p>Four is not a big number yet. Dependabot opens only a few pull requests a week for us, and that is the point: none of them takes a minute of our day now.</p>
+  </section>
+
+  <section class="q" id="human"><h2>What still comes to us</h2>
+  <ul>
+    <li><strong>Major versions</strong>, including a 0.x minor and a group with one major in it. TypeScript 7 and vitest 5 both needed code changes and a decision, and they would again.</li>
+    <li><strong>Pinned packages.</strong> Our CRDT libraries, the collaboration server and the MCP SDK are pinned on purpose and ignored by Dependabot. Bumping one is a reviewed change.</li>
+    <li><strong>Sensitive areas.</strong> An update that changes auth, sync, persistence or protocol behaviour escalates, whatever its version number says.</li>
+    <li><strong>A second failure</strong>, or a fix that needs a real decision rather than adapting a test.</li>
+  </ul>
+  <p>And Dependabot only sees what a manifest pins. The PHP interpreter in a server image or the runtime on a host is still somebody's job to update.</p>
+  <p>All of this is opinionated, and none of it is built into the loop. What goes to a person and what merges on its own comes from the agent instructions and the gates we chose. We found these to be sensible defaults, and changing one is an edit to a text file.</p>
+  </section>
+
+  <section class="q" id="next"><h2>If you want this</h2>
+  <p>You need a loop that can tell who authored a pull request, keep a bot's text away from the model, and follow written rules about what it may merge. Ours is <a href="https://agents.uberblick.ai">ub-agents</a>, and the three settings above are all it took on the loop's side. The rules are plain text in our repository; copy them and change what does not fit.</p>
+  </section>
+</article>
