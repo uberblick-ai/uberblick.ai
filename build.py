@@ -32,7 +32,8 @@ works from a checkout of the site alone; the release tag falls back the same way
 
 Blog posts live in pages/blog/<year>/<slug>.html and carry, in their <head>,
 <meta name="date">, <meta name="author"> and <meta name="kind"> (release, design
-note or building note); <meta name="draft" content="yes"> keeps a post out of
+note or building note), plus <meta name="nav"> with a short label for the
+sidebar when the title is longer than one sidebar line; <meta name="draft" content="yes"> keeps a post out of
 the index, the feed and the recent changes but still builds its page. The build
 writes the post list into pages/blog/index.html's <!-- posts --> line, an Atom
 feed to /blog/feed.xml, and gives blog pages a sidebar of posts.
@@ -256,6 +257,9 @@ def recent(text, posts, count=5):
     return '\n  '.join(f'<li><time datetime="{day}">{day}</time><span class="tag">{kind}</span><span>{text}</span></li>' for day, kind, text in items[:count])
 
 
+NAV_MAX = 24  # characters of a post's sidebar label: "Why we dropped Mermaid" fits one line
+
+
 def meta(head, name):
     m = re.search(rf'<meta name="{name}" content="([^"]*)">', head)
     return html.unescape(m[1]) if m else ''
@@ -271,7 +275,10 @@ def post(page, head, body):
         sys.exit(f'{name}: a post needs <meta name="date"> (YYYY-MM-DD), <meta name="author"> and <meta name="kind"> (one of {", ".join(KINDS)})')
     if not path.startswith(f'/blog/{day[:4]}/'):
         sys.exit(f'{name}: a post from {day} lives in pages/blog/{day[:4]}/')
-    return {'path': path, 'date': day, 'author': author, 'kind': kind, 'title': title, 'summary': meta(head, 'description'),
+    nav = meta(head, 'nav') or title
+    if len(nav) > NAV_MAX:
+        sys.exit(f'{name}: the sidebar shows one line per post; give it <meta name="nav"> of at most {NAV_MAX} characters')
+    return {'nav': nav, 'path': path, 'date': day, 'author': author, 'kind': kind, 'title': title, 'summary': meta(head, 'description'),
             'draft': meta(head, 'draft') != '', 'body': body}
 
 
@@ -321,7 +328,7 @@ def section(path, posts=()):
     if path == '/guides' or path.startswith('/guides/'):
         return 'Guides', GUIDES
     if path == '/blog' or path.startswith('/blog/'):
-        return 'Posts', [(None, None, [('/blog', 'All posts')]), ('Posts', None, [(p['path'], p['title']) for p in posts if not p['draft']]), (None, None, [('/blog/feed.xml', 'Atom feed')])]
+        return 'Posts', [(None, None, [('/blog', 'All posts')]), ('Posts', None, [(p['path'], p['nav']) for p in posts if not p['draft']]), (None, None, [('/blog/feed.xml', 'Atom feed')])]
     return None
 
 
@@ -468,7 +475,7 @@ def main():
         social_tags = social(path, head, body, blog)
         if path != '/404' and not (blog and meta(head, 'draft')):
             entries.append((path, page))
-        head = re.sub(r'<meta name="(date|author|kind|draft|image)" content="[^"]*">\n', '', head)
+        head = re.sub(r'<meta name="(date|author|kind|draft|image|nav)" content="[^"]*">\n', '', head)
         if blog:
             head += '<link rel="alternate" type="application/atom+xml" title="Uberblick blog" href="/blog/feed.xml">\n'
         canonical = '' if path == '/404' else f'<link rel="canonical" href="{SITE}{path}">\n'
