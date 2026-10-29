@@ -39,6 +39,11 @@
   </ul>
   <p>The actions are judged again on every run. A card stays while its evidence holds and drops out once a merged change addressed it or the data no longer shows it.</p>
   <p>A card has a button that opens a Claude Code session to discuss the action before changing anything. Most of the time the discussion ends in a pull request or an issue. The session then strikes the card through and puts that pull request below it, so the next run knows someone is on it.</p>
+  <figure class="shot">
+    <video class="l" src="/video/ci-discuss-light.mp4" poster="/img/ci-discuss-poster-light.webp" width="1440" height="904" controls muted playsinline preload="none" aria-label="The Uberblick CI health report scrolls down to its recommended actions. A click on Discuss in Claude Code on the top card, about intermittent browser tests, opens the Claude desktop app with the prompt filled in; it is sent, and Claude answers with a plan to read the failed logs before proposing anything."></video>
+    <video class="d" src="/video/ci-discuss-dark.mp4" poster="/img/ci-discuss-poster-dark.webp" width="1440" height="904" controls muted playsinline preload="none" aria-label="The Uberblick CI health report scrolls down to its recommended actions. A click on Discuss in Claude Code on the top card, about intermittent browser tests, opens the Claude desktop app with the prompt filled in; it is sent, and Claude answers with a plan to read the failed logs before proposing anything."></video>
+    <figcaption>From a card in our CI health report to a discussion in Claude Code.</figcaption>
+  </figure>
   </section>
 
   <section class="q" id="campfire"><h2>From 13 to 8 minutes on the CampfireFM backend</h2>
@@ -90,3 +95,4 @@
   <p>None of this needed a CI expert. It needed us to watch CI every day and take the numbers as seriously as any other part of the product. The <a href="https://skills.uberblick.ai/skills/ci-health">ci-health skill</a> does the watching for us, and it works on any GitHub repository, with or without Uberblick. Without Uberblick it prints a table instead of keeping a page. To keep the report in a workspace, start with <a href="/guides/install">Install</a>.</p>
   </section>
 </article>
+<script type="module" src="/js/video.js"></script>
