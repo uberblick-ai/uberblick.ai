@@ -32,7 +32,8 @@ works from a checkout of the site alone; the release tag falls back the same way
 
 Blog posts live in pages/blog/<year>/<slug>.html and carry, in their <head>,
 <meta name="date">, <meta name="author"> and <meta name="kind"> (release, design
-note or building note), plus <meta name="nav"> with a short label for the
+note or building note; the date orders the posts and goes into the feed, the
+sitemap and the structured data, but no page shows it), plus <meta name="nav"> with a short label for the
 sidebar when the title is longer than one sidebar line; <meta name="draft" content="yes"> keeps a post out of
 the index, the feed and the recent changes but still builds its page. The build
 writes the post list into pages/blog/index.html's <!-- posts --> line, an Atom
@@ -287,7 +288,7 @@ def post_list(posts):
     for p in posts:
         if p['draft']:
             continue
-        items.append(f'<li><time datetime="{p["date"]}">{p["date"]}</time><span class="tag">{KINDS[p["kind"]]}</span><span><a href="{p["path"]}">{html.escape(p["title"], quote=False)}</a><small>{html.escape(p["summary"], quote=False)} · {html.escape(p["author"], quote=False)}</small></span></li>')
+        items.append(f'<li><span class="tag">{KINDS[p["kind"]]}</span><span><a href="{p["path"]}">{html.escape(p["title"], quote=False)}</a><small>{html.escape(p["summary"], quote=False)} · {html.escape(p["author"], quote=False)}</small></span></li>')
     return '\n  '.join(items)
 
 

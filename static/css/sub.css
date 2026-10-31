@@ -7,7 +7,7 @@
 /* Blog and changelog. */
 .col.wide { max-width: none }
 .byline { font-family: var(--mono); font-size: 13px; color: var(--muted); margin: -10px 0 20px; display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center }
-.byline time { font-variant-numeric: tabular-nums }
+.changes.posts li { grid-template-columns: 96px minmax(0, 1fr) }
 .posts small { display: block; color: var(--muted); font-size: 13px; margin-top: 2px }
 .changelog .q > h2 time { font-weight: 400; color: var(--muted); font-size: 14px; margin-left: 8px; font-family: var(--mono) }
 .changelog h3 { font-size: 13px; font-weight: 600; margin: 14px 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em }
