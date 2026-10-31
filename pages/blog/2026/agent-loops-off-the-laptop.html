@@ -1,0 +1,64 @@
+<head>
+<title>Moving our agent loops off the laptop · Uberblick blog</title>
+<meta name="description" content="How we moved CampfireFM's three ub-agents loops onto a server of their own: what the agents may not reach, why each launcher runs in tmux under systemd, what broke in the first week, and the requirements we wrote down for anyone doing the same.">
+<meta name="date" content="2026-10-31">
+<meta name="author" content="Ben">
+<meta name="kind" content="building note">
+<meta name="nav" content="A server for the loop">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/blog">Blog</a> / Building note</p>
+  <h1>Moving our agent loops off the laptop</h1>
+  <p class="byline"><time datetime="2026-10-31">2026-10-31</time> · Ben · <span class="tag">Building note</span></p>
+  <p class="lede">Since 26 October, the agent loops that build <a href="https://joincampfire.fm">CampfireFM</a> run on a server of their own instead of on my laptop: the backend, a CRM prototype and, since this week, the studio app. This note says how we set it up, what went wrong in the first week, and which parts we would do the same way anywhere.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="why"><h2>Why a server</h2>
+  <p>Our loop is <a href="https://agents.uberblick.ai">ub-agents</a>: a preparer, an implementer, a reviewer and an integrator, steered by GitHub labels. A launcher claims the next item from the queue and runs the agent for it, wherever you start it. For weeks that was a terminal on my laptop. The loop stopped when the lid closed, and issues labelled in the evening waited for the morning.</p>
+  <p>Uberblick's own loops already ran on a small box, three launchers in tmux panes that someone starts by hand. Over 14 days it did 454 runs and never more than two at once, so a box of the same size was a fair start. CampfireFM needed more than that, though. Its runs are heavier, they start a database, a cache, object storage and a search engine in containers, and there would be two loops from the start, with more to follow. So we built a box that starts its loops on its own, restarts them, upgrades them and tells us when one stops.</p>
+  </section>
+
+  <section class="q" id="box"><h2>What the agents may not reach</h2>
+  <p>Agents run code from pull requests, with the launcher's environment and its user's rights. Most of the design follows from that one sentence.</p>
+  <ul>
+    <li><strong>A machine of its own.</strong> A Hetzner VM with 8 shared vCPUs and 16 GB, built from Terraform and one setup script. It holds nothing we can't recreate, so a box we doubt gets replaced, not cleaned.</li>
+    <li><strong>No way in, no way out.</strong> No public ports and no private network. It joins our VPN with a tag that people may reach and that reaches nothing, and a canary alerts if the box can ever connect to staging. The cloud metadata service is blocked for the agents.</li>
+    <li><strong>An agent user without privileges.</strong> No sudo, and not in the <code>docker</code> group. The backend's compose stack runs on that user's own rootless Docker.</li>
+    <li><strong>Only the runtimes' credentials.</strong> A GitHub token for the agents' account, a long-lived Claude Code token, and the device logins for Codex and the Uberblick hub. No person's key to our encrypted secrets is on the box. It has an age key of its own, and a repository decides value by value what that key may open. So far that is nothing.</li>
+  </ul>
+  </section>
+
+  <section class="q" id="tmux"><h2>systemd, with tmux inside</h2>
+  <p>The documented way to run a launcher as a service is <code>ub-agents launch --no-ui</code> under a service manager. We wanted to keep the live terminal view, which shows the queue, the running agents and what each one is doing. It needs a terminal, and a service has none.</p>
+  <p>So each loop is a systemd user unit that starts its launcher inside a tmux server of its own, and a small wrapper waits for the session and passes the launcher's exit status back to systemd. Attaching shows the view, live. One tmux server per loop matters: a tmux server belongs to the unit that started it, so a shared one would stop with whichever loop stopped first.</p>
+  <p>This is our opinion, not a requirement. It costs about a hundred lines of wrapper, and it adds a trap: whoever attaches can press <code>q</code>, which drains the launcher until it exits cleanly.</p>
+  </section>
+
+  <section class="q" id="week"><h2>The first week</h2>
+  <p>Most of what we learned came from the box doing something we had not planned for.</p>
+  <ul>
+    <li><strong>41 restarts in a day, and nobody noticed.</strong> On 30 October the CRM prototype's launcher exited every 30 to 45 minutes, because a process listing timed out while the box was deep in swap. systemd restarted it each time, and the unit looked active all day. Had systemd's usual start limit tripped, the loop would have stayed dead until someone looked. Restarts now back off from one minute to thirty with no limit, and an alert counts them.</li>
+    <li><strong>One build can take the box.</strong> That repository's builds and end-to-end tests reached 8.5 GB plus 7.5 GB of swap in a single launcher. Each launcher now has a soft memory cap, so a runaway build slows down instead of an OOM kill landing in another loop. The containers needed a cap of their own: rootless Docker starts them outside the launcher's unit, where its cap doesn't reach. And the backend's compose file binds fixed ports, so it gets one launcher on this box, not two.</li>
+    <li><strong>An upgrade deleted the running version.</strong> A launcher keeps the version it started with, so our updater drains each loop and starts it again. Homebrew's cleanup removed the old version while two launchers were still draining on it, and a draining launcher still starts helpers from its own install. ub-agents now keeps a copy of its own code from startup, so a cleanup no longer matters.</li>
+    <li><strong>Some tools never updated.</strong> ub-agents keeps the agent CLIs current between runs, but only installs it recognises. Codex from its own installer was skipped 48 times as an unknown installation, and <code>gh</code> from apt not at all.</li>
+    <li><strong>Root ran a script the agents could swap.</strong> Setup was copied to <code>/tmp</code> and run as root from there. After a reboot clears <code>/tmp</code>, any agent run can create that directory first and replace the script, which is root for whatever a pull request contains. Root now runs setup only from a directory only root can write, and the script refuses anything else. A review of the setup caught this, not an incident.</li>
+    <li><strong>The token reached too far.</strong> We started with a classic GitHub token, and <code>repo</code> opens every repository the account can write to, in every organisation, dozens of unrelated ones in our case. The fix is a fine-grained token for the loop's repositories and nothing else.</li>
+  </ul>
+  </section>
+
+  <section class="q" id="watch"><h2>What we watch</h2>
+  <p>"Unit failed" turned out to catch almost nothing. The alerts that matter are the ones the service manager doesn't show: a launcher restarted three times in three hours, an enabled loop that hasn't run for 15 minutes, a launcher still on an old version twelve hours after an upgrade, and a failing <code>ub-agents doctor</code>, because a launcher stays up while every run fails on an expired login. Health is collected as root, so nothing an agent changes can make a broken loop look healthy. One more alert fires when the agent user has a service, a crontab entry or an SSH key that setup didn't install.</p>
+  </section>
+
+  <section class="q" id="generic"><h2>What carries over</h2>
+  <p>Very little of this is about systemd, tmux or Hetzner. Each fix answers a requirement any service manager has to meet: restart on every exit with a growing delay, stop with a signal that releases the claim, and watch for the loop that is up but not working. Writing those down showed us a change for our own setup too. A service that restarts on every exit it didn't ask for also starts a loop again after an accidental <code>q</code>, which makes the trap above harmless. Ours still lets a clean exit stand, so that is the next change on the box.</p>
+  <p>We are writing the requirements up as a best-practices page for the ub-agents docs, <a href="https://github.com/uberblick-ai/ub-agents/pull/683">Run launchers on a server</a>, with the settings that matter for systemd, launchd and Docker Compose. It will be the reference; this note is the story behind it.</p>
+  </section>
+
+  <section class="q" id="next"><h2>Next</h2>
+  <p>Our updater should not be with us for long. ub-agents is learning to <a href="https://github.com/uberblick-ai/ub-agents/pull/672">upgrade and restart itself</a> between runs, in place, and to leave a release that needs every launcher upgraded together to us. The next piece would be a view that attaches to a launcher running without one, which would replace tmux. Until then, the box runs three loops around the clock, and my laptop lid is mine again.</p>
+  </section>
+
+</article>
