@@ -1,28 +1,41 @@
 <head>
 <title>Run a hub · Uberblick docs</title>
-<meta name="description" content="Reference for the Uberblick hub: the setup script and its variables, routes, the claim, the ub-hub commands in the container, endpoints, and updates.">
+<meta name="description" content="Reference for the Uberblick hub: the setup script, what it promises, routes, the claim, the ub-hub commands, endpoints and updates.">
 <link rel="stylesheet" href="/css/sub.css">
 </head>
 <div class="hero sub">
   <p class="crumb"><a href="/">Uberblick</a> / Docs / Get started</p>
   <h1>Run a hub</h1>
-  <p class="lede">A hub shares a workspace between computers and people. Every computer keeps its own copy and works offline; the hub passes changes on and admits only members. It is one Docker release, started and updated by one hosted script and operated with <code>ub-hub</code> inside its container. This page is the reference; <a href="/guides/hub">Set up a hub</a> walks through a first hub for a team, and <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/REMOTE.md">REMOTE.md</a> has what the script does by hand.</p>
+  <p class="lede">A hub shares a workspace between computers and people. Every computer keeps its own copy and works offline; the hub passes changes on and admits only members. One hosted script starts and updates it, and <code>ub-hub</code> checks it from inside its container. This page is the reference; <a href="/guides/hub">Set up a hub</a> walks through a first hub for a team.</p>
+  <p class="small">Agents: follow <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/REMOTE.md">REMOTE.md</a> for every by-hand procedure.</p>
 </div>
 <article class="col">
 
   <section class="q" id="setup"><h2>setup-hub.sh</h2>
-<section class="block code"><div class="cap"><span>usage</span></div><pre>$ /bin/bash -c "$(curl -fsSL https://uberblick.ai/setup-hub.sh)"
-$ HUB_HOST=&lt;name&gt; HUB_VERSION=X.Y.Z /bin/bash -c "$(curl -fsSL https://uberblick.ai/setup-hub.sh)"
+<section class="block code"><div class="cap"><span>help</span></div><pre>$ HELP=1 /bin/bash -c "$(curl -fsSL https://uberblick.ai/setup-hub.sh)"
+Start or update a Docker hub on this host.
+Requires curl, Docker Engine 28.0.0+, Compose 2.24.4+, and Linux ss or macOS netstat.
 
-HUB_HOST       The name other computers use: a public host name with port 443 open,
-               or a Tailscale name (machine.tailnet.ts.net). Unset: this computer only
-HUB_VERSION    Pin a hub release. Unset: the newest hub-vX.Y.Z release
-HUB_DIR        Where the release files and .env live. Default ~/uberblick-remote
-LOOPBACK_PORT  The local port when HUB_HOST is unset. Default 8080
-ALLOW_ROOT=1   Allow running as root; the script never uses sudo
-HELP=1         Print this and exit</pre></section>
-  <p>Runs on the machine that hosts the hub: a Linux box with Docker Engine 28 or newer on x86_64, or a Mac with Docker Desktop for a hub that only your own computers use. It checks <code>curl</code>, Docker, Docker Compose and the ports before it downloads anything, and a failed check names what is missing and the command that fixes it. Then it fetches the four files of the release into <code>HUB_DIR</code>, writes a private <code>.env</code> (mode 600) with the release and the route, runs <code>docker compose pull</code> and <code>up -d</code>, and waits until <code>ub-hub status</code> reports a healthy hub. It ends with the next step: the hub's URL and the <code>ub auth login</code> line that claims it.</p>
-  <p>Running it again is the update and the route change: an existing <code>.env</code> keeps every value, <code>HUB_VERSION</code> moves to the newest release unless pinned, the route follows <code>HUB_HOST</code> when given, and the hub comes back on the new release after an <code>ub-hub backup</code> whose path is printed. The script never installs or updates Docker and changes nothing outside <code>HUB_DIR</code>.</p>
+  /bin/bash -c "$(curl -fsSL https://uberblick.ai/setup-hub.sh)"
+
+Variables (put them before /bin/bash):
+  HUB_HOST       Unset: loopback HTTP. Public DNS name: HTTPS on port 443.
+                 A *.ts.net name: Tailscale HTTPS on Linux (Tailscale must be up).
+  HUB_VERSION    Pin X.Y.Z; otherwise use GitHub's latest hub release.
+  HUB_DIR        Deployment directory (default: ~/uberblick-remote).
+  LOOPBACK_PORT  Loopback HTTP port (default: 8080).
+  ALLOW_ROOT=1   Allow an explicit root run; Docker is never installed or updated.
+  HELP=1         Print this help without checks or changes (also: --help).
+
+Re-run to update or change the HTTPS hostname. Without route variables, an
+existing .env keeps its route and other values. HTTPS-to-loopback switching,
+release downgrades, Windows/WSL, Podman and rootless Docker are not supported.</pre></section>
+  <ul>
+    <li>Nothing is downloaded or changed until every check passes, and a failed check names what is missing and how to fix it.</li>
+    <li>It never calls <code>sudo</code>, never installs or updates Docker, and writes only inside <code>HUB_DIR</code>.</li>
+    <li>Running it again updates the hub and keeps its settings. Before it moves a running hub to another release it takes a backup, and it never moves a hub to an older release.</li>
+    <li>It ends with the hub's address and the <code>ub auth login</code> line that claims it.</li>
+  </ul>
   </section>
 
   <section class="q" id="routes"><h2>Routes</h2>
@@ -34,7 +47,7 @@ HELP=1         Print this and exit</pre></section>
       <tr><td>Tailscale, recommended for a team</td><td><code>HUB_HOST=machine.tailnet.ts.net</code></td><td><code>https://machine.tailnet.ts.net</code> on the tailnet address only, with the certificate from the host's <a href="https://tailscale.com">Tailscale</a> daemon; needs <code>tailscale</code> up on the host</td></tr>
     </tbody>
   </table></div>
-  <p>Clients refuse an unencrypted hub on another computer, so there is no insecure mode to forget to turn off. In <code>.env</code> the routes are <code>WEB_HOST</code>, <code>TAILSCALE_IP</code> and <code>COMPOSE_FILE</code>; <code>HUB_GITHUB_CLIENT_ID</code> swaps the shared GitHub sign-in app for your own. The file comments every variable.</p>
+  <p>Clients refuse an unencrypted hub on another computer, so there is no insecure mode to forget to turn off. To sign in with your own GitHub app instead of the shared one, see <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/REMOTE.md#use-an-operator-owned-app">REMOTE.md</a>.</p>
   </section>
 
   <section class="q" id="claim"><h2>The claim</h2>
@@ -52,7 +65,7 @@ commands:
   hub-admin add --account-id &lt;id&gt;  Appoint by durable GitHub account ID
   backup                           Verify and save an online database copy
   restore [--yes] &lt;file|-&gt;         Restore a database while the hub is stopped</pre></section>
-  <p>Run from <code>HUB_DIR</code> on the host, inside the container: <code>docker compose exec hub ub-hub status</code>. <code>status</code> shows the release, the database state and whether the hub is claimed; <code>doctor</code> checks hub, database, storage, GitHub and clock and names the fix for each warning. <code>backup</code> prints the path of a backup to copy off the host; to restore, stop the hub and run <code>docker compose run --rm hub ub-hub restore &lt;path&gt;</code>. Logs: <code>docker compose logs --tail=100 hub caddy</code>. Nothing here starts, stops or updates the containers.</p>
+  <p>Run it on the host, from <code>HUB_DIR</code>. <code>status</code> shows the release, the database and whether the hub is claimed; <code>doctor</code> checks the hub, database, storage, GitHub and clock and names the fix for each warning. <code>backup</code> prints the path of a copy to keep off the host; restoring one is in <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/REMOTE.md#restoring-one">REMOTE.md</a>. <code>ub-hub</code> never starts, stops or updates the hub.</p>
   </section>
 
   <section class="q" id="endpoints"><h2>Endpoints</h2>
@@ -68,11 +81,10 @@ commands:
   </section>
 
   <section class="q" id="update"><h2>Updating</h2>
-  <p>Run the setup line again on the host. A release that changes the sync protocol needs the hub and every client updated in the same sitting: <code>brew upgrade uberblick</code> on each computer, then restart agents and <code>ub open</code> and reload browser tabs; until then clients report the mismatch and stay read-only. Documents and the claim live in named Docker volumes, so <code>docker compose down</code> and <code>up -d</code> keep them; only <code>--volumes</code> deletes them. Rollback and recovery are in <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/REMOTE.md">REMOTE.md</a>.</p>
+  <p>Run the setup line again on the host. A release that changes the sync protocol needs the hub and every client updated in the same sitting: <code>brew upgrade uberblick</code> on each computer, then restart agents and <code>ub open</code> and reload browser tabs; until then clients report the mismatch and stay read-only. Stopping, rollback and recovery are in <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/REMOTE.md">REMOTE.md</a>.</p>
   </section>
 
   <section class="q" id="kamal"><h2>With Kamal</h2>
-  <p>We use it with <a href="https://kamal-deploy.org">Kamal</a>: the hub runs as an accessory next to the app.</p>
-  <p>If you replace the <code>web</code> image's Caddyfile with your own, keep <code>admin 127.0.0.1:2019</code> in its global options and <code>import /etc/caddy/uberblick-csp.caddy</code> in the route that serves the app. <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/REMOTE.md">REMOTE.md</a> explains why.</p>
+  <p>We use it with <a href="https://kamal-deploy.org">Kamal</a>: the hub runs as an accessory next to the app. What to keep when you bring your own Caddyfile is in <a href="https://github.com/uberblick-ai/uberblick-2/blob/main/REMOTE.md">REMOTE.md</a>.</p>
   </section>
 </article>
