@@ -54,11 +54,11 @@
 
   <section class="q" id="generic"><h2>What carries over</h2>
   <p>Very little of this is about systemd, tmux or Hetzner. Each fix answers a requirement any service manager has to meet: restart on every exit with a growing delay, stop with a signal that releases the claim, and watch for the loop that is up but not working. Writing those down showed us a change for our own setup too. A service that restarts on every exit it didn't ask for also starts a loop again after an accidental <code>q</code>, which makes the trap above harmless. Ours still lets a clean exit stand, so that is the next change on the box.</p>
-  <p>We are writing the requirements up as a best-practices page for the ub-agents docs, <a href="https://github.com/uberblick-ai/ub-agents/pull/683">Run launchers on a server</a>, with the settings that matter for systemd, launchd and Docker Compose. It will be the reference; this note is the story behind it.</p>
+  <p>We wrote the requirements up as <a href="https://agents.uberblick.ai/docs/best-practices/launchers-on-a-server.html">Run launchers on a server</a> on the ub-agents site, with the settings that matter for systemd, launchd and Docker Compose. It is the reference; this note is the story behind it.</p>
   </section>
 
   <section class="q" id="next"><h2>Next</h2>
-  <p>Our updater should not be with us for long. ub-agents is learning to <a href="https://github.com/uberblick-ai/ub-agents/pull/672">upgrade and restart itself</a> between runs, in place, and to leave a release that needs every launcher upgraded together to us. The next piece would be a view that attaches to a launcher running without one, which would replace tmux. Until then, the box runs three loops around the clock, and my laptop lid is mine again.</p>
+  <p>Our updater is on its way out. From the next release, ub-agents can <a href="https://agents.uberblick.ai/docs/configuration/runtime-updates.html#updating-the-launcher">upgrade and restart itself</a> between runs, in place, and leaves a release that needs every launcher upgraded together to us. The next piece would be a view that attaches to a launcher running without one, which would replace tmux. Until then, the box runs three loops around the clock, and my laptop lid is mine again.</p>
   </section>
 
 </article>
