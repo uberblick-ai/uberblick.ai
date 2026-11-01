@@ -5,6 +5,8 @@
 // page's own monospace face measured on a canvas, as the editor does) and
 // "mermaid" with Mermaid itself, loaded from its package on jsDelivr when the
 // page has one. Both follow the colour scheme and redraw when it changes.
+// An ablauf flow with `play` sections gets ablauf's own playback controls
+// under the drawing. Nothing plays until the reader presses Play.
 const MERMAID = "https://cdn.jsdelivr.net/npm/mermaid@12.1.0/dist/mermaid.esm.min.mjs";
 const MONO = "IBM Plex Mono";
 const blocks = [...document.querySelectorAll(".tabs.ex[data-diagram]")];
@@ -19,7 +21,9 @@ const adopt = (box, svg, asHtml = false) => {
 		? Object.assign(document.createElement("template"), { innerHTML: svg }).content.querySelector("svg")
 		: new DOMParser().parseFromString(svg, "image/svg+xml").documentElement;
 	if (root?.localName !== "svg") throw new Error("not an SVG");
-	box.querySelector(".pic").replaceChildren(document.importNode(root, true));
+	const svgEl = document.importNode(root, true);
+	box.querySelector(".pic").replaceChildren(svgEl);
+	return svgEl;
 };
 const failed = (box, why) => {
 	const p = document.createElement("p");
@@ -28,6 +32,8 @@ const failed = (box, why) => {
 	box.querySelector(".pic").replaceChildren(p);
 };
 
+// Playback mounts by block, destroyed before each redraw so a scheme change starts clean.
+const mounts = new Map();
 let ablauf;
 let measure;
 let mermaid;
@@ -42,13 +48,16 @@ async function drawAblauf(box, n) {
 			return ctx.measureText(text).width;
 		};
 	}
-	const { svg, diagnostics } = ablauf.render(source(box), {
+	const { svg, diagnostics, timelines } = ablauf.render(source(box), {
 		idPrefix: `ab${n}`,
 		scheme: scheme(),
 		fonts: { mono: { family: MONO, measureText: measure } },
 	});
 	for (const d of diagnostics) console.warn(`ablauf line ${d.line}: ${d.message}`);
-	adopt(box, svg);
+	mounts.get(box)?.destroy();
+	mounts.delete(box);
+	const svgEl = adopt(box, svg);
+	if (timelines?.length) mounts.set(box, ablauf.mountPlayback(box.querySelector(".pic"), svgEl, timelines));
 }
 async function drawMermaid(box, n) {
 	mermaid ??= (await import(MERMAID)).default;
