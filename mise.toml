@@ -28,8 +28,18 @@ run = ["mise run build", "mise run lint"]
 description = "Build and deploy the Worker with your own Cloudflare login"
 run = "python3 build.py && npx -y wrangler@4.152.0 deploy"
 
-# The ablauf renderer the diagram examples draw with, bundled from a checkout of
-# uberblick-ai/ablauf beside this one (static/js/ablauf.js says which commit).
+# The ablauf renderer and its playback controls, bundled for the browser from the
+# published @uberblick/ablauf package (static/js/ablauf.js says which version).
 [tasks.ablauf]
-description = "Bundle ../ablauf's renderer into static/js/ablauf.js"
-run = "npx -y esbuild@0.27.2 ../ablauf/spike/flow/index.ts --bundle --format=esm --minify --target=es2022 --outfile=static/js/ablauf.js"
+description = "Bundle @uberblick/ablauf's renderer and playback into static/js/ablauf.js"
+run = '''
+set -eu
+version=0.3.0
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+npm install --prefix "$tmp" --no-save --no-audit --no-fund "@uberblick/ablauf@$version" >/dev/null
+printf 'export { render } from "@uberblick/ablauf";\nexport { mountPlayback } from "@uberblick/ablauf/playback";\n' > "$tmp/entry.mjs"
+npx -y esbuild@0.27.2 "$tmp/entry.mjs" --bundle --format=esm --minify --target=es2022 --legal-comments=none \
+  --banner:js="// @uberblick/ablauf $version (render and mountPlayback), bundled for the browser with \`mise run ablauf\`. Not edited by hand. MIT, see github.com/uberblick-ai/ablauf." \
+  --outfile=static/js/ablauf.js
+'''

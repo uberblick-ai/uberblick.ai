@@ -52,6 +52,73 @@ agents:
     <li><strong>Merge minor and patch, write a report.</strong> Every merge leaves a comment that says what was checked and why it was safe.</li>
     <li><strong>One repair round.</strong> When CI fails, the implementer gets one try to adapt. Its commit then owes a normal agent review. A second failure goes to a person.</li>
   </ul>
+  <p>Here is the same path as an <a href="/docs/markdown/diagrams">ablauf</a> flow. Pick an outcome and press Play to follow one pull request through it.</p>
+<div class="tabs ex" data-diagram="ablauf"><div class="tablist" role="tablist" aria-label="Dependabot flow"><button role="tab" id="t-dep-v" aria-selected="true" aria-controls="p-dep-v" type="button">Displayed</button><button role="tab" id="t-dep-m" aria-selected="false" aria-controls="p-dep-m" type="button">Markdown</button></div>
+  <div class="panel pic" role="tabpanel" id="p-dep-v" aria-labelledby="t-dep-v"><p class="small">Drawn here from the source in the next tab.</p></div>
+  <div class="panel" role="tabpanel" id="p-dep-m" aria-labelledby="t-dep-m" hidden><pre>```ablauf
+flow v0
+# Dependabot updates: small bumps merge on their own, majors wait for a person.
+
+columns rework main stop
+
+box dependabot col=main title=Dependabot "opens a pull request"
+pill dependencies tone=agent
+box integrator "reads the title and the diff, runs the gates"
+pill needs-changes col=rework row=integrator tone=rework
+box implementer col=rework "one fix round, then a review"
+end merged col=main "Merged · minor or patch"
+
+panel human col=stop row=integrator span=2 tone=stop
+  pill needs-human
+  strong "A person decides"
+
+dependabot --&gt; dependencies
+dependencies --&gt; integrator : trigger
+integrator --&gt; merged : gates green
+integrator --&gt; needs-changes tone=rework from=left.1 : a gate failed
+needs-changes --&gt; implementer tone=rework
+implementer --&gt; integrator tone=rework from=right to=left.2
+integrator --&gt; human tone=stop : major, or still failing
+
+legend
+  pill tone=done "GitHub label" sample=dependencies
+  box "agent role"
+  panel tone=stop "a person decides"
+
+play "Clean merge"
+  tempo 1.8s
+  step dependabot actor="Dependabot" "Bump vite from 7.1.2 to 7.1.5"
+  step dependencies actor="Loop" "Trusted author and the dependencies label: straight to the integrator"
+  step integrator 2.6s actor="Integrator" "Only the lockfile changed, CI is green, no gate stops it"
+  step merged 3s actor="Merged" "Merged with a report, nobody involved"
+
+play "Tests failing"
+  tempo 1.8s
+  step dependabot actor="Dependabot" "Bump zod from 4.4.3 to 4.6.6"
+  step dependencies actor="Loop" "Straight to the integrator"
+  step integrator 2.4s actor="Integrator" "A test fails on the new version, so it gets one repair round"
+  step needs-changes actor="Loop" "Labels it needs-changes"
+  step implementer 2.8s actor="Implementer" "Fixes two assertions, and a reviewer checks the fix"
+  step integrator 2.2s actor="Integrator" "CI is green now"
+  step merged 3s actor="Merged" "Merged after one repair round"
+
+play "Fix fails"
+  tempo 1.8s
+  step dependabot actor="Dependabot" "Bump a package whose new version breaks a test"
+  step dependencies actor="Loop" "Straight to the integrator"
+  step integrator 2.4s actor="Integrator" "A test fails, so it gets one repair round"
+  step needs-changes actor="Loop" "Labels it needs-changes"
+  step implementer 2.6s actor="Implementer" "Adapts the code, and a reviewer checks the fix"
+  step integrator 2.4s actor="Integrator" "Still failing, so no second try"
+  step human 3s actor="A person" "Fix it by hand, pin the old version or close it"
+
+play "Major release"
+  tempo 1.8s
+  step dependabot actor="Dependabot" "Bump a package to a new major version"
+  step dependencies actor="Loop" "Straight to the integrator"
+  step integrator 2.6s actor="Integrator" "CI is green, but a major can change behaviour"
+  step human 3s actor="A person" "Reads the changelog and decides"
+```</pre></div></div>
   </section>
 
   <section class="q" id="merges"><h2>Four merges</h2>
@@ -86,3 +153,4 @@ agents:
   <p>You need a loop that can tell who authored a pull request, keep a bot's text away from the model, and follow written rules about what it may merge. Ours is <a href="https://agents.uberblick.ai">ub-agents</a>, and the three settings above are all it took on the loop's side. The rules are plain text in our repository; copy them and change what does not fit.</p>
   </section>
 </article>
+<script type="module" src="/js/diagrams.js"></script>
