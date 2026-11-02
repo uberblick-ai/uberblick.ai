@@ -6,7 +6,8 @@
 // "mermaid" with Mermaid itself, loaded from its package on jsDelivr when the
 // page has one. Both follow the colour scheme and redraw when it changes.
 // An ablauf flow with `play` sections gets ablauf's own playback controls
-// under the drawing. Nothing plays until the reader presses Play.
+// under the drawing. It plays while it is in view, unless the reader paused it
+// or prefers reduced motion.
 const MERMAID = "https://cdn.jsdelivr.net/npm/mermaid@12.1.0/dist/mermaid.esm.min.mjs";
 const MONO = "IBM Plex Mono";
 const blocks = [...document.querySelectorAll(".tabs.ex[data-diagram]")];
@@ -57,7 +58,7 @@ async function drawAblauf(box, n) {
 	mounts.get(box)?.destroy();
 	mounts.delete(box);
 	const svgEl = adopt(box, svg);
-	if (timelines?.length) mounts.set(box, ablauf.mountPlayback(box.querySelector(".pic"), svgEl, timelines));
+	if (timelines?.length) mounts.set(box, ablauf.mountPlayback(box.querySelector(".pic"), svgEl, timelines, { autoplay: true }));
 }
 async function drawMermaid(box, n) {
 	mermaid ??= (await import(MERMAID)).default;
