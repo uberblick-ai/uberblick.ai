@@ -1,0 +1,55 @@
+<head>
+<title>A monitor, not an app · Uberblick blog</title>
+<meta name="description" content="Why the ub-agents monitor is a page in the browser you already have open and not a desktop app: the memory on a laptop belongs to the agents, and what we need from a monitor is to see what's waiting for us and unblock it quickly.">
+<meta name="date" content="2026-11-06">
+<meta name="author" content="Ben">
+<meta name="kind" content="design note">
+<meta name="nav" content="A monitor, not an app">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/blog">Blog</a> / Design note</p>
+  <h1>A monitor, not an app</h1>
+  <p class="byline">Ben · <span class="tag">Design note</span></p>
+  <p class="lede">Since 0.5.1, <a href="https://agents.uberblick.ai/docs/commands/monitor.html">ub-agents monitor</a> shows our agent loops on every machine in one browser page: what waits for a person, what runs, and what finished today. We could have built a desktop app for it. We chose not to, because the memory on our laptops belongs to the agents.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="why"><h2>Why we needed one</h2>
+  <p>The terminal view of <a href="https://agents.uberblick.ai">ub-agents</a> shows the runs of the launcher it belongs to. That was enough while every loop ran on a laptop. Then our loops <a href="/blog/2026/agent-loops-off-the-laptop">moved to a server</a>, and work started happening where nobody was looking.</p>
+  <p>One day we labelled an issue as ready at 11:13. At 11:22 the server claimed it, and nothing told us; we noticed by chance. Later that day another issue went through preparation, implementation, review and merge on the server in about an hour, and we followed every step by refreshing GitHub. The loop worked. We just couldn't see it.</p>
+  </section>
+
+  <section class="q" id="memory"><h2>The memory belongs to the agents</h2>
+  <p>The obvious answer is a desktop app with a dashboard. Built on Electron, as so many are, it brings another copy of Chromium and Node, running all day to show a list that changes a few times an hour.</p>
+  <p>On a laptop that runs a launcher, that memory is already spoken for. The agents build, run test suites, start browsers for end-to-end tests and bring up databases in containers. On our server, one repository's build and tests <a href="/blog/2026/agent-loops-off-the-laptop#week">reached 8.5 GB plus swap</a> on their own. Whatever a dashboard holds is memory a build doesn't get.</p>
+  <p>So the monitor is a tab in the browser you already have open, served by a small process on your machine. We measured it on Linux while it served <a href="https://github.com/uberblick-ai/uberblick-2">Uberblick's</a> last 24 hours, 16 finished runs and three items waiting for us. The server held 28 MB idle and 35 MB after reading. The page's own JavaScript held about 1.5 MB. The whole tab, in the same Chromium, took 30 to 40 MB more than a nearly empty page.</p>
+  </section>
+
+  <section class="q" id="page"><h2>What waits for you comes first</h2>
+  <p>Before it went into ub-agents, the monitor was a single HTML page and a short script in CampfireFM's studio repository. The shape stayed: one page, read from the top, with what needs us first.</p>
+  <figure class="shot">
+    <img class="l" src="/img/monitor-light.webp" width="1440" height="1392" loading="lazy" decoding="async" alt="The ub-agents monitor for uberblick-ai/uberblick-2, in a terminal-style monospace page. A red-framed Needs human panel holds one item, issue 2202, MCP host: enforce read-only and read-write scope per request, stopped by the issue reviewer, with its asks, a discuss with Claude button and links to the action needed comment and the outcome record. Below it, a blue Running panel shows three runs, a PR review on loop-server-1, an implementer on this machine and an issue preparer on loop-server-2, with a dropdown in its top-right border reading All Machines (3). An Eligible panel lists four issues in claim order, the first marked next with high priority and the last in backoff after one failure. Recent activity lists 15 runs costing 23.52 dollars in the last 24 hours, each with its result, machine, duration and age.">
+    <img class="d" src="/img/monitor-dark.webp" width="1440" height="1392" alt="The same page in dark mode." loading="lazy">
+    <figcaption>The monitor on Uberblick's repository, staged from the past day's runs and issues.</figcaption>
+  </figure>
+  <p><strong>Needs human</strong> lists every item an agent handed back, with what it asks: the actions, and the options with the recommended one first. Below it, <strong>Running</strong> shows each live run with its agent and machine, and narrows to one machine when you pick it. <strong>Eligible</strong> shows what the loop picks up next, in the order it will claim it. <strong>Expired without a result</strong> shows runs whose launcher went away, and <strong>Recent activity</strong> shows the last 24 hours with result, machine, duration, tokens and cost. If you want, the page notifies you, but only for what you choose. By default that's an item that newly needs a person.</p>
+  </section>
+
+  <section class="q" id="unblock"><h2>From waiting to unblocked</h2>
+  <p>Seeing that something waits is half the job. The other half is deciding, and that usually takes a conversation: what did the agent find, is its recommendation sound, what happens if we pick the other option?</p>
+  <p>Each item has a <strong>discuss with Claude</strong> button, and it saves you the part where you explain the problem. It opens Claude Code in the Claude app, already in your checkout, with the request to unblock that item through the <a href="https://skills.uberblick.ai/skills/ub-agents-unblock">ub-agents-unblock skill</a> written out. You confirm the folder and send it.</p>
+  <p>You don't start from scratch. Claude gathers the context itself: how your loop is set up, the agent's notice, its outcome record with the options and the evidence behind them, and the item. Its first answer tells you in plain words what the decision unblocks and what the agent recommends. You don't paste links or retell the history; you go straight to the decision. Once you've made it, Claude resumes the item the way the notice says, and the loop picks it up again.</p>
+  </section>
+
+  <section class="q" id="records"><h2>Nothing lives in the monitor</h2>
+  <p>We describe ub-agents as making coding-agent work repeatable, inspectable and recoverable. The monitor holds to that by keeping nothing of its own. Every row on the page is a record the launchers already write to GitHub, read with the same rules the launchers use, and every row links to it. The page never changes anything on GitHub. Close it and nothing is lost; open it on another laptop and it shows the same loop.</p>
+  <p>It's light on GitHub too. It asks every 30 seconds, and because GitHub doesn't count a "304 Not Modified" answer, a quiet poll costs about one call from your hourly budget. The status bar shows how much of that budget is left.</p>
+  </section>
+
+  <section class="q" id="small"><h2>Small on purpose</h2>
+  <p>The monitor added no dependency to ub-agents. It's one HTML file of 26 KB and Python's built-in web server, listening only on your own machine. It reads GitHub with the login you already gave <code>gh</code>, and that login stays in the server; the page only ever sees the records it shows.</p>
+  <p>It's still marked experimental. If you run ub-agents, start it with <a href="https://agents.uberblick.ai/docs/commands/monitor.html">ub-agents monitor</a> and tell us what you miss. We'll keep it small.</p>
+  </section>
+
+</article>
