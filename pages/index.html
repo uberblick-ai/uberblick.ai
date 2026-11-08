@@ -11,8 +11,8 @@
 </div>
 
 <section class="blk video" id="video">
-<a class="vframe" id="loom" href="https://www.loom.com/share/ad990edf5d93480dbc36911510fab080" data-embed="https://www.loom.com/embed/ad990edf5d93480dbc36911510fab080?hideEmbedTopBar=true&amp;autoplay=1"><span class="vplay" aria-hidden="true"></span><span class="vlabel">Watch the overview</span></a>
-<p class="vnote">A walk through Uberblick on the real product. It plays from Loom, which loads only once you press play.</p>
+<div class="vframe" id="loom" data-src="https://www.loom.com/embed/ad990edf5d93480dbc36911510fab080?hideEmbedTopBar=true"><noscript><a href="https://www.loom.com/share/ad990edf5d93480dbc36911510fab080">Watch the overview on Loom</a></noscript></div>
+<p class="vnote">A walk through Uberblick on the real product.</p>
 <p class="vsrc">The change made in the video: <a href="https://github.com/uberblick-ai/uberblick-2/issues/2672">issue #2672</a> and <a href="https://github.com/uberblick-ai/uberblick-2/pull/2673">pull request #2673</a>.</p>
 </section>
 
@@ -210,19 +210,18 @@ ub mcp install claude">Copy</button></span></div>
 </section>
 <script>
 (() => {
-  // The demo plays from Loom. Until someone presses play the page loads nothing
-  // from there; the click swaps the link for the player, which starts at once.
-  const link = document.getElementById('loom');
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
+  // The demo plays from Loom. The player loads as soon as the page has, so it
+  // is ready when someone presses play, and never plays on its own.
+  const box = document.getElementById('loom');
+  const embed = () => {
     const frame = document.createElement('iframe');
-    frame.className = 'vframe';
-    frame.src = link.dataset.embed;
+    frame.src = box.dataset.src;
     frame.title = 'Uberblick overview video';
-    frame.allow = 'autoplay; fullscreen; picture-in-picture';
+    frame.allow = 'fullscreen; picture-in-picture';
     frame.allowFullscreen = true;
-    link.replaceWith(frame);
-  });
+    box.replaceChildren(frame);
+  };
+  if (document.readyState === 'complete') embed(); else addEventListener('load', embed);
 })();
 (() => {
   const $ = id => document.getElementById(id);
