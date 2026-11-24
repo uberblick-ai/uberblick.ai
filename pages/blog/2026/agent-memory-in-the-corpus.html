@@ -1,0 +1,64 @@
+<head>
+<title>Why we moved agent memory into Uberblick pages · Uberblick blog</title>
+<meta name="description" content="Why we turned off Claude Code's local memory and moved agent memory into Uberblick pages: what the local folders held, what the first loop run saved, why one memory belonged on the retro board, and the memory page kind we are building next.">
+<meta name="date" content="2026-11-24">
+<meta name="author" content="Ben">
+<meta name="kind" content="building note">
+<meta name="nav" content="Agent memory in pages">
+<link rel="stylesheet" href="/css/sub.css">
+</head>
+<div class="hero sub">
+  <p class="crumb"><a href="/">Uberblick</a> / <a href="/blog">Blog</a> / Building note</p>
+  <h1>Why we moved agent memory into Uberblick pages</h1>
+  <p class="byline">Ben · <span class="tag">Building note</span></p>
+  <p class="lede">Our agents work on a MacBook, a Mac Studio and a Linux server. Each machine kept its own memory of what the agents had learned, and none of them shared it. This week we moved agent memory into Uberblick pages. Here's what we found, what the first run wrote, and what we're building next.</p>
+</div>
+<article class="col">
+
+  <section class="q" id="local"><h2>One repository, three memories</h2>
+  <p>Claude Code keeps a local memory: notes under the user's home directory, with an index it loads when a session starts. It works well on one machine. We looked at what it held for <a href="https://joincampfire.fm">CampfireFM</a>'s backend.</p>
+  <ul>
+    <li><strong>The MacBook had 16 notes, the Mac Studio 7.</strong> Only one topic appeared on both: format with black, never <code>ruff format</code>. Agents on two machines had learned the same lesson separately, and each machine knew things the other never saw.</li>
+    <li><strong>The loop read it and never wrote it.</strong> <a href="https://agents.uberblick.ai">ub-agents</a> runs each role in its own worktree, and all 63 run transcripts on the MacBook loaded the main checkout's index. None of them saved a note. The server runs a loop too, with whatever memory it has of its own.</li>
+    <li><strong>Codex never saw it.</strong> Two of our loop roles run on Codex, which has a memory of its own.</li>
+  </ul>
+  <p>Agents already share one place that every machine and runtime can reach: the Uberblick workspace they read product intent from. So we tried putting memory there.</p>
+  </section>
+
+  <section class="q" id="trial"><h2>The trial</h2>
+  <p>We tried it on Uberblick's own repository first, with three changes:</p>
+  <ul>
+    <li><strong>Local memory off.</strong> We turned off automatic local memory for Claude Code and Codex in the repository's settings. That also removes their prompts to save notes, so we had to supply our own.</li>
+    <li><strong>One page per memory.</strong> Each memory is a page tagged <code>agent-memory</code>, with a title that names the fact and a one-line description. The descriptions are the index: an agent lists the tag and opens only what bears on its task.</li>
+    <li><strong>One rule in <code>AGENTS.md</code>.</strong> Read the memories before you start. Save one when something failed before it worked, a tool refused you, or finding something took several attempts, and another run would hit it again. Before you finish, check you haven't left one unsaved. Rules still go into instructions, product intent onto its page, follow-ups into issues, and nothing secret goes anywhere.</li>
+  </ul>
+  <p>Claude and Codex both read <code>AGENTS.md</code>, and both already reach the workspace, so no runtime needed anything else.</p>
+  </section>
+
+  <section class="q" id="first"><h2>What the first run wrote</h2>
+  <p>The first agent to run under the new rule was merging a pull request. It saved two memories:</p>
+  <ul>
+    <li><strong>Redirect large output into the run's scratch directory.</strong> When a command prints too much, Claude Code saves the output where a headless run may not read it, and the denial lasts for the rest of the run.</li>
+    <li><strong>Wait for a long job with Claude Code's Monitor tool.</strong> Our unattended runs block both a plain <code>sleep</code> and <code>tail --pid</code>.</li>
+  </ul>
+  <p>Both notes save a later run the same trouble. But the first one exposed a bug: our loop configuration has a permission rule meant to let agents read that saved output, and the rule doesn't match. The memory kept the workaround, and nobody heard about the bug.</p>
+  </section>
+
+  <section class="q" id="retro"><h2>A memory is not a retrospective</h2>
+  <p>Our roles post a retrospective when a run loses real time and can name the fix. The retrospective tells a maintainer what to change; a memory tells the next agent how to get by until then. The run saved the workaround and told no one about the gap.</p>
+  <p>So the rule gained a sentence: when a memory works around a gap in configuration or instructions, also name the gap in the run's retrospective. We posted that first one ourselves.</p>
+  </section>
+
+  <section class="q" id="open"><h2>What we're still working out</h2>
+  <ul>
+    <li><strong>Machines differ.</strong> A workaround found on a Mac may be wrong on the Linux server. So a memory's description now opens with when it holds: the runtime, a headless or interactive session, and the operating system where it matters. An agent checks a memory before relying on it and narrows it in place rather than adding one that contradicts it. Nothing machine-bound, such as a local path or a hostname, belongs in a memory.</li>
+    <li><strong>Saving is the weak spot.</strong> In a test, Codex read the memory index unprompted, then spent several searches finding the right test command and saved nothing. So every handoff now names the memories a run saved, or none, and a memory is archived once a fix makes it unnecessary. We set no quota: “none” is a fine answer.</li>
+    <li><strong>Reading first is still a request.</strong> Claude Code loads its index whether the agent asks or not. A page is read only if the agent remembers to, so we put the read at the top of the file every role opens first. We can't yet prove every run does it.</li>
+  </ul>
+  </section>
+
+  <section class="q" id="next"><h2>Next</h2>
+  <p>Tagged pages were the quickest way to try this, and they mix memories in with product pages. We're giving memories a document kind of their own (<a href="https://github.com/uberblick-ai/uberblick-2/issues/2731">#2731</a>), with their own tab, an optional agent name so a reviewer keeps notes apart from an implementer, and one call that returns the index. Until it lands, the tag does the job, and a lesson learned on one machine is now waiting on the others.</p>
+  </section>
+
+</article>
